@@ -89,4 +89,80 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+import { InsertProcurementApproval, InsertUploadedDocument, procurementApprovals, uploadedDocuments } from "../drizzle/schema";
+import { desc } from "drizzle-orm";
+
+/**
+ * 創建新的採購簽呈記錄
+ */
+export async function createProcurementApproval(data: InsertProcurementApproval) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(procurementApprovals).values(data);
+  return result[0].insertId;
+}
+
+/**
+ * 獲取使用者的所有簽呈記錄
+ */
+export async function getUserApprovals(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db
+    .select()
+    .from(procurementApprovals)
+    .where(eq(procurementApprovals.userId, userId))
+    .orderBy(desc(procurementApprovals.createdAt));
+}
+
+/**
+ * 獲取單一簽呈詳情
+ */
+export async function getApprovalById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db
+    .select()
+    .from(procurementApprovals)
+    .where(eq(procurementApprovals.id, id))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+/**
+ * 刪除簽呈記錄
+ */
+export async function deleteApproval(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(procurementApprovals).where(eq(procurementApprovals.id, id));
+}
+
+/**
+ * 儲存上傳文件記錄
+ */
+export async function saveUploadedDocument(data: InsertUploadedDocument) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(uploadedDocuments).values(data);
+  return result[0].insertId;
+}
+
+/**
+ * 獲取簽呈的所有附件
+ */
+export async function getApprovalDocuments(approvalId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db
+    .select()
+    .from(uploadedDocuments)
+    .where(eq(uploadedDocuments.approvalId, approvalId));
+}
