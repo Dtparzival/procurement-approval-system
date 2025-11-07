@@ -8,7 +8,7 @@ import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
-import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check } from "lucide-react";
+import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check, LogOut, Brain } from "lucide-react";
 import { Streamdown } from "streamdown";
 import { Link } from "wouter";
 
@@ -28,14 +28,33 @@ export default function Home() {
     content: string;
   } | null>(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [generatingStatus, setGeneratingStatus] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const logoutMutation = trpc.auth.logout.useMutation({
+    onSuccess: () => {
+      toast.success("已登出");
+      window.location.href = getLoginUrl();
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
+
   const generateMutation = trpc.procurement.generate.useMutation({
+    onMutate: () => {
+      setGeneratingStatus("正在分析您的需求...");
+      setTimeout(() => setGeneratingStatus("正在組織簽呈內容..."), 2000);
+      setTimeout(() => setGeneratingStatus("正在優化公文格式..."), 4000);
+    },
     onSuccess: (data) => {
       setGeneratedApproval(data);
+      setGeneratingStatus("");
       toast.success("簽呈生成成功!");
     },
     onError: (error) => {
+      setGeneratingStatus("");
       toast.error(error.message || "生成失敗,請稍後再試");
     },
   });
@@ -171,23 +190,35 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FileText className="w-8 h-8 text-blue-600" />
             <h1 className="text-2xl font-bold text-gray-900">{APP_TITLE}</h1>
           </div>
           <div className="flex items-center gap-4">
+            {isAuthenticated && (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <span>歡迎, {user?.name || "使用者"}</span>
+              </div>
+            )}
             <Link href="/history">
               <Button variant="outline" className="gap-2">
                 <HistoryIcon className="w-4 h-4" />
                 歷史記錄
               </Button>
             </Link>
-            <div className="text-sm text-gray-600">
-              {user?.name || user?.email}
-            </div>
+            {isAuthenticated && (
+              <Button 
+                variant="outline" 
+                className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={handleLogout}
+                disabled={logoutMutation.isPending}
+              >
+                <LogOut className="w-4 h-4" />
+                登出
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -343,7 +374,27 @@ export default function Home() {
                 )}
               </CardHeader>
               <CardContent>
-                {!generatedApproval ? (
+                {generateMutation.isPending ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="relative">
+                      <Brain className="w-16 h-16 text-blue-500 mb-4 animate-pulse" />
+                      <div className="absolute inset-0 w-16 h-16 border-4 border-blue-200 rounded-full animate-ping" />
+                    </div>
+                    <p className="text-lg font-semibold text-blue-600 mb-2">
+                      AI 正在思考中...
+                    </p>
+                    {generatingStatus && (
+                      <p className="text-sm text-gray-600 animate-pulse">
+                        {generatingStatus}
+                      </p>
+                    )}
+                    <div className="mt-6 flex gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                ) : !generatedApproval ? (
                   <div className="flex flex-col items-center justify-center py-20 text-center">
                     <FileText className="w-16 h-16 text-gray-300 mb-4" />
                     <p className="text-gray-500">
