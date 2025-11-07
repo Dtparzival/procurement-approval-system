@@ -44,9 +44,33 @@ export default function Home() {
     onSuccess: (data) => {
       setUploadedFiles(prev => [...prev, data]);
       toast.success(`${data.fileName} 上傳成功`);
+      // 自動識別文件內容
+      extractMutation.mutate({
+        fileUrl: data.fileUrl,
+        fileName: data.fileName,
+        mimeType: data.mimeType,
+      });
     },
     onError: (error) => {
       toast.error(error.message || "上傳失敗");
+    },
+  });
+
+  const extractMutation = trpc.procurement.extractDocumentInfo.useMutation({
+    onSuccess: (data) => {
+      if (data.extractedInfo) {
+        // 將識別的資訊附加到現有輸入
+        setUserInput((prev: string) => {
+          if (prev.trim()) {
+            return `${prev}\n\n${data.extractedInfo}`;
+          }
+          return data.extractedInfo as string;
+        });
+        toast.success("已自動識別文件內容");
+      }
+    },
+    onError: (error) => {
+      toast.error("文件識別失敗，請手動輸入資訊");
     },
   });
 
@@ -186,14 +210,20 @@ export default function Home() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="userInput">需求描述</Label>
-                  <Textarea
-                    id="userInput"
-                    placeholder="例如:需要採購 10 台筆記型電腦,規格為 Intel i7 處理器、16GB RAM、512GB SSD,用於研發部門進行軟體開發工作,預算約 30 萬元..."
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    rows={8}
-                    className="resize-none"
-                  />
+              <Textarea
+                id="userInput"
+                placeholder="例如:需要採購 10 台筆記型電腦,規格為 Intel i7 處理器, 16GB RAM, 512GB SSD,用於研發部門進行軟體開發工作,預算約 30 萬元..."
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                className="min-h-[120px] resize-none"
+                disabled={generateMutation.isPending || extractMutation.isPending}
+              />
+              {extractMutation.isPending && (
+                <p className="text-sm text-blue-600 mt-2 flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  正在識別文件內容...
+                </p>
+              )}
                   <div className="text-xs text-gray-500">
                     {userInput.length} / 最少 10 個字元
                   </div>

@@ -23,6 +23,72 @@ export const appRouter = router({
 
   procurement: router({
     /**
+     * 識別文件內容並提取關鍵資訊
+     */
+    extractDocumentInfo: protectedProcedure
+      .input(
+        z.object({
+          fileUrl: z.string(),
+          fileName: z.string(),
+          mimeType: z.string().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        try {
+          // 使用 AI 分析文件內容
+          const response = await invokeLLM({
+            messages: [
+              {
+                role: "system",
+                content: `你是一個專業的文件分析助手。請分析上傳的文件，識別出與採購相關的關鍵資訊。
+
+請提取以下資訊：
+- 採購物品/服務名稱
+- 規格與型號
+- 數量
+- 單價與總價
+- 採購目的與理由
+- 使用單位/部門
+- 預算來源
+- 其他重要資訊
+
+請以自然、流暢的文字描述這些資訊，不要使用條列式，像是在填寫簽呈的需求描述一樣。`,
+              },
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: `請分析這個文件：${input.fileName}`,
+                  },
+                  {
+                    type: "file_url",
+                    file_url: {
+                      url: input.fileUrl,
+                      mime_type: input.mimeType as any,
+                    },
+                  },
+                ],
+              },
+            ],
+          });
+
+          const extractedInfo = response.choices[0]?.message?.content || "";
+
+          return {
+            success: true,
+            extractedInfo,
+          };
+        } catch (error) {
+          console.error("[Document Extraction Error]", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "文件識別失敗，請稍後再試",
+          });
+        }
+      }),
+
+    /**
      * 生成採購簽呈
      */
     generate: protectedProcedure
