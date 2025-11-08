@@ -211,34 +211,37 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <FileText className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">{APP_TITLE}</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            {isAuthenticated && (
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <span>歡迎, {user?.name || "使用者"}</span>
-              </div>
-            )}
-            <Link href="/history">
-              <Button variant="outline" className="gap-2">
-                <HistoryIcon className="w-4 h-4" />
-                歷史記錄
-              </Button>
-            </Link>
-            {isAuthenticated && (
-              <Button 
-                variant="outline" 
-                className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                onClick={handleLogout}
-                disabled={logoutMutation.isPending}
-              >
-                <LogOut className="w-4 h-4" />
-                登出
-              </Button>
-            )}
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0" />
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">{APP_TITLE}</h1>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {isAuthenticated && (
+                <div className="hidden md:flex items-center gap-2 text-sm text-gray-600">
+                  <span className="truncate max-w-[120px]">歡迎, {user?.name || "使用者"}</span>
+                </div>
+              )}
+              <Link href="/history">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <HistoryIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">歷史記錄</span>
+                </Button>
+              </Link>
+              {isAuthenticated && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="gap-1.5 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">登出</span>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>

@@ -92,20 +92,22 @@ export default function ApprovalDetail() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <FileText className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">{APP_TITLE}</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/history">
-              <Button variant="outline" className="gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                返回列表
-              </Button>
-            </Link>
-            <div className="text-sm text-gray-600">
-              {user?.name || user?.email}
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0" />
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">{APP_TITLE}</h1>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Link href="/history">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">返回列表</span>
+                </Button>
+              </Link>
+              <div className="hidden md:block text-sm text-gray-600 truncate max-w-[120px]">
+                {user?.name || user?.email}
+              </div>
             </div>
           </div>
         </div>
