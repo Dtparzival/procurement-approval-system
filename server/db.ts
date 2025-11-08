@@ -90,7 +90,7 @@ export async function getUserByOpenId(openId: string) {
 }
 
 import { InsertProcurementApproval, InsertUploadedDocument, procurementApprovals, uploadedDocuments } from "../drizzle/schema";
-import { desc } from "drizzle-orm";
+import { desc, and } from "drizzle-orm";
 
 /**
  * 創建新的採購簽呈記錄
@@ -165,4 +165,55 @@ export async function getApprovalDocuments(approvalId: number) {
     .select()
     .from(uploadedDocuments)
     .where(eq(uploadedDocuments.approvalId, approvalId));
+}
+
+/**
+ * 獲取使用者的草稿列表
+ */
+export async function getUserDrafts(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db
+    .select()
+    .from(procurementApprovals)
+    .where(
+      and(
+        eq(procurementApprovals.userId, userId),
+        eq(procurementApprovals.status, "draft")
+      )
+    )
+    .orderBy(desc(procurementApprovals.updatedAt));
+}
+
+/**
+ * 獲取使用者的已完成簽呈列表
+ */
+export async function getUserCompletedApprovals(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db
+    .select()
+    .from(procurementApprovals)
+    .where(
+      and(
+        eq(procurementApprovals.userId, userId),
+        eq(procurementApprovals.status, "completed")
+      )
+    )
+    .orderBy(desc(procurementApprovals.createdAt));
+}
+
+/**
+ * 更新簽呈記錄
+ */
+export async function updateApproval(id: number, data: Partial<InsertProcurementApproval>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db
+    .update(procurementApprovals)
+    .set(data)
+    .where(eq(procurementApprovals.id, id));
 }

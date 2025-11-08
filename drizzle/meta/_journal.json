@@ -15,6 +15,13 @@
       "when": 1762532938756,
       "tag": "0001_mysterious_the_renegades",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1762602329063,
+      "tag": "0002_silent_mister_fear",
+      "breakpoints": true
     }
   ]
 }

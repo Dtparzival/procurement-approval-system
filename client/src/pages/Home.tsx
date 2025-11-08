@@ -8,7 +8,7 @@ import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
-import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check, LogOut, Brain } from "lucide-react";
+import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check, LogOut, Brain, Save } from "lucide-react";
 import { Streamdown } from "streamdown";
 import { Link } from "wouter";
 
@@ -40,6 +40,26 @@ export default function Home() {
 
   const handleLogout = () => {
     logoutMutation.mutate();
+  };
+
+  const saveDraftMutation = trpc.procurement.saveDraft.useMutation({
+    onSuccess: () => {
+      toast.success("草稿已儲存");
+    },
+    onError: (error) => {
+      toast.error(error.message || "儲存失敗");
+    },
+  });
+
+  const handleSaveDraft = () => {
+    if (!userInput.trim()) {
+      toast.error("請先輸入內容");
+      return;
+    }
+    saveDraftMutation.mutate({
+      userInput,
+      title: "採購簽呈草稿",
+    });
   };
 
   const generateMutation = trpc.procurement.generate.useMutation({
@@ -308,24 +328,45 @@ export default function Home() {
                   )}
                 </div>
 
-                <Button
-                  onClick={handleGenerate}
-                  disabled={generateMutation.isPending || !userInput.trim()}
-                  className="w-full gap-2"
-                  size="lg"
-                >
-                  {generateMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      AI 生成中...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      生成簽呈
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleSaveDraft}
+                    disabled={saveDraftMutation.isPending || !userInput.trim()}
+                    variant="outline"
+                    className="flex-1 gap-2"
+                    size="lg"
+                  >
+                    {saveDraftMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        儲存中...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        儲存草稿
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={handleGenerate}
+                    disabled={generateMutation.isPending || !userInput.trim()}
+                    className="flex-1 gap-2"
+                    size="lg"
+                  >
+                    {generateMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        AI 生成中...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        生成簽呈
+                      </>
+                    )}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

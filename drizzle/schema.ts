@@ -35,9 +35,11 @@ export const procurementApprovals = mysqlTable("procurement_approvals", {
   /** 使用者輸入的自然語言描述 */
   userInput: text("userInput").notNull(),
   /** AI 生成的簽呈內容 */
-  generatedContent: text("generatedContent").notNull(),
+  generatedContent: text("generatedContent"),
   /** 簽呈標題(從內容中提取或生成) */
-  title: varchar("title", { length: 255 }).notNull(),
+  title: varchar("title", { length: 255 }),
+  /** 簽呈狀態: draft(草稿), completed(已完成) */
+  status: mysqlEnum("status", ["draft", "completed"]).default("draft").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

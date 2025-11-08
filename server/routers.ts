@@ -152,12 +152,13 @@ export const appRouter = router({
         const titleMatch = generatedContent.match(/^#?\s*(.+?)$/m);
         const title = titleMatch ? titleMatch[1].trim() : "採購簽呈";
 
-        // 儲存簽呈記錄
+        // 儲存簽呈記錄(狀態為已完成)
         const approvalId = await db.createProcurementApproval({
           userId: ctx.user.id,
           userInput: input.userInput,
           generatedContent,
           title,
+          status: "completed",
         });
 
         // 儲存附件記錄
@@ -277,6 +278,131 @@ export const appRouter = router({
 
         await db.deleteApproval(input.id);
         return { success: true };
+      }),
+
+    /**
+     * 儲存草稿
+     */
+    saveDraft: protectedProcedure
+      .input(
+        z.object({
+          userInput: z.string(),
+          title: z.string().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const draftId = await db.createProcurementApproval({
+          userId: ctx.user.id,
+          userInput: input.userInput,
+          title: input.title || "採購簽呈草稿",
+          status: "draft",
+        });
+
+        return {
+          id: draftId,
+          message: "草稿已儲存",
+        };
+      }),
+
+    /**
+     * 更新草稿
+     */
+    updateDraft: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          userInput: z.string(),
+          title: z.string().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const draft = await db.getApprovalById(input.id);
+        
+        if (!draft) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "草稿不存在",
+          });
+        }
+
+        if (draft.userId !== ctx.user.id) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "無權編輯此草稿",
+          });
+        }
+
+        if (draft.status !== "draft") {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "只能編輯草稿",
+          });
+        }
+
+        await db.updateApproval(input.id, {
+          userInput: input.userInput,
+          title: input.title,
+        });
+
+        return { success: true };
+      }),
+
+    /**
+     * 獲取草稿列表
+     */
+    listDrafts: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getUserDrafts(ctx.user.id);
+    }),
+
+    /**
+     * 獲取已完成簽呈列表
+     */
+    listCompleted: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getUserCompletedApprovals(ctx.user.id);
+    }),
+
+    /**
+     * 將草稿轉為正式簽呈
+     */
+    completeDraft: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          generatedContent: z.string(),
+          title: z.string(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const draft = await db.getApprovalById(input.id);
+        
+        if (!draft) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "草稿不存在",
+          });
+        }
+
+        if (draft.userId !== ctx.user.id) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "無權操作此草稿",
+          });
+        }
+
+        if (draft.status !== "draft") {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "只能將草稿轉為正式簽呈",
+          });
+        }
+
+        await db.updateApproval(input.id, {
+          generatedContent: input.generatedContent,
+          title: input.title,
+          status: "completed",
+        });
+
+        return { success: true, id: input.id };
       }),
   }),
 });

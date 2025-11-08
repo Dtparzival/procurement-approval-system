@@ -21,7 +21,7 @@ export default function ApprovalDetail() {
   );
 
   const handleCopy = async () => {
-    if (!approval) return;
+    if (!approval || !approval.generatedContent) return;
     
     try {
       await navigator.clipboard.writeText(approval.generatedContent);
