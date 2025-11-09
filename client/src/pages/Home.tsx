@@ -9,13 +9,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check, LogOut, Brain, Save, Clock, FileEdit, ArrowRight, CheckCircle } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { LoginDialog } from "@/components/LoginDialog";
 import { Streamdown } from "streamdown";
 import { Link } from "wouter";
 
@@ -388,27 +382,11 @@ export default function Home() {
         </div>
 
         {/* 登入對話框 */}
-        <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>歡迎使用 {APP_TITLE}</DialogTitle>
-              <DialogDescription>
-                請登入以開始使用 AI 智能公文簽核系統。
-              </DialogDescription>
-            </DialogHeader>
-            <div className="py-4">
-              <Button 
-                onClick={() => (window.location.href = getLoginUrl())} 
-                className="w-full h-12 text-lg"
-              >
-                登入
-              </Button>
-              <p className="text-center text-sm text-gray-500 mt-4">
-                登入即表示您同意我們的服務條款與隱私政策
-              </p>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <LoginDialog 
+          open={showLoginDialog} 
+          onOpenChange={setShowLoginDialog}
+          onLogin={() => (window.location.href = getLoginUrl())}
+        />
       </>
     );
   }
