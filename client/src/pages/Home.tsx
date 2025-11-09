@@ -226,16 +226,67 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>請登入</CardTitle>
-            <CardDescription>您需要登入才能使用此服務</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => (window.location.href = getLoginUrl())} className="w-full">
-              登入
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-indigo-700 to-blue-800 relative overflow-hidden">
+        {/* 背景裝飾 */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        <Card className="w-full max-w-lg mx-4 shadow-2xl border-0 relative z-10">
+          <CardContent className="p-12">
+            {/* Logo 與標題 */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl mb-4 shadow-lg">
+                <FileText className="w-10 h-10 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{APP_TITLE}</h1>
+              <p className="text-gray-600 text-lg">AI 智能公文簽核系統</p>
+            </div>
+
+            {/* 功能介紹 */}
+            <div className="space-y-3 mb-8">
+              <div className="flex items-start gap-3 text-gray-700">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium">自然語言輸入</p>
+                  <p className="text-sm text-gray-500">用日常語言描述需求，AI 自動生成專業簽呈</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 text-gray-700">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Upload className="w-3.5 h-3.5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium">智能文件識別</p>
+                  <p className="text-sm text-gray-500">上傳參考文件，自動提取關鍵資訊</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 text-gray-700">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Save className="w-3.5 h-3.5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium">草稿自動儲存</p>
+                  <p className="text-sm text-gray-500">每 30 秒自動保存，防止資料遺失</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 登入按鈕 */}
+            <Button 
+              onClick={() => (window.location.href = getLoginUrl())} 
+              className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-lg"
+            >
+              開始使用
             </Button>
+
+            {/* 底部說明 */}
+            <p className="text-center text-sm text-gray-500 mt-6">
+              登入即表示您同意我們的服務條款與隱私政策
+            </p>
           </CardContent>
         </Card>
       </div>
