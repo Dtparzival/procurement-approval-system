@@ -49,7 +49,8 @@ export default function Home() {
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
       toast.success("已登出");
-      window.location.href = getLoginUrl();
+      // 登出後重新載入首頁
+      window.location.href = "/";
     },
   });
 
