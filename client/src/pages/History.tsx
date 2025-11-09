@@ -2,9 +2,10 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import { APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
-import { Loader2, FileText, ArrowLeft, Trash2, Eye, FileEdit } from "lucide-react";
+import { Loader2, FileText, ArrowLeft, Trash2, Eye, FileEdit, Search } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -24,10 +25,14 @@ export default function History() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
   const utils = trpc.useUtils();
   const [, setLocation] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: drafts, isLoading: draftsLoading } = trpc.procurement.listDrafts.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: drafts, isLoading: draftsLoading } = trpc.procurement.listDrafts.useQuery(
+    { search: searchQuery },
+    {
+      enabled: isAuthenticated,
+    }
+  );
 
   const { data: completed, isLoading: completedLoading } = trpc.procurement.listCompleted.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -198,6 +203,19 @@ export default function History() {
               </TabsContent>
 
               <TabsContent value="drafts">
+                {/* 草稿搜尋 */}
+                <div className="mb-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Input
+                      placeholder="搜尋草稿標題或內容..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
                 {!drafts || drafts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <FileEdit className="w-16 h-16 text-gray-300 mb-4" />

@@ -288,9 +288,41 @@ export const appRouter = router({
         z.object({
           userInput: z.string(),
           title: z.string().optional(),
+          id: z.number().optional(), // 如果提供 ID 則更新現有草稿
         })
       )
       .mutation(async ({ ctx, input }) => {
+        // 如果提供了 ID，則更新現有草稿
+        if (input.id) {
+          const draft = await db.getApprovalById(input.id);
+          
+          if (!draft) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "草稿不存在",
+            });
+          }
+
+          if (draft.userId !== ctx.user.id) {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "無權更新此草稿",
+            });
+          }
+
+          await db.updateApproval(input.id, {
+            userInput: input.userInput,
+            title: input.title || draft.title,
+          });
+
+          return {
+            id: input.id,
+            message: "草稿已更新",
+            isNew: false,
+          };
+        }
+        
+        // 否則建立新草稿
         const draftId = await db.createProcurementApproval({
           userId: ctx.user.id,
           userInput: input.userInput,
@@ -301,6 +333,7 @@ export const appRouter = router({
         return {
           id: draftId,
           message: "草稿已儲存",
+          isNew: true,
         };
       }),
 
@@ -350,8 +383,42 @@ export const appRouter = router({
     /**
      * 獲取草稿列表
      */
-    listDrafts: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getUserDrafts(ctx.user.id);
+    listDrafts: protectedProcedure
+      .input(
+        z.object({
+          search: z.string().optional(),
+          limit: z.number().optional(),
+        }).optional()
+      )
+      .query(async ({ ctx, input }) => {
+        const drafts = await db.getUserDrafts(ctx.user.id);
+        
+        let filtered = drafts;
+        
+        // 搜尋功能
+        if (input?.search) {
+          const searchLower = input.search.toLowerCase();
+          filtered = filtered.filter(
+            (draft) =>
+              draft.title?.toLowerCase().includes(searchLower) ||
+              draft.userInput.toLowerCase().includes(searchLower)
+          );
+        }
+        
+        // 限制數量
+        if (input?.limit) {
+          filtered = filtered.slice(0, input.limit);
+        }
+        
+        return filtered;
+      }),
+
+    /**
+     * 獲取最近的草稿(用於首頁快速恢復)
+     */
+    getRecentDrafts: protectedProcedure.query(async ({ ctx }) => {
+      const drafts = await db.getUserDrafts(ctx.user.id);
+      return drafts.slice(0, 3); // 只返回最近 3 筆
     }),
 
     /**

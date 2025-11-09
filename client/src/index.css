@@ -184,3 +184,10 @@
     }
   }
 }
+/* 隱藏 OAuth 登入頁面的 Powered by Manus 文字 */
+[class*="powered"],
+[class*="footer"] a[href*="manus"],
+a[href*="manus.im"] {
+  display: none !important;
+  visibility: hidden !important;
+}
