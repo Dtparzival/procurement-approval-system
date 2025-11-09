@@ -52,10 +52,10 @@ export function LoginDialog({
       open={onOpenChange ? open : internalOpen}
       onOpenChange={handleOpenChange}
     >
-      <DialogContent className="py-5 bg-[#f8f8f7] rounded-[20px] w-[90vw] max-w-[420px] shadow-[0px_4px_11px_0px_rgba(0,0,0,0.08)] border border-[rgba(0,0,0,0.08)] backdrop-blur-2xl p-0 gap-0 text-center">
+      <DialogContent className="py-5 bg-[#f8f8f7] rounded-[20px] w-[90vw] max-w-[420px] shadow-[0px_4px_11px_0px_rgba(0,0,0,0.08)] border border-[rgba(0,0,0,0.08)] backdrop-blur-2xl p-0 gap-0 text-center sm:max-w-[420px]">
         <div className="flex flex-col items-center gap-2 p-5 pt-12">
-          <div className="w-16 h-16 bg-white rounded-xl border border-[rgba(0,0,0,0.08)] flex items-center justify-center">
-            <img src={logo} alt="App icon" className="w-10 h-10 rounded-md" />
+          <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center">
+            <img src={logo} alt="App icon" className="w-10 h-10" />
           </div>
 
           {/* Title and subtitle */}
@@ -78,22 +78,22 @@ export function LoginDialog({
           
           {/* Privacy Policy and Terms of Service */}
           <div className="text-xs text-[#858481] leading-relaxed px-2">
-            <p className="mb-2">登入即表示您同意我們的</p>
-            <div className="flex items-center justify-center gap-2 flex-wrap">
+            <div className="flex items-center justify-center gap-1 flex-wrap">
+              <span>登入即表示您同意我們的</span>
               <a 
                 href="/terms" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-[#1a1a19] hover:text-[#1a1a19]/80 underline underline-offset-2 font-medium transition-colors"
+                className="text-[#1a1a19] hover:text-[#1a1a19]/80 underline underline-offset-2 font-medium transition-colors whitespace-nowrap"
               >
                 服務條款
               </a>
-              <span className="text-[#c5c4c1]">與</span>
+              <span>與</span>
               <a 
                 href="/privacy" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-[#1a1a19] hover:text-[#1a1a19]/80 underline underline-offset-2 font-medium transition-colors"
+                className="text-[#1a1a19] hover:text-[#1a1a19]/80 underline underline-offset-2 font-medium transition-colors whitespace-nowrap"
               >
                 隱私政策
               </a>
