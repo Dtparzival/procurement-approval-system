@@ -209,7 +209,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-x-hidden">
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-2">
@@ -247,8 +247,8 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <main className="container mx-auto px-4 py-8 max-w-7xl w-full">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 w-full">
           {/* Left: Input Section */}
           <div className="space-y-6">
             <Card className="shadow-lg">
