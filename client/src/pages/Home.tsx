@@ -8,7 +8,14 @@ import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check, LogOut, Brain, Save, Clock, FileEdit } from "lucide-react";
+import { Loader2, FileText, Upload, Sparkles, History as HistoryIcon, Copy, Check, LogOut, Brain, Save, Clock, FileEdit, ArrowRight, CheckCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Streamdown } from "streamdown";
 import { Link } from "wouter";
 
@@ -19,6 +26,7 @@ export default function Home() {
   const [currentDraftId, setCurrentDraftId] = useState<number | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<Array<{
     fileName: string;
     fileKey: string;
@@ -226,70 +234,181 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-indigo-700 to-blue-800 relative overflow-hidden">
-        {/* 背景裝飾 */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-
-        <Card className="w-full max-w-lg mx-4 shadow-2xl border-0 relative z-10">
-          <CardContent className="p-12">
-            {/* Logo 與標題 */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl mb-4 shadow-lg">
-                <FileText className="w-10 h-10 text-white" />
+      <>
+        <div className="min-h-screen bg-gray-50">
+          {/* 導航欄 */}
+          <header className="bg-white border-b">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-white" />
+                  </div>
+                  <h1 className="text-xl font-bold text-gray-900">{APP_TITLE}</h1>
+                </div>
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowLoginDialog(true)}
+                >
+                  登入
+                </Button>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{APP_TITLE}</h1>
-              <p className="text-gray-600 text-lg">AI 智能公文簽核系統</p>
             </div>
+          </header>
+
+          {/* 主要內容 */}
+          <main>
+            {/* Hero 區塊 */}
+            <section className="py-20 px-4">
+              <div className="container mx-auto max-w-4xl text-center">
+                <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl mb-8 shadow-xl">
+                  <FileText className="w-12 h-12 text-white" />
+                </div>
+                <h2 className="text-5xl font-bold text-gray-900 mb-6">
+                  AI 智能公文簽核系統
+                </h2>
+                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                  用自然語言描述需求，AI 自動生成專業採購簽呈。節省 99% 的時間，提升行政效率。
+                </p>
+                <Button 
+                  size="lg"
+                  onClick={() => setShowLoginDialog(true)}
+                  className="h-14 px-8 text-lg bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-lg"
+                >
+                  開始使用
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </div>
+            </section>
 
             {/* 功能介紹 */}
-            <div className="space-y-3 mb-8">
-              <div className="flex items-start gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-medium">自然語言輸入</p>
-                  <p className="text-sm text-gray-500">用日常語言描述需求，AI 自動生成專業簽呈</p>
+            <section className="py-16 px-4 bg-white">
+              <div className="container mx-auto max-w-6xl">
+                <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
+                  核心功能
+                </h3>
+                <div className="grid md:grid-cols-3 gap-8">
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <Sparkles className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <h4 className="text-xl font-semibold text-gray-900 mb-2">自然語言輸入</h4>
+                      <p className="text-gray-600">
+                        用日常語言描述採購需求，AI 自動生成符合格式的專業簽呈。
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <Upload className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <h4 className="text-xl font-semibold text-gray-900 mb-2">智能文件識別</h4>
+                      <p className="text-gray-600">
+                        上傳 PDF、Word 或圖片，系統自動提取關鍵資訊並填入簽呈。
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <Save className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <h4 className="text-xl font-semibold text-gray-900 mb-2">草稿自動儲存</h4>
+                      <p className="text-gray-600">
+                        每 30 秒自動保存草稿，防止意外關閉導致資料遺失。
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
-              <div className="flex items-start gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Upload className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-medium">智能文件識別</p>
-                  <p className="text-sm text-gray-500">上傳參考文件，自動提取關鍵資訊</p>
+            </section>
+
+            {/* 優勢介紹 */}
+            <section className="py-16 px-4">
+              <div className="container mx-auto max-w-4xl">
+                <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
+                  為什麼選擇 {APP_TITLE}
+                </h3>
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-1">節省 99% 的時間</h4>
+                      <p className="text-gray-600">從傳統 18 分鐘縮短至 12 秒，大幅提升行政效率。</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-1">專業格式保證</h4>
+                      <p className="text-gray-600">AI 生成的簽呈符合公文格式，可直接使用。</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-1">完整歷史記錄</h4>
+                      <p className="text-gray-600">所有簽呈自動儲存，隨時查詢與管理。</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Save className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-medium">草稿自動儲存</p>
-                  <p className="text-sm text-gray-500">每 30 秒自動保存，防止資料遺失</p>
-                </div>
+            </section>
+
+            {/* CTA 區塊 */}
+            <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-indigo-700">
+              <div className="container mx-auto max-w-4xl text-center">
+                <h3 className="text-4xl font-bold text-white mb-6">
+                  立即開始使用
+                </h3>
+                <p className="text-xl text-blue-100 mb-8">
+                  加入數百位使用者，體驗 AI 智能公文系統帶來的效率提升。
+                </p>
+                <Button 
+                  size="lg"
+                  onClick={() => setShowLoginDialog(true)}
+                  className="h-14 px-8 text-lg bg-white text-blue-600 hover:bg-gray-100 shadow-lg"
+                >
+                  免費開始使用
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
               </div>
+            </section>
+          </main>
+
+          {/* 頁尾 */}
+          <footer className="bg-white border-t py-8 px-4">
+            <div className="container mx-auto text-center text-gray-600">
+              <p>© 2025 {APP_TITLE}. All rights reserved.</p>
             </div>
+          </footer>
+        </div>
 
-            {/* 登入按鈕 */}
-            <Button 
-              onClick={() => (window.location.href = getLoginUrl())} 
-              className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-lg"
-            >
-              開始使用
-            </Button>
-
-            {/* 底部說明 */}
-            <p className="text-center text-sm text-gray-500 mt-6">
-              登入即表示您同意我們的服務條款與隱私政策
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+        {/* 登入對話框 */}
+        <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>歡迎使用 {APP_TITLE}</DialogTitle>
+              <DialogDescription>
+                請登入以開始使用 AI 智能公文簽核系統。
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Button 
+                onClick={() => (window.location.href = getLoginUrl())} 
+                className="w-full h-12 text-lg"
+              >
+                登入
+              </Button>
+              <p className="text-center text-sm text-gray-500 mt-4">
+                登入即表示您同意我們的服務條款與隱私政策
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
