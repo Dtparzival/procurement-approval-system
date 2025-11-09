@@ -7,15 +7,11 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import History from "./pages/History";
 import ApprovalDetail from "./pages/ApprovalDetail";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path="/terms" component={Terms} />
-      <Route path="/privacy" component={Privacy} />
       <Route path={"/history"} component={History} />
       <Route path={"/:id"} component={ApprovalDetail} />
       <Route path={"/404"} component={NotFound} />
