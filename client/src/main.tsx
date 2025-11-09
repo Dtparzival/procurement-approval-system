@@ -10,30 +10,26 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
-const redirectToLoginIfUnauthorized = (error: unknown) => {
-  if (!(error instanceof TRPCClientError)) return;
-  if (typeof window === "undefined") return;
-
-  const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
-
-  if (!isUnauthorized) return;
-
-  window.location.href = getLoginUrl();
-};
+// 移除自動跳轉邏輯，讓首頁可以正常顯示
+// 登入狀態由各頁面自行處理
 
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
-    redirectToLoginIfUnauthorized(error);
-    console.error("[API Query Error]", error);
+    // 只記錄錯誤，不自動跳轉
+    if (error instanceof TRPCClientError && error.message !== UNAUTHED_ERR_MSG) {
+      console.error("[API Query Error]", error);
+    }
   }
 });
 
 queryClient.getMutationCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.mutation.state.error;
-    redirectToLoginIfUnauthorized(error);
-    console.error("[API Mutation Error]", error);
+    // 只記錄錯誤，不自動跳轉
+    if (error instanceof TRPCClientError && error.message !== UNAUTHED_ERR_MSG) {
+      console.error("[API Mutation Error]", error);
+    }
   }
 });
 
