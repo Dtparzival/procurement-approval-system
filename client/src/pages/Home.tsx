@@ -442,30 +442,30 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-7xl w-full">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl w-full">
         {/* 最近草稿快速恢復 */}
         {recentDrafts && recentDrafts.length > 0 && !currentDraftId && (
           <Card className="mb-6 bg-amber-50 border-amber-200">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <FileEdit className="w-5 h-5 text-amber-600" />
-                繼續編輯最近的草稿
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                <FileEdit className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 flex-shrink-0" />
+                <span className="truncate">繼續編輯最近的草稿</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <div className="grid gap-2">
                 {recentDrafts.map((draft) => (
                   <Button
                     key={draft.id}
                     variant="outline"
-                    className="justify-start text-left h-auto py-2"
+                    className="justify-start text-left h-auto py-2 px-3"
                     onClick={() => handleLoadDraft(draft)}
                   >
-                    <div className="flex-1">
-                      <div className="font-medium">{draft.title}</div>
-                      <div className="text-sm text-gray-500 truncate">{draft.userInput.substring(0, 60)}...</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium truncate text-sm">{draft.title}</div>
+                      <div className="text-xs sm:text-sm text-gray-500 truncate">{draft.userInput.substring(0, 50)}...</div>
                       <div className="text-xs text-gray-400 mt-1">
-                        {new Date(draft.updatedAt).toLocaleString("zh-TW")}
+                        {new Date(draft.updatedAt).toLocaleString("zh-TW", { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
                   </Button>
@@ -479,64 +479,66 @@ export default function Home() {
           {/* Left: Input Section */}
           <div className="space-y-6">
             <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-blue-600" />
-                  採購需求描述
+              <CardHeader className="pb-4">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
+                  <span>採購需求描述</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs sm:text-sm">
                   請詳細描述您的採購需求,包括物品名稱、數量、用途等資訊
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4">
                 {/* 草稿標題 */}
-                <div className="space-y-2">
-                  <Label htmlFor="draftTitle">草稿標題 (選填)</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="draftTitle" className="text-xs sm:text-sm">草稿標題 (選填)</Label>
                   <Input
                     id="draftTitle"
-                    placeholder="例如:辦公設備採購、軟體授權採購..."
+                    placeholder="例如:辦公設備採購..."
                     value={draftTitle}
                     onChange={(e) => setDraftTitle(e.target.value)}
+                    className="text-sm"
                   />
                 </div>
 
                 {/* 需求描述 */}
-                <div className="space-y-2">
-                  <Label htmlFor="userInput">需求描述</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="userInput" className="text-xs sm:text-sm">需求描述</Label>
                   <Textarea
                     id="userInput"
                     placeholder="例如:需要採購 10 台筆記型電腦,規格為 Intel i7 處理器, 16GB RAM, 512GB SSD,用於研發部門進行軟體開發工作,預算約 30 萬元..."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     rows={8}
-                    className="resize-none"
+                    className="resize-none text-sm"
                   />
-                  <div className="flex items-center justify-between text-xs text-gray-500">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-gray-500">
                     <span>{userInput.length} / 最少 10 個字元</span>
                     {lastSaved && (
                       <span className="flex items-center gap-1 text-green-600">
                         <Clock className="w-3 h-3" />
-                        上次儲存: {lastSaved.toLocaleTimeString("zh-TW")}
+                        上次儲存: {lastSaved.toLocaleTimeString("zh-TW", { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     )}
                   </div>
                 </div>
 
                 {/* 參考文件 */}
-                <div className="space-y-2">
-                  <Label>參考文件 (選填)</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label className="text-xs sm:text-sm">參考文件 (選填)</Label>
                   <div className="flex items-center gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploadFileMutation.isPending || extractDocumentMutation.isPending}
-                      className="gap-2"
+                      className="gap-2 text-sm"
+                      size="sm"
                     >
                       <Upload className="w-4 h-4" />
                       選擇檔案
                     </Button>
-                    <span className="text-sm text-gray-500">支援 PDF, Word, 圖片 (最大 10MB)</span>
+                    <span className="text-xs sm:text-sm text-gray-500 truncate">支援 PDF, Word, 圖片 (最大 10MB)</span>
                   </div>
                   <input
                     ref={fileInputRef}
@@ -564,20 +566,21 @@ export default function Home() {
                 </div>
 
                 {/* 操作按鈕 */}
-                <div className="flex gap-2 pt-4">
+                <div className="flex flex-col sm:flex-row gap-2 pt-4">
                   <Button
                     onClick={handleSaveDraft}
                     variant="outline"
                     disabled={!userInput.trim() || saveDraftMutation.isPending}
-                    className="gap-2 flex-1"
+                    className="gap-2 flex-1 text-sm"
                   >
                     <Save className="w-4 h-4" />
-                    儲存草稿
+                    <span className="hidden sm:inline">儲存草稿</span>
+                    <span className="sm:hidden">儲存</span>
                   </Button>
                   <Button
                     onClick={handleGenerate}
                     disabled={!userInput.trim() || generateMutation.isPending}
-                    className="gap-2 flex-1"
+                    className="gap-2 flex-1 text-sm"
                   >
                     {generateMutation.isPending ? (
                       <>
@@ -598,17 +601,17 @@ export default function Home() {
 
           {/* Right: Preview Section */}
           <div className="space-y-6">
-            <Card className="shadow-lg min-h-[500px]">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-600" />
-                  簽呈預覽
+            <Card className="shadow-lg min-h-[400px] sm:min-h-[500px]">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
+                  <span>簽呈預覽</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs sm:text-sm">
                   填寫採購需求後,點擊「生成簽呈」按鈕
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 sm:px-6">
                 {generateMutation.isPending ? (
                   <div className="flex flex-col items-center justify-center py-16 space-y-4">
                     <Brain className="w-16 h-16 text-blue-600 animate-pulse" />
@@ -623,35 +626,35 @@ export default function Home() {
                   </div>
                 ) : generatedApproval ? (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{generatedApproval.title}</h3>
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-sm sm:text-lg font-semibold truncate flex-1">{generatedApproval.title}</h3>
                       <Button
                         onClick={handleCopy}
                         variant="outline"
                         size="sm"
-                        className="gap-2"
+                        className="gap-1 sm:gap-2 flex-shrink-0 text-xs sm:text-sm"
                       >
                         {isCopied ? (
                           <>
-                            <Check className="w-4 h-4 text-green-600" />
-                            已複製
+                            <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                            <span className="hidden sm:inline">已複製</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-4 h-4" />
-                            複製
+                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">複製</span>
                           </>
                         )}
                       </Button>
                     </div>
-                    <div className="prose prose-sm max-w-none border rounded-lg p-4 bg-gray-50">
+                    <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm">
                       <Streamdown>{generatedApproval.content}</Streamdown>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-                    <FileText className="w-16 h-16 mb-4" />
-                    <p>AI 將自動為您生成專業的採購簽呈公文</p>
+                  <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-gray-400">
+                    <FileText className="w-12 h-12 sm:w-16 sm:h-16 mb-4" />
+                    <p className="text-sm sm:text-base text-center px-4">AI 將自動為您生成專業的採購簽呈公文</p>
                   </div>
                 )}
               </CardContent>
