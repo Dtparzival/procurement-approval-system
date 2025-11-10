@@ -191,3 +191,38 @@ a[href*="manus.im"] {
   display: none !important;
   visibility: hidden !important;
 }
+
+/* 優化 prose 和表格的手機版顯示 */
+.prose {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.prose td,
+.prose th {
+  word-break: break-word;
+  min-width: 80px;
+}
+
+@media (max-width: 640px) {
+  .prose {
+    font-size: 0.875rem;
+  }
+  
+  .prose table {
+    font-size: 0.75rem;
+  }
+  
+  .prose td,
+  .prose th {
+    padding: 0.5rem;
+    min-width: 60px;
+  }
+}

@@ -502,7 +502,7 @@ export default function Home() {
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     rows={8}
-                    className="resize-none text-sm"
+                    className="resize-none text-sm w-full break-words"
                   />
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-gray-500">
                     <span>{userInput.length} / 最少 10 個字元</span>
@@ -639,7 +639,7 @@ export default function Home() {
                         )}
                       </Button>
                     </div>
-                    <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm">
+                    <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm overflow-x-auto break-words">
                       <Streamdown>{generatedApproval.content}</Streamdown>
                     </div>
                   </div>
