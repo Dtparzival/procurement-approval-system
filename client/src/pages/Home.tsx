@@ -458,13 +458,15 @@ export default function Home() {
                   <Button
                     key={draft.id}
                     variant="outline"
-                    className="justify-start text-left h-auto py-2 px-3"
+                    className="justify-start text-left h-auto py-3 px-3 sm:px-4"
                     onClick={() => handleLoadDraft(draft)}
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate text-sm">{draft.title}</div>
-                      <div className="text-xs sm:text-sm text-gray-500 truncate">{draft.userInput.substring(0, 50)}...</div>
-                      <div className="text-xs text-gray-400 mt-1">
+                      <div className="font-medium text-sm sm:text-base mb-1 line-clamp-1">{draft.title}</div>
+                      <div className="text-xs sm:text-sm text-gray-600 mb-1.5 line-clamp-2 leading-relaxed">
+                        {draft.userInput.length > 80 ? draft.userInput.substring(0, 80) + '...' : draft.userInput}
+                      </div>
+                      <div className="text-xs text-gray-400">
                         {new Date(draft.updatedAt).toLocaleString("zh-TW", { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
