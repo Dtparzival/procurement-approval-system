@@ -443,39 +443,6 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl w-full">
-        {/* 最近草稿快速恢復 */}
-        {recentDrafts && recentDrafts.length > 0 && !currentDraftId && (
-          <Card className="mb-6 bg-amber-50 border-amber-200">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                <FileEdit className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 flex-shrink-0" />
-                <span className="truncate">繼續編輯最近的草稿</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="grid gap-2">
-                {recentDrafts.map((draft) => (
-                  <Button
-                    key={draft.id}
-                    variant="outline"
-                    className="justify-start text-left h-auto py-3 px-3 sm:px-4"
-                    onClick={() => handleLoadDraft(draft)}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm sm:text-base mb-1 line-clamp-1">{draft.title}</div>
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1.5 line-clamp-2 leading-relaxed">
-                        {draft.userInput.length > 80 ? draft.userInput.substring(0, 80) + '...' : draft.userInput}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(draft.updatedAt).toLocaleString("zh-TW", { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 w-full">
           {/* Left: Input Section */}
