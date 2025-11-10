@@ -17,10 +17,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Streamdown } from "streamdown";
-import { Link } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 
 export default function Home() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
+  const [location, setLocation] = useLocation();
+  const searchParams = useSearch();
   const [userInput, setUserInput] = useState("");
   const [draftTitle, setDraftTitle] = useState("");
   const [currentDraftId, setCurrentDraftId] = useState<number | null>(null);
@@ -104,6 +106,27 @@ export default function Home() {
     setCurrentDraftId(draft.id);
     toast.success("已載入草稿");
   };
+
+  // 查詢草稿列表用於從 URL 載入
+  const { data: allDrafts } = trpc.procurement.listDrafts.useQuery(
+    { search: '' },
+    { enabled: isAuthenticated }
+  );
+
+  // 從 URL 參數載入草稿
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    const draftId = params.get('draft');
+    
+    if (draftId && isAuthenticated && allDrafts) {
+      const draft = allDrafts.find((d) => d.id === parseInt(draftId));
+      if (draft) {
+        handleLoadDraft(draft);
+        // 清除 URL 參數
+        setLocation('/');
+      }
+    }
+  }, [searchParams, isAuthenticated, allDrafts]);
 
   const uploadFileMutation = trpc.procurement.uploadFile.useMutation({
     onSuccess: (data) => {
