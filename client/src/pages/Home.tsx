@@ -43,6 +43,8 @@ export default function Home() {
   } | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [generatingStatus, setGeneratingStatus] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedContent, setEditedContent] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 獲取最近草稿
@@ -246,6 +248,33 @@ export default function Home() {
     } catch (error) {
       toast.error("複製失敗");
     }
+  };
+
+  const handleEdit = () => {
+    if (!generatedApproval) return;
+    setEditedContent(generatedApproval.content);
+    setIsEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setEditedContent("");
+  };
+
+  const handleSaveEdit = () => {
+    if (!generatedApproval) return;
+    if (!editedContent.trim()) {
+      toast.error("內容不能為空");
+      return;
+    }
+    
+    // 更新顯示的簽呈內容
+    setGeneratedApproval({
+      ...generatedApproval,
+      content: editedContent,
+    });
+    setIsEditMode(false);
+    toast.success("編輯已儲存");
   };
 
   if (authLoading) {
@@ -620,28 +649,71 @@ export default function Home() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="text-sm sm:text-lg font-semibold truncate flex-1">{generatedApproval.title}</h3>
-                      <Button
-                        onClick={handleCopy}
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 sm:gap-2 flex-shrink-0 text-xs sm:text-sm"
-                      >
-                        {isCopied ? (
+                      <div className="flex gap-2">
+                        {!isEditMode && (
                           <>
-                            <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
-                            <span className="hidden sm:inline">已複製</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span className="hidden sm:inline">複製</span>
+                            <Button
+                              onClick={handleEdit}
+                              variant="outline"
+                              size="sm"
+                              className="gap-1 sm:gap-2 flex-shrink-0 text-xs sm:text-sm"
+                            >
+                              <FileEdit className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <span className="hidden sm:inline">編輯</span>
+                            </Button>
+                            <Button
+                              onClick={handleCopy}
+                              variant="outline"
+                              size="sm"
+                              className="gap-1 sm:gap-2 flex-shrink-0 text-xs sm:text-sm"
+                            >
+                              {isCopied ? (
+                                <>
+                                  <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                                  <span className="hidden sm:inline">已複製</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                                  <span className="hidden sm:inline">複製</span>
+                                </>
+                              )}
+                            </Button>
                           </>
                         )}
-                      </Button>
+                      </div>
                     </div>
-                    <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm overflow-x-auto break-words w-full">
-                      <Streamdown>{generatedApproval.content}</Streamdown>
-                    </div>
+                    {isEditMode ? (
+                      <div className="space-y-3">
+                        <Textarea
+                          value={editedContent}
+                          onChange={(e) => setEditedContent(e.target.value)}
+                          className="min-h-[400px] font-mono text-sm w-full break-words"
+                          placeholder="編輯簽呈內容..."
+                        />
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            onClick={handleCancelEdit}
+                            variant="outline"
+                            size="sm"
+                          >
+                            取消
+                          </Button>
+                          <Button
+                            onClick={handleSaveEdit}
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
+                            <Save className="w-4 h-4 mr-1" />
+                            儲存
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm overflow-x-auto break-words w-full">
+                        <Streamdown>{generatedApproval.content}</Streamdown>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-gray-400">
