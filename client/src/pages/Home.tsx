@@ -639,7 +639,7 @@ export default function Home() {
                         )}
                       </Button>
                     </div>
-                    <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm overflow-x-auto break-words">
+                    <div className="prose prose-sm max-w-none border rounded-lg p-3 sm:p-4 bg-gray-50 text-sm overflow-x-auto break-words w-full">
                       <Streamdown>{generatedApproval.content}</Streamdown>
                     </div>
                   </div>

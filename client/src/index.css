@@ -196,6 +196,7 @@ a[href*="manus.im"] {
 .prose {
   word-wrap: break-word;
   overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .prose table {
@@ -208,12 +209,19 @@ a[href*="manus.im"] {
 .prose td,
 .prose th {
   word-break: break-word;
-  min-width: 80px;
+  white-space: normal;
+}
+
+.prose p,
+.prose li {
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 640px) {
   .prose {
     font-size: 0.875rem;
+    line-height: 1.6;
   }
   
   .prose table {
@@ -223,6 +231,13 @@ a[href*="manus.im"] {
   .prose td,
   .prose th {
     padding: 0.5rem;
-    min-width: 60px;
+    min-width: unset;
+    max-width: none;
+  }
+  
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    word-break: break-word;
   }
 }
