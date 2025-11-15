@@ -93,7 +93,7 @@ export default function History() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-x-hidden">
       {/* Header */}
-      <header className="bg-white/70 backdrop-blur-md border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
