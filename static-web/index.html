@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 採購簽呈生成系統</title>
+    <meta name="description" content="用自然語言描述需求，AI 自動生成專業採購簽呈。節省 99% 的時間，提升行政效率。">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50">
+    <!-- 導航欄 -->
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
+                        <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">AI 採購簽呈生成系統</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="historyBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
+                        <i data-lucide="history" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">歷史記錄</span>
+                    </button>
+                    <button id="settingsBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要內容 -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- 左側：輸入區域 -->
+            <div class="space-y-6">
+                <!-- 草稿標題 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <label for="draftTitle" class="block text-sm font-medium text-gray-700 mb-2">
+                        草稿標題 (選填)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="draftTitle" 
+                        placeholder="例如：辦公室設備採購簽呈"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                </div>
+
+                <!-- 需求描述 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="userInput" class="block text-sm font-medium text-gray-700">
+                            採購需求描述 <span class="text-red-500">*</span>
+                        </label>
+                        <button id="saveDraftBtn" class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                            <i data-lucide="save" class="w-4 h-4"></i>
+                            儲存草稿
+                        </button>
+                    </div>
+                    <textarea 
+                        id="userInput" 
+                        rows="12"
+                        placeholder="請詳細描述採購需求，例如：&#10;&#10;需要採購 10 台筆記型電腦供業務部門使用，規格需求如下：&#10;- 處理器：Intel Core i7 或以上&#10;- 記憶體：16GB RAM&#10;- 儲存空間：512GB SSD&#10;- 預算：每台約 NT$ 35,000&#10;- 使用目的：提升業務人員外出作業效率"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    ></textarea>
+                    <div class="mt-2 text-xs text-gray-500">
+                        <span id="autoSaveStatus">自動儲存已啟用</span>
+                        <span id="lastSaved" class="ml-2"></span>
+                    </div>
+                </div>
+
+                <!-- 檔案上傳 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                        參考文件 (選填)
+                    </label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors cursor-pointer" id="uploadArea">
+                        <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,image/*">
+                        <i data-lucide="upload" class="w-12 h-12 mx-auto text-gray-400 mb-3"></i>
+                        <p class="text-sm text-gray-600 mb-1">點擊上傳或拖曳檔案至此</p>
+                        <p class="text-xs text-gray-500">支援 PDF、Word、圖片等格式，最大 10MB</p>
+                    </div>
+                    <div id="uploadedFilesList" class="mt-4 space-y-2"></div>
+                </div>
+
+                <!-- 生成按鈕 -->
+                <button id="generateBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    生成簽呈
+                </button>
+            </div>
+
+            <!-- 右側：預覽區域 -->
+            <div class="space-y-6">
+                <!-- 生成狀態 -->
+                <div id="generatingStatus" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="animate-spin">
+                            <i data-lucide="loader-2" class="w-5 h-5 text-blue-600"></i>
+                        </div>
+                        <span id="statusText" class="text-blue-700 font-medium">正在分析您的需求...</span>
+                    </div>
+                </div>
+
+                <!-- 預覽區域 -->
+                <div id="previewArea" class="bg-white rounded-lg shadow-sm p-6 min-h-[600px]">
+                    <div id="emptyState" class="flex flex-col items-center justify-center h-full text-center py-20">
+                        <i data-lucide="file-text" class="w-20 h-20 text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">尚未生成簽呈</h3>
+                        <p class="text-sm text-gray-500 max-w-sm">
+                            請在左側輸入採購需求描述，然後點擊「生成簽呈」按鈕
+                        </p>
+                    </div>
+
+                    <!-- 簽呈內容 -->
+                    <div id="approvalContent" class="hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 id="approvalTitle" class="text-2xl font-bold text-gray-900"></h2>
+                            <div class="flex items-center gap-2">
+                                <button id="editBtn" class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2">
+                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                    編輯
+                                </button>
+                                <button id="copyBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
+                                    <i data-lucide="copy" class="w-4 h-4"></i>
+                                    複製
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 閱讀模式 -->
+                        <div id="readMode" class="prose prose-sm max-w-none">
+                            <div id="approvalMarkdown"></div>
+                        </div>
+
+                        <!-- 編輯模式 -->
+                        <div id="editMode" class="hidden">
+                            <textarea 
+                                id="editContent" 
+                                rows="20"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
+                            ></textarea>
+                            <div class="flex items-center gap-3 mt-4">
+                                <button id="saveEditBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                    <i data-lucide="check" class="w-4 h-4"></i>
+                                    儲存
+                                </button>
+                                <button id="cancelEditBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                    取消
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近草稿 -->
+        <div id="recentDraftsSection" class="mt-8 bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+                最近草稿
+            </h3>
+            <div id="recentDraftsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- 草稿項目將動態插入 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 歷史記錄 Modal -->
+    <div id="historyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="history" class="w-6 h-6"></i>
+                    歷史記錄
+                </h2>
+                <button id="closeHistoryBtn" class="text-gray-500 hover:text-gray-700">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+                <div id="historyList" class="space-y-4">
+                    <!-- 歷史記錄項目將動態插入 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定 Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                    設定
+                </h2>
+                <button id="closeSettingsBtn" class="text-gray-500 hover:text-gray-700">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div>
+                    <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-2">
+                        OpenAI API Key
+                    </label>
+                    <input 
+                        type="password" 
+                        id="apiKeyInput" 
+                        placeholder="sk-..."
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                    <p class="mt-2 text-xs text-gray-500">
+                        您的 API Key 將安全地儲存在瀏覽器本地，不會上傳到任何伺服器
+                    </p>
+                </div>
+                
+                <div>
+                    <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-2">
+                        AI 模型
+                    </label>
+                    <select 
+                        id="modelSelect"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="gpt-4.1-mini">GPT-4.1 Mini (推薦)</option>
+                        <option value="gpt-4.1-nano">GPT-4.1 Nano (快速)</option>
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">自動儲存</label>
+                        <p class="text-xs text-gray-500 mt-1">每 30 秒自動儲存草稿</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="autoSaveToggle" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+
+                <div class="pt-4 border-t">
+                    <button id="saveSettingsBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        儲存設定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 通知 -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Custom JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
