@@ -1,39 +1,47 @@
-// Local Storage Management Module
+// Local Storage Management Module with Multi-User Support
 
 const Storage = {
+    /**
+     * Get user-specific storage key
+     */
+    getUserKey(key) {
+        const userId = Auth.getUserId();
+        return userId ? `user_${userId}_${key}` : key;
+    },
+
     /**
      * Get API key from localStorage
      */
     getApiKey() {
-        return localStorage.getItem(CONFIG.STORAGE.API_KEY) || '';
+        return localStorage.getItem(this.getUserKey(CONFIG.STORAGE.API_KEY)) || '';
     },
 
     /**
      * Set API key to localStorage
      */
     setApiKey(apiKey) {
-        localStorage.setItem(CONFIG.STORAGE.API_KEY, apiKey);
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.API_KEY), apiKey);
     },
 
     /**
      * Get selected model from localStorage
      */
     getModel() {
-        return localStorage.getItem(CONFIG.STORAGE.MODEL) || CONFIG.API.DEFAULT_MODEL;
+        return localStorage.getItem(this.getUserKey(CONFIG.STORAGE.MODEL)) || CONFIG.API.DEFAULT_MODEL;
     },
 
     /**
      * Set selected model to localStorage
      */
     setModel(model) {
-        localStorage.setItem(CONFIG.STORAGE.MODEL, model);
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.MODEL), model);
     },
 
     /**
      * Get auto-save setting
      */
     getAutoSave() {
-        const value = localStorage.getItem(CONFIG.STORAGE.AUTO_SAVE);
+        const value = localStorage.getItem(this.getUserKey(CONFIG.STORAGE.AUTO_SAVE));
         return value === null ? true : value === 'true';
     },
 
@@ -41,14 +49,14 @@ const Storage = {
      * Set auto-save setting
      */
     setAutoSave(enabled) {
-        localStorage.setItem(CONFIG.STORAGE.AUTO_SAVE, enabled.toString());
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.AUTO_SAVE), enabled.toString());
     },
 
     /**
      * Get all drafts
      */
     getDrafts() {
-        const draftsJson = localStorage.getItem(CONFIG.STORAGE.DRAFTS);
+        const draftsJson = localStorage.getItem(this.getUserKey(CONFIG.STORAGE.DRAFTS));
         return draftsJson ? JSON.parse(draftsJson) : [];
     },
 
@@ -82,7 +90,7 @@ const Storage = {
             drafts.unshift(newDraft);
         }
 
-        localStorage.setItem(CONFIG.STORAGE.DRAFTS, JSON.stringify(drafts));
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.DRAFTS), JSON.stringify(drafts));
         return drafts[0];
     },
 
@@ -115,7 +123,7 @@ const Storage = {
      * Get current draft ID
      */
     getCurrentDraftId() {
-        const id = localStorage.getItem(CONFIG.STORAGE.CURRENT_DRAFT_ID);
+        const id = localStorage.getItem(this.getUserKey(CONFIG.STORAGE.CURRENT_DRAFT_ID));
         return id ? parseInt(id) : null;
     },
 
@@ -124,9 +132,9 @@ const Storage = {
      */
     setCurrentDraftId(id) {
         if (id) {
-            localStorage.setItem(CONFIG.STORAGE.CURRENT_DRAFT_ID, id.toString());
+            localStorage.setItem(this.getUserKey(CONFIG.STORAGE.CURRENT_DRAFT_ID), id.toString());
         } else {
-            localStorage.removeItem(CONFIG.STORAGE.CURRENT_DRAFT_ID);
+            localStorage.removeItem(this.getUserKey(CONFIG.STORAGE.CURRENT_DRAFT_ID));
         }
     },
 
@@ -134,7 +142,7 @@ const Storage = {
      * Get all history items (generated approvals)
      */
     getHistory() {
-        const historyJson = localStorage.getItem(CONFIG.STORAGE.HISTORY);
+        const historyJson = localStorage.getItem(this.getUserKey(CONFIG.STORAGE.HISTORY));
         return historyJson ? JSON.parse(historyJson) : [];
     },
 
@@ -161,7 +169,7 @@ const Storage = {
             history.splice(CONFIG.UI.MAX_HISTORY_ITEMS);
         }
 
-        localStorage.setItem(CONFIG.STORAGE.HISTORY, JSON.stringify(history));
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify(history));
         return newItem;
     },
 
@@ -204,6 +212,13 @@ const Storage = {
             },
             exportedAt: new Date().toISOString()
         };
+    },
+
+    /**
+     * Load user data (called after login)
+     */
+    loadUserData(userId) {
+        console.log('Loading user data for:', userId);
     },
 
     /**

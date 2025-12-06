@@ -2,12 +2,11 @@
 
 const UI = {
     /**
-     * Show toast notification
+     * 顯示 Toast 通知
      */
     showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
         
         const iconMap = {
             success: 'check-circle',
@@ -16,263 +15,369 @@ const UI = {
             warning: 'alert-triangle'
         };
         
+        const colorMap = {
+            success: 'bg-green-50 text-green-800 border-green-200',
+            error: 'bg-red-50 text-red-800 border-red-200',
+            info: 'bg-blue-50 text-blue-800 border-blue-200',
+            warning: 'bg-yellow-50 text-yellow-800 border-yellow-200'
+        };
+        
+        toast.className = `flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg transition-all ${colorMap[type]}`;
+        toast.style.cssText = 'animation: slideIn 0.3s ease-out;';
+        
         toast.innerHTML = `
-            <i data-lucide="${iconMap[type]}" class="w-5 h-5"></i>
-            <span>${message}</span>
+            <i data-lucide="${iconMap[type]}" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="font-medium">${message}</span>
         `;
         
         container.appendChild(toast);
         lucide.createIcons();
         
         setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(100%)';
+            toast.style.animation = 'slideOut 0.3s ease-in';
             setTimeout(() => toast.remove(), 300);
         }, CONFIG.UI.TOAST_DURATION);
     },
 
     /**
-     * Show loading status
+     * 顯示登入對話框
      */
-    showLoading(message) {
-        const statusDiv = document.getElementById('generatingStatus');
-        const statusText = document.getElementById('statusText');
-        statusText.textContent = message;
-        statusDiv.classList.remove('hidden');
+    showLoginDialog() {
+        document.getElementById('loginDialog').classList.remove('hidden');
         lucide.createIcons();
     },
 
     /**
-     * Hide loading status
+     * 隱藏登入對話框
      */
-    hideLoading() {
-        const statusDiv = document.getElementById('generatingStatus');
-        statusDiv.classList.add('hidden');
+    hideLoginDialog() {
+        document.getElementById('loginDialog').classList.add('hidden');
     },
 
     /**
-     * Show approval content
+     * 顯示歷史記錄 Modal
+     */
+    showHistoryModal() {
+        const modal = document.getElementById('historyModal');
+        const historyList = document.getElementById('historyList');
+        const emptyHistory = document.getElementById('emptyHistory');
+        
+        const history = Storage.getHistory();
+        
+        if (history.length === 0) {
+            historyList.innerHTML = '';
+            emptyHistory.classList.remove('hidden');
+        } else {
+            emptyHistory.classList.add('hidden');
+            historyList.innerHTML = history.map(item => `
+                <div class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-gray-900">${item.title}</h3>
+                        <button onclick="UI.deleteHistoryItem(${item.id})" class="text-red-500 hover:text-red-700">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2 line-clamp-2">${item.userInput}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-500">${this.formatDate(item.createdAt)}</span>
+                        <button onclick="UI.viewHistoryItem(${item.id})" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                            查看
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+    },
+
+    /**
+     * 隱藏歷史記錄 Modal
+     */
+    hideHistoryModal() {
+        document.getElementById('historyModal').classList.add('hidden');
+    },
+
+    /**
+     * 查看歷史記錄項目
+     */
+    viewHistoryItem(id) {
+        const item = Storage.getHistoryById(id);
+        if (!item) return;
+        
+        this.showApproval(item);
+        this.hideHistoryModal();
+    },
+
+    /**
+     * 刪除歷史記錄項目
+     */
+    deleteHistoryItem(id) {
+        if (confirm('確定要刪除這筆記錄嗎？')) {
+            Storage.deleteHistory(id);
+            this.showHistoryModal(); // 重新整理列表
+            this.showToast('已刪除歷史記錄', 'success');
+        }
+    },
+
+    /**
+     * 顯示設定 Modal
+     */
+    showSettingsModal() {
+        const modal = document.getElementById('settingsModal');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const modelSelect = document.getElementById('modelSelect');
+        const autoSaveToggle = document.getElementById('autoSaveToggle');
+        
+        // 載入當前設定
+        apiKeyInput.value = Storage.getApiKey();
+        modelSelect.value = Storage.getModel();
+        autoSaveToggle.checked = Storage.getAutoSave();
+        
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+    },
+
+    /**
+     * 隱藏設定 Modal
+     */
+    hideSettingsModal() {
+        document.getElementById('settingsModal').classList.add('hidden');
+    },
+
+    /**
+     * 儲存設定
+     */
+    saveSettings() {
+        const apiKey = document.getElementById('apiKeyInput').value.trim();
+        const model = document.getElementById('modelSelect').value;
+        const autoSave = document.getElementById('autoSaveToggle').checked;
+        
+        if (!apiKey) {
+            this.showToast('請輸入 API Key', 'error');
+            return;
+        }
+        
+        Storage.setApiKey(apiKey);
+        Storage.setModel(model);
+        Storage.setAutoSave(autoSave);
+        
+        this.hideSettingsModal();
+        this.showToast('設定已儲存', 'success');
+    },
+
+    /**
+     * 顯示生成結果
      */
     showApproval(approval) {
         const emptyState = document.getElementById('emptyState');
-        const approvalContent = document.getElementById('approvalContent');
-        const approvalTitle = document.getElementById('approvalTitle');
-        const approvalMarkdown = document.getElementById('approvalMarkdown');
-
+        const loadingState = document.getElementById('loadingState');
+        const generatedContent = document.getElementById('generatedContent');
+        const resultActions = document.getElementById('resultActions');
+        
         emptyState.classList.add('hidden');
-        approvalContent.classList.remove('hidden');
+        loadingState.classList.add('hidden');
+        generatedContent.classList.remove('hidden');
+        resultActions.classList.remove('hidden');
         
-        approvalTitle.textContent = approval.title;
-        approvalMarkdown.innerHTML = marked.parse(approval.content);
+        // 渲染 Markdown
+        generatedContent.innerHTML = marked.parse(approval.content);
         
-        // Scroll to preview area on mobile
+        // 儲存當前簽呈資料
+        this.currentApproval = approval;
+        
+        // 滾動到結果區域（行動裝置）
         if (window.innerWidth < 1024) {
-            document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth' });
+            generatedContent.scrollIntoView({ behavior: 'smooth' });
         }
         
         lucide.createIcons();
     },
 
     /**
-     * Hide approval content
+     * 顯示載入狀態
      */
-    hideApproval() {
+    showLoading(message) {
         const emptyState = document.getElementById('emptyState');
-        const approvalContent = document.getElementById('approvalContent');
+        const loadingState = document.getElementById('loadingState');
+        const generatedContent = document.getElementById('generatedContent');
+        const loadingText = document.getElementById('loadingText');
+        
+        emptyState.classList.add('hidden');
+        generatedContent.classList.add('hidden');
+        loadingState.classList.remove('hidden');
+        loadingText.textContent = message;
+        
+        lucide.createIcons();
+    },
 
+    /**
+     * 隱藏載入狀態
+     */
+    hideLoading() {
+        document.getElementById('loadingState').classList.add('hidden');
+    },
+
+    /**
+     * 顯示空狀態
+     */
+    showEmptyState() {
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const generatedContent = document.getElementById('generatedContent');
+        const resultActions = document.getElementById('resultActions');
+        
         emptyState.classList.remove('hidden');
-        approvalContent.classList.add('hidden');
+        loadingState.classList.add('hidden');
+        generatedContent.classList.add('hidden');
+        resultActions.classList.add('hidden');
         
         lucide.createIcons();
     },
 
     /**
-     * Toggle edit mode
+     * 複製簽呈內容
      */
-    toggleEditMode(isEdit) {
-        const readMode = document.getElementById('readMode');
+    async copyApproval() {
+        if (!this.currentApproval) return;
+        
+        try {
+            await navigator.clipboard.writeText(this.currentApproval.content);
+            this.showToast('已複製到剪貼簿', 'success');
+            
+            // 更新按鈕圖示
+            const copyBtn = document.getElementById('copyBtn');
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已複製';
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+                lucide.createIcons();
+            }, 2000);
+        } catch (error) {
+            this.showToast('複製失敗', 'error');
+        }
+    },
+
+    /**
+     * 編輯簽呈
+     */
+    editApproval() {
+        if (!this.currentApproval) return;
+        
+        const generatedContent = document.getElementById('generatedContent');
         const editMode = document.getElementById('editMode');
-        const editContent = document.getElementById('editContent');
-        const approvalMarkdown = document.getElementById('approvalMarkdown');
-
-        if (isEdit) {
-            // Get current content from markdown
-            const currentContent = approvalMarkdown.textContent || '';
-            editContent.value = currentContent;
-            readMode.classList.add('hidden');
-            editMode.classList.remove('hidden');
-        } else {
-            readMode.classList.remove('hidden');
-            editMode.classList.add('hidden');
-        }
+        const editTextarea = document.getElementById('editTextarea');
+        
+        generatedContent.classList.add('hidden');
+        editMode.classList.remove('hidden');
+        editTextarea.value = this.currentApproval.content;
         
         lucide.createIcons();
     },
 
     /**
-     * Update approval content after edit
+     * 儲存編輯
      */
-    updateApprovalContent(content) {
-        const approvalMarkdown = document.getElementById('approvalMarkdown');
-        approvalMarkdown.innerHTML = marked.parse(content);
-        lucide.createIcons();
-    },
-
-    /**
-     * Render recent drafts
-     */
-    renderRecentDrafts(drafts) {
-        const container = document.getElementById('recentDraftsList');
+    saveEdit() {
+        const editTextarea = document.getElementById('editTextarea');
+        const content = editTextarea.value.trim();
         
-        if (drafts.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center py-8 text-gray-500">
-                    <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
-                    <p>尚無草稿</p>
-                </div>
-            `;
-            lucide.createIcons();
+        if (!content) {
+            this.showToast('內容不能為空', 'error');
             return;
         }
+        
+        this.currentApproval.content = content;
+        this.cancelEdit();
+        this.showApproval(this.currentApproval);
+        this.showToast('編輯已儲存', 'success');
+    },
 
-        container.innerHTML = drafts.map(draft => `
-            <div class="draft-card bg-gray-50 rounded-lg p-4 border border-gray-200" data-draft-id="${draft.id}">
-                <div class="flex items-start justify-between mb-2">
-                    <h4 class="font-semibold text-gray-900 truncate flex-1">${draft.title}</h4>
-                    <button class="delete-draft-btn text-gray-400 hover:text-red-600 ml-2" data-draft-id="${draft.id}">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-                <p class="text-sm text-gray-600 line-clamp-2 mb-3">${draft.userInput.substring(0, 100)}...</p>
-                <div class="flex items-center justify-between text-xs text-gray-500">
-                    <span>${this.formatDate(draft.updatedAt)}</span>
-                    <button class="load-draft-btn text-blue-600 hover:text-blue-700 font-medium" data-draft-id="${draft.id}">
-                        載入
-                    </button>
-                </div>
-            </div>
-        `).join('');
+    /**
+     * 取消編輯
+     */
+    cancelEdit() {
+        const generatedContent = document.getElementById('generatedContent');
+        const editMode = document.getElementById('editMode');
+        
+        editMode.classList.add('hidden');
+        generatedContent.classList.remove('hidden');
         
         lucide.createIcons();
     },
 
     /**
-     * Render history items
+     * 顯示上傳的檔案
      */
-    renderHistory(history) {
-        const container = document.getElementById('historyList');
-        
-        if (history.length === 0) {
-            container.innerHTML = `
-                <div class="text-center py-12 text-gray-500">
-                    <i data-lucide="inbox" class="w-16 h-16 mx-auto mb-3 text-gray-300"></i>
-                    <p>尚無歷史記錄</p>
-                </div>
-            `;
-            lucide.createIcons();
-            return;
-        }
-
-        container.innerHTML = history.map(item => `
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <div class="flex items-start justify-between mb-2">
-                    <h4 class="font-semibold text-gray-900">${item.title}</h4>
-                    <button class="delete-history-btn text-gray-400 hover:text-red-600" data-history-id="${item.id}">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">${this.formatDate(item.createdAt)}</p>
-                <div class="flex items-center gap-2">
-                    <button class="view-history-btn px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700" data-history-id="${item.id}">
-                        查看
-                    </button>
-                    <button class="copy-history-btn px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-history-id="${item.id}">
-                        複製
-                    </button>
-                </div>
+    showUploadedFile(file) {
+        const filesList = document.getElementById('uploadedFilesList');
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+        fileDiv.innerHTML = `
+            <div class="flex items-center gap-2">
+                <i data-lucide="file" class="w-4 h-4 text-gray-500"></i>
+                <span class="text-sm text-gray-700">${file.fileName}</span>
+                <span class="text-xs text-gray-500">(${this.formatFileSize(file.fileSize)})</span>
             </div>
-        `).join('');
-        
+            <button onclick="UI.removeUploadedFile(this)" class="text-red-500 hover:text-red-700">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        `;
+        filesList.appendChild(fileDiv);
         lucide.createIcons();
     },
 
     /**
-     * Render uploaded files list
+     * 移除上傳的檔案
      */
-    renderUploadedFiles(files) {
-        const container = document.getElementById('uploadedFilesList');
-        
-        if (files.length === 0) {
-            container.innerHTML = '';
-            return;
-        }
-
-        container.innerHTML = files.map((file, index) => `
-            <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div class="flex items-center gap-2 flex-1 min-w-0">
-                    <i data-lucide="file" class="w-4 h-4 text-gray-500 flex-shrink-0"></i>
-                    <span class="text-sm text-gray-700 truncate">${file.fileName}</span>
-                    <span class="text-xs text-gray-500">(${this.formatFileSize(file.fileSize)})</span>
-                </div>
-                <button class="remove-file-btn text-gray-400 hover:text-red-600 ml-2" data-file-index="${index}">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        `).join('');
-        
-        lucide.createIcons();
+    removeUploadedFile(button) {
+        button.closest('div').remove();
     },
 
     /**
-     * Show modal
+     * 格式化檔案大小
      */
-    showModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+    formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     },
 
     /**
-     * Hide modal
-     */
-    hideModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    },
-
-    /**
-     * Format date
+     * 格式化日期
      */
     formatDate(dateString) {
         const date = new Date(dateString);
         const now = new Date();
         const diff = now - date;
         
-        // Less than 1 minute
+        // 小於 1 分鐘
         if (diff < 60000) {
             return '剛剛';
         }
         
-        // Less than 1 hour
+        // 小於 1 小時
         if (diff < 3600000) {
             const minutes = Math.floor(diff / 60000);
             return `${minutes} 分鐘前`;
         }
         
-        // Less than 1 day
+        // 小於 1 天
         if (diff < 86400000) {
             const hours = Math.floor(diff / 3600000);
             return `${hours} 小時前`;
         }
         
-        // Less than 7 days
+        // 小於 7 天
         if (diff < 604800000) {
             const days = Math.floor(diff / 86400000);
             return `${days} 天前`;
         }
         
-        // Format as date
+        // 顯示完整日期
         return date.toLocaleDateString('zh-TW', {
             year: 'numeric',
             month: '2-digit',
@@ -283,25 +388,56 @@ const UI = {
     },
 
     /**
-     * Format file size
+     * 切換用戶選單
      */
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    toggleUserMenu() {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.toggle('hidden');
     },
 
     /**
-     * Update last saved time
+     * 初始化事件監聽器
      */
-    updateLastSaved() {
-        const lastSavedSpan = document.getElementById('lastSaved');
-        const now = new Date();
-        lastSavedSpan.textContent = `最後儲存: ${now.toLocaleTimeString('zh-TW')}`;
+    initEventListeners() {
+        // 登入按鈕
+        document.getElementById('loginBtn')?.addEventListener('click', () => this.showLoginDialog());
+        document.getElementById('heroLoginBtn')?.addEventListener('click', () => this.showLoginDialog());
+        document.getElementById('closeLoginDialog')?.addEventListener('click', () => this.hideLoginDialog());
+        
+        // 用戶選單
+        document.getElementById('userMenuBtn')?.addEventListener('click', () => this.toggleUserMenu());
+        document.getElementById('logoutBtn')?.addEventListener('click', () => Auth.logout());
+        
+        // 歷史記錄
+        document.getElementById('historyBtn')?.addEventListener('click', () => this.showHistoryModal());
+        document.getElementById('closeHistoryBtn')?.addEventListener('click', () => this.hideHistoryModal());
+        
+        // 設定
+        document.getElementById('settingsBtn')?.addEventListener('click', () => this.showSettingsModal());
+        document.getElementById('closeSettingsBtn')?.addEventListener('click', () => this.hideSettingsModal());
+        document.getElementById('saveSettingsBtn')?.addEventListener('click', () => this.saveSettings());
+        
+        // 編輯功能
+        document.getElementById('editBtn')?.addEventListener('click', () => this.editApproval());
+        document.getElementById('saveEditBtn')?.addEventListener('click', () => this.saveEdit());
+        document.getElementById('cancelEditBtn')?.addEventListener('click', () => this.cancelEdit());
+        document.getElementById('copyBtn')?.addEventListener('click', () => this.copyApproval());
+        
+        // 點擊外部關閉用戶選單
+        document.addEventListener('click', (e) => {
+            const userMenu = document.getElementById('userMenuBtn');
+            const dropdown = document.getElementById('userDropdown');
+            if (userMenu && dropdown && !userMenu.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
     }
 };
+
+// 頁面載入時初始化
+document.addEventListener('DOMContentLoaded', () => {
+    UI.initEventListeners();
+});
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {

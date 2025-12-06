@@ -3,11 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 採購簽呈生成系統</title>
+    <title>AI 智能公文簽核系統</title>
     <meta name="description" content="用自然語言描述需求，AI 自動生成專業採購簽呈。節省 99% 的時間，提升行政效率。">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -15,151 +29,246 @@
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-gray-50">
-    <!-- 導航欄 -->
-    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
-                        <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <h1 class="text-xl font-bold text-gray-900">AI 採購簽呈生成系統</h1>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button id="historyBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
-                        <i data-lucide="history" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">歷史記錄</span>
-                    </button>
-                    <button id="settingsBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                        <i data-lucide="settings" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- 主要內容 -->
-    <main class="container mx-auto px-4 py-8 max-w-6xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- 左側：輸入區域 -->
-            <div class="space-y-6">
-                <!-- 草稿標題 -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label for="draftTitle" class="block text-sm font-medium text-gray-700 mb-2">
-                        草稿標題 (選填)
-                    </label>
-                    <input 
-                        type="text" 
-                        id="draftTitle" 
-                        placeholder="例如：辦公室設備採購簽呈"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                </div>
-
-                <!-- 需求描述 -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <label for="userInput" class="block text-sm font-medium text-gray-700">
-                            採購需求描述 <span class="text-red-500">*</span>
-                        </label>
-                        <button id="saveDraftBtn" class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                            <i data-lucide="save" class="w-4 h-4"></i>
-                            儲存草稿
-                        </button>
-                    </div>
-                    <textarea 
-                        id="userInput" 
-                        rows="12"
-                        placeholder="請詳細描述採購需求，例如：&#10;&#10;需要採購 10 台筆記型電腦供業務部門使用，規格需求如下：&#10;- 處理器：Intel Core i7 或以上&#10;- 記憶體：16GB RAM&#10;- 儲存空間：512GB SSD&#10;- 預算：每台約 NT$ 35,000&#10;- 使用目的：提升業務人員外出作業效率"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    ></textarea>
-                    <div class="mt-2 text-xs text-gray-500">
-                        <span id="autoSaveStatus">自動儲存已啟用</span>
-                        <span id="lastSaved" class="ml-2"></span>
-                    </div>
-                </div>
-
-                <!-- 檔案上傳 -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">
-                        參考文件 (選填)
-                    </label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors cursor-pointer" id="uploadArea">
-                        <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,image/*">
-                        <i data-lucide="upload" class="w-12 h-12 mx-auto text-gray-400 mb-3"></i>
-                        <p class="text-sm text-gray-600 mb-1">點擊上傳或拖曳檔案至此</p>
-                        <p class="text-xs text-gray-500">支援 PDF、Word、圖片等格式，最大 10MB</p>
-                    </div>
-                    <div id="uploadedFilesList" class="mt-4 space-y-2"></div>
-                </div>
-
-                <!-- 生成按鈕 -->
-                <button id="generateBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                    <i data-lucide="sparkles" class="w-5 h-5"></i>
-                    生成簽呈
-                </button>
-            </div>
-
-            <!-- 右側：預覽區域 -->
-            <div class="space-y-6">
-                <!-- 生成狀態 -->
-                <div id="generatingStatus" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <!-- 未登入狀態：Hero 區塊 -->
+    <div id="heroSection" class="hidden">
+        <!-- 導航欄 -->
+        <header class="bg-white border-b">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="animate-spin">
-                            <i data-lucide="loader-2" class="w-5 h-5 text-blue-600"></i>
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
+                            <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
                         </div>
-                        <span id="statusText" class="text-blue-700 font-medium">正在分析您的需求...</span>
+                        <h1 class="text-xl font-bold text-gray-900">AI 智能公文簽核系統</h1>
+                    </div>
+                    <button id="loginBtn" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg font-medium hover:shadow-lg transition-all">
+                        登入
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero 內容 -->
+        <main>
+            <!-- Hero 區塊 -->
+            <section class="py-20 px-4">
+                <div class="container mx-auto max-w-4xl text-center">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl mb-8 shadow-xl">
+                        <i data-lucide="file-text" class="w-12 h-12 text-white"></i>
+                    </div>
+                    <h2 class="text-5xl font-bold text-gray-900 mb-6">
+                        AI 智能公文簽核系統
+                    </h2>
+                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                        用自然語言描述需求，AI 自動生成專業採購簽呈。節省 99% 的時間，提升行政效率。
+                    </p>
+                    <button id="heroLoginBtn" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg font-semibold text-lg hover:shadow-xl transition-all">
+                        開始使用
+                    </button>
+                </div>
+            </section>
+
+            <!-- 功能特色 -->
+            <section class="py-16 px-4 bg-white">
+                <div class="container mx-auto max-w-6xl">
+                    <h3 class="text-3xl font-bold text-center text-gray-900 mb-12">核心功能</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- 功能卡片 1 -->
+                        <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center mb-4">
+                                <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">AI 智能生成</h4>
+                            <p class="text-gray-600">使用先進的 AI 技術，自動分析需求並生成專業的採購簽呈，符合公文格式規範。</p>
+                        </div>
+
+                        <!-- 功能卡片 2 -->
+                        <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center mb-4">
+                                <i data-lucide="upload" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">文件識別</h4>
+                            <p class="text-gray-600">上傳參考文件，AI 自動識別並提取關鍵資訊，快速填入採購需求。</p>
+                        </div>
+
+                        <!-- 功能卡片 3 -->
+                        <div class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center mb-4">
+                                <i data-lucide="save" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">草稿管理</h4>
+                            <p class="text-gray-600">自動儲存草稿，支援歷史記錄查詢，隨時繼續編輯未完成的簽呈。</p>
+                        </div>
                     </div>
                 </div>
+            </section>
+        </main>
+    </div>
 
-                <!-- 預覽區域 -->
-                <div id="previewArea" class="bg-white rounded-lg shadow-sm p-6 min-h-[600px]">
-                    <div id="emptyState" class="flex flex-col items-center justify-center h-full text-center py-20">
-                        <i data-lucide="file-text" class="w-20 h-20 text-gray-300 mb-4"></i>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-2">尚未生成簽呈</h3>
-                        <p class="text-sm text-gray-500 max-w-sm">
-                            請在左側輸入採購需求描述，然後點擊「生成簽呈」按鈕
-                        </p>
+    <!-- 已登入狀態：主應用程式 -->
+    <div id="appSection" class="hidden">
+        <!-- 導航欄 -->
+        <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
+                            <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <h1 class="text-xl font-bold text-gray-900">AI 智能公文簽核系統</h1>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="historyBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
+                            <i data-lucide="history" class="w-4 h-4"></i>
+                            <span class="hidden sm:inline">歷史記錄</span>
+                        </button>
+                        
+                        <!-- 用戶選單 -->
+                        <div class="relative">
+                            <button id="userMenuBtn" class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                <img id="userAvatar" src="" alt="User" class="w-8 h-8 rounded-full border-2 border-gray-200">
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-600"></i>
+                            </button>
+                            
+                            <!-- 下拉選單 -->
+                            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                                <div class="px-4 py-3 border-b border-gray-100">
+                                    <p id="userName" class="font-semibold text-gray-900"></p>
+                                    <p id="userEmail" class="text-sm text-gray-500 truncate"></p>
+                                </div>
+                                <button id="settingsBtn" class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                                    <i data-lucide="settings" class="w-4 h-4"></i>
+                                    設定
+                                </button>
+                                <button id="logoutBtn" class="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    登出
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要內容 -->
+        <main class="container mx-auto px-4 py-8 max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 左側：輸入區域 -->
+                <div class="space-y-6">
+                    <!-- 草稿標題 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                        <label for="draftTitle" class="block text-sm font-medium text-gray-700 mb-2">
+                            草稿標題 (選填)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="draftTitle" 
+                            placeholder="例如：辦公室設備採購簽呈"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        >
                     </div>
 
-                    <!-- 簽呈內容 -->
-                    <div id="approvalContent" class="hidden">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 id="approvalTitle" class="text-2xl font-bold text-gray-900"></h2>
-                            <div class="flex items-center gap-2">
-                                <button id="editBtn" class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2">
+                    <!-- 需求描述 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="userInput" class="block text-sm font-medium text-gray-700">
+                                採購需求描述 <span class="text-red-500">*</span>
+                            </label>
+                            <button id="saveDraftBtn" class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium">
+                                <i data-lucide="save" class="w-4 h-4"></i>
+                                儲存草稿
+                            </button>
+                        </div>
+                        <textarea 
+                            id="userInput" 
+                            rows="12"
+                            placeholder="請詳細描述採購需求，例如：&#10;&#10;需要採購 10 台筆記型電腦供業務部門使用，規格需求如下：&#10;- 處理器：Intel Core i7 或以上&#10;- 記憶體：16GB RAM&#10;- 儲存空間：512GB SSD&#10;- 預算：每台約 NT$ 35,000&#10;- 使用目的：提升業務人員外出作業效率"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all"
+                        ></textarea>
+                        <div class="mt-2 text-xs text-gray-500 flex items-center justify-between">
+                            <span id="autoSaveStatus">自動儲存已啟用</span>
+                            <span id="lastSaved" class="text-green-600"></span>
+                        </div>
+                    </div>
+
+                    <!-- 檔案上傳 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            參考文件 (選填)
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors cursor-pointer" id="uploadArea">
+                            <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,image/*">
+                            <i data-lucide="upload" class="w-12 h-12 mx-auto text-gray-400 mb-3"></i>
+                            <p class="text-sm text-gray-600 mb-1">點擊上傳或拖曳檔案至此</p>
+                            <p class="text-xs text-gray-500">支援 PDF、Word、圖片等格式，最大 10MB</p>
+                        </div>
+                        <div id="uploadedFilesList" class="mt-4 space-y-2"></div>
+                    </div>
+
+                    <!-- 生成按鈕 -->
+                    <button id="generateBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 rounded-lg font-semibold text-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        生成簽呈
+                    </button>
+                </div>
+
+                <!-- 右側：輸出區域 -->
+                <div class="space-y-6">
+                    <!-- 生成結果 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 min-h-[600px]">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                                生成結果
+                            </h2>
+                            <div id="resultActions" class="hidden flex items-center gap-2">
+                                <button id="editBtn" class="px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1">
                                     <i data-lucide="edit" class="w-4 h-4"></i>
                                     編輯
                                 </button>
-                                <button id="copyBtn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
+                                <button id="copyBtn" class="px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1">
                                     <i data-lucide="copy" class="w-4 h-4"></i>
                                     複製
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- 閱讀模式 -->
-                        <div id="readMode" class="prose prose-sm max-w-none">
-                            <div id="approvalMarkdown"></div>
+                        <!-- 空狀態 -->
+                        <div id="emptyState" class="flex flex-col items-center justify-center h-[500px] text-center">
+                            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <i data-lucide="file-text" class="w-10 h-10 text-gray-400"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">尚未生成簽呈</h3>
+                            <p class="text-sm text-gray-500 max-w-sm">
+                                請在左側輸入採購需求描述，然後點擊「生成簽呈」按鈕
+                            </p>
                         </div>
 
+                        <!-- 載入狀態 -->
+                        <div id="loadingState" class="hidden flex flex-col items-center justify-center h-[500px]">
+                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+                            <p id="loadingText" class="text-gray-600 font-medium">正在生成簽呈...</p>
+                        </div>
+
+                        <!-- 生成內容 -->
+                        <div id="generatedContent" class="hidden prose prose-sm max-w-none"></div>
+                        
                         <!-- 編輯模式 -->
                         <div id="editMode" class="hidden">
-                            <textarea 
-                                id="editContent" 
-                                rows="20"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
-                            ></textarea>
-                            <div class="flex items-center gap-3 mt-4">
-                                <button id="saveEditBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                                    <i data-lucide="check" class="w-4 h-4"></i>
+                            <textarea id="editTextarea" rows="20" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+                            <div class="flex items-center gap-2 mt-4">
+                                <button id="saveEditBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                                     儲存
                                 </button>
-                                <button id="cancelEditBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                <button id="cancelEditBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
                                     取消
                                 </button>
                             </div>
@@ -167,23 +276,49 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+    </div>
 
-        <!-- 最近草稿 -->
-        <div id="recentDraftsSection" class="mt-8 bg-white rounded-lg shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <i data-lucide="clock" class="w-5 h-5"></i>
-                最近草稿
-            </h3>
-            <div id="recentDraftsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- 草稿項目將動態插入 -->
+    <!-- 登入對話框 -->
+    <div id="loginDialog" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+            <button id="closeLoginDialog" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                    <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">AI 智能公文簽核系統</h2>
+                <p class="text-gray-600 mb-6">請登入以繼續使用</p>
+                
+                <!-- Google Sign-In Button -->
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-size="large"
+                     data-theme="outline"
+                     data-text="sign_in_with"
+                     data-shape="rectangular"
+                     data-logo_alignment="left"
+                     data-width="320">
+                </div>
+                
+                <p class="text-xs text-gray-500 mt-4">
+                    登入即表示您同意我們的服務條款和隱私政策
+                </p>
             </div>
         </div>
-    </main>
+    </div>
 
     <!-- 歷史記錄 Modal -->
     <div id="historyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
             <div class="p-6 border-b flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <i data-lucide="history" class="w-6 h-6"></i>
@@ -194,8 +329,10 @@
                 </button>
             </div>
             <div class="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
-                <div id="historyList" class="space-y-4">
-                    <!-- 歷史記錄項目將動態插入 -->
+                <div id="historyList" class="space-y-4"></div>
+                <div id="emptyHistory" class="hidden text-center py-12">
+                    <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">尚無歷史記錄</p>
                 </div>
             </div>
         </div>
@@ -203,7 +340,7 @@
 
     <!-- 設定 Modal -->
     <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full">
             <div class="p-6 border-b flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <i data-lucide="settings" class="w-6 h-6"></i>
@@ -259,7 +396,7 @@
                 </div>
 
                 <div class="pt-4 border-t">
-                    <button id="saveSettingsBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    <button id="saveSettingsBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
                         儲存設定
                     </button>
                 </div>
@@ -267,13 +404,14 @@
         </div>
     </div>
 
-    <!-- Toast 通知 -->
+    <!-- Toast 通知容器 -->
     <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
 
     <!-- Custom JavaScript -->
     <script src="js/config.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
     

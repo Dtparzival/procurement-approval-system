@@ -2,237 +2,125 @@
 
 class ProcurementApp {
     constructor() {
-        this.currentDraftId = Storage.getCurrentDraftId();
+        this.currentDraftId = null;
         this.uploadedFiles = [];
-        this.generatedApproval = null;
         this.autoSaveTimer = null;
-        
         this.init();
     }
 
     /**
-     * Initialize the application
+     * 初始化應用程式
      */
     init() {
-        this.loadSettings();
-        this.bindEvents();
-        this.loadRecentDrafts();
-        this.setupAutoSave();
-        
-        // Initialize Lucide icons
-        lucide.createIcons();
+        // 等待 Auth 初始化完成
+        setTimeout(() => {
+            if (Auth.isAuthenticated()) {
+                this.loadSettings();
+                this.bindEvents();
+                this.setupAutoSave();
+            }
+            lucide.createIcons();
+        }, 100);
     }
 
     /**
-     * Load settings from localStorage
+     * 載入設定
      */
     loadSettings() {
         const apiKey = Storage.getApiKey();
         const model = Storage.getModel();
         const autoSave = Storage.getAutoSave();
 
-        document.getElementById('apiKeyInput').value = apiKey;
-        document.getElementById('modelSelect').value = model;
-        document.getElementById('autoSaveToggle').checked = autoSave;
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const modelSelect = document.getElementById('modelSelect');
+        const autoSaveToggle = document.getElementById('autoSaveToggle');
+
+        if (apiKeyInput) apiKeyInput.value = apiKey;
+        if (modelSelect) modelSelect.value = model;
+        if (autoSaveToggle) autoSaveToggle.checked = autoSave;
     }
 
     /**
-     * Bind event listeners
+     * 綁定事件監聽器
      */
     bindEvents() {
-        // Generate button
-        document.getElementById('generateBtn').addEventListener('click', () => this.handleGenerate());
+        // 生成按鈕
+        const generateBtn = document.getElementById('generateBtn');
+        if (generateBtn) {
+            generateBtn.addEventListener('click', () => this.handleGenerate());
+        }
 
-        // Save draft button
-        document.getElementById('saveDraftBtn').addEventListener('click', () => this.handleSaveDraft());
+        // 儲存草稿按鈕
+        const saveDraftBtn = document.getElementById('saveDraftBtn');
+        if (saveDraftBtn) {
+            saveDraftBtn.addEventListener('click', () => this.handleSaveDraft());
+        }
 
-        // File upload
+        // 檔案上傳
         const fileInput = document.getElementById('fileInput');
         const uploadArea = document.getElementById('uploadArea');
 
-        uploadArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+        if (uploadArea && fileInput) {
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
 
-        // Drag and drop
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+            // 拖放功能
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('border-blue-500', 'bg-blue-50');
+            });
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+            });
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                this.handleFileUpload({ target: { files: e.dataTransfer.files } });
-            }
-        });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+                if (e.dataTransfer.files.length > 0) {
+                    this.handleFileUpload({ target: { files: e.dataTransfer.files } });
+                }
+            });
+        }
 
-        // Edit buttons
-        document.getElementById('editBtn').addEventListener('click', () => this.handleEdit());
-        document.getElementById('saveEditBtn').addEventListener('click', () => this.handleSaveEdit());
-        document.getElementById('cancelEditBtn').addEventListener('click', () => this.handleCancelEdit());
-
-        // Copy button
-        document.getElementById('copyBtn').addEventListener('click', () => this.handleCopy());
-
-        // History button
-        document.getElementById('historyBtn').addEventListener('click', () => this.showHistory());
-        document.getElementById('closeHistoryBtn').addEventListener('click', () => UI.hideModal('historyModal'));
-
-        // Settings button
-        document.getElementById('settingsBtn').addEventListener('click', () => this.showSettings());
-        document.getElementById('closeSettingsBtn').addEventListener('click', () => UI.hideModal('settingsModal'));
-        document.getElementById('saveSettingsBtn').addEventListener('click', () => this.saveSettings());
-
-        // Auto-save toggle
-        document.getElementById('autoSaveToggle').addEventListener('change', (e) => {
-            Storage.setAutoSave(e.target.checked);
-            this.setupAutoSave();
-        });
-
-        // Event delegation for dynamic elements
-        document.addEventListener('click', (e) => {
-            // Load draft
-            if (e.target.closest('.load-draft-btn')) {
-                const draftId = parseInt(e.target.closest('.load-draft-btn').dataset.draftId);
-                this.loadDraft(draftId);
-            }
-
-            // Delete draft
-            if (e.target.closest('.delete-draft-btn')) {
-                e.stopPropagation();
-                const draftId = parseInt(e.target.closest('.delete-draft-btn').dataset.draftId);
-                this.deleteDraft(draftId);
-            }
-
-            // Remove file
-            if (e.target.closest('.remove-file-btn')) {
-                const fileIndex = parseInt(e.target.closest('.remove-file-btn').dataset.fileIndex);
-                this.removeFile(fileIndex);
-            }
-
-            // View history
-            if (e.target.closest('.view-history-btn')) {
-                const historyId = parseInt(e.target.closest('.view-history-btn').dataset.historyId);
-                this.viewHistory(historyId);
-            }
-
-            // Copy history
-            if (e.target.closest('.copy-history-btn')) {
-                const historyId = parseInt(e.target.closest('.copy-history-btn').dataset.historyId);
-                this.copyHistory(historyId);
-            }
-
-            // Delete history
-            if (e.target.closest('.delete-history-btn')) {
-                const historyId = parseInt(e.target.closest('.delete-history-btn').dataset.historyId);
-                this.deleteHistory(historyId);
-            }
-        });
-
-        // Close modals on background click
-        document.getElementById('historyModal').addEventListener('click', (e) => {
-            if (e.target.id === 'historyModal') {
-                UI.hideModal('historyModal');
-            }
-        });
-
-        document.getElementById('settingsModal').addEventListener('click', (e) => {
-            if (e.target.id === 'settingsModal') {
-                UI.hideModal('settingsModal');
-            }
-        });
+        // 自動儲存切換
+        const autoSaveToggle = document.getElementById('autoSaveToggle');
+        if (autoSaveToggle) {
+            autoSaveToggle.addEventListener('change', (e) => {
+                Storage.setAutoSave(e.target.checked);
+                this.setupAutoSave();
+                UI.showToast(e.target.checked ? '自動儲存已啟用' : '自動儲存已停用', 'info');
+            });
+        }
     }
 
     /**
-     * Setup auto-save functionality
+     * 設定自動儲存
      */
     setupAutoSave() {
+        // 清除現有計時器
         if (this.autoSaveTimer) {
             clearInterval(this.autoSaveTimer);
+            this.autoSaveTimer = null;
         }
 
+        // 如果啟用自動儲存
         if (Storage.getAutoSave()) {
             this.autoSaveTimer = setInterval(() => {
-                const userInput = document.getElementById('userInput').value.trim();
+                const userInput = document.getElementById('userInput')?.value.trim();
                 if (userInput) {
-                    this.handleSaveDraft(true); // Silent save
+                    this.handleSaveDraft(true); // true 表示是自動儲存
                 }
-            }, CONFIG.AUTO_SAVE_INTERVAL);
+            }, 30000); // 30 秒
         }
     }
 
     /**
-     * Handle file upload
-     */
-    async handleFileUpload(event) {
-        const files = event.target.files;
-        if (!files || files.length === 0) return;
-
-        const file = files[0];
-
-        try {
-            // Validate file
-            API.validateFile(file);
-
-            UI.showToast('正在上傳檔案...', 'info');
-
-            // Upload file
-            const uploadedFile = await API.uploadFile(file);
-            this.uploadedFiles.push(uploadedFile);
-
-            // Update UI
-            UI.renderUploadedFiles(this.uploadedFiles);
-            UI.showToast(`檔案 ${file.name} 上傳成功`, 'success');
-
-            // Extract document info if it's an image
-            if (file.type.startsWith('image/')) {
-                UI.showToast('正在識別文件內容...', 'info');
-                try {
-                    const extractedInfo = await API.extractDocumentInfo(
-                        uploadedFile.fileUrl,
-                        uploadedFile.fileName,
-                        uploadedFile.mimeType
-                    );
-
-                    // Append to user input
-                    const userInput = document.getElementById('userInput');
-                    const currentValue = userInput.value.trim();
-                    userInput.value = currentValue 
-                        ? `${currentValue}\n\n${extractedInfo}` 
-                        : extractedInfo;
-
-                    UI.showToast('已自動識別文件內容', 'success');
-                } catch (error) {
-                    console.error('Document extraction error:', error);
-                    UI.showToast('文件識別失敗，請手動輸入', 'warning');
-                }
-            }
-        } catch (error) {
-            console.error('File upload error:', error);
-            UI.showToast(error.message, 'error');
-        }
-    }
-
-    /**
-     * Remove uploaded file
-     */
-    removeFile(index) {
-        this.uploadedFiles.splice(index, 1);
-        UI.renderUploadedFiles(this.uploadedFiles);
-        UI.showToast('已移除檔案', 'info');
-    }
-
-    /**
-     * Handle generate approval
+     * 處理生成簽呈
      */
     async handleGenerate() {
-        const userInput = document.getElementById('userInput').value.trim();
-
+        const userInput = document.getElementById('userInput')?.value.trim();
+        
         if (!userInput) {
             UI.showToast('請輸入採購需求描述', 'error');
             return;
@@ -240,52 +128,34 @@ class ProcurementApp {
 
         const apiKey = Storage.getApiKey();
         if (!apiKey) {
-            UI.showToast('請先在設定中輸入 API Key', 'error');
-            UI.showModal('settingsModal');
+            UI.showToast('請先設定 API Key', 'error');
+            UI.showSettingsModal();
             return;
         }
 
         try {
-            // Show loading status
-            const statusMessages = [
-                '正在分析您的需求...',
-                '正在組織簽呈內容...',
-                '正在優化公文格式...'
-            ];
+            // 顯示載入狀態
+            UI.showLoading('正在分析您的需求...');
+            
+            setTimeout(() => UI.showLoading('正在組織簽呈內容...'), 2000);
+            setTimeout(() => UI.showLoading('正在優化公文格式...'), 4000);
 
-            let statusIndex = 0;
-            UI.showLoading(statusMessages[statusIndex]);
+            // 呼叫 API 生成簽呈
+            const result = await API.generateApproval(userInput, this.uploadedFiles);
 
-            const statusInterval = setInterval(() => {
-                statusIndex = (statusIndex + 1) % statusMessages.length;
-                UI.showLoading(statusMessages[statusIndex]);
-            }, 2000);
-
-            // Generate approval
-            const approval = await API.generateApproval(userInput, this.uploadedFiles);
-
-            clearInterval(statusInterval);
-            UI.hideLoading();
-
-            // Save to history
+            // 儲存到歷史記錄
             const historyItem = Storage.saveHistory({
-                title: approval.title,
-                content: approval.content,
+                title: result.title,
+                content: result.content,
                 userInput: userInput,
                 attachments: this.uploadedFiles
             });
 
-            this.generatedApproval = {
-                id: historyItem.id,
-                title: approval.title,
-                content: approval.content
-            };
-
-            // Show approval
-            UI.showApproval(this.generatedApproval);
+            // 顯示結果
+            UI.showApproval(historyItem);
             UI.showToast('簽呈生成成功！', 'success');
 
-            // Clear current draft ID
+            // 清除草稿 ID
             this.currentDraftId = null;
             Storage.setCurrentDraftId(null);
 
@@ -297,242 +167,109 @@ class ProcurementApp {
     }
 
     /**
-     * Handle save draft
+     * 處理儲存草稿
      */
-    handleSaveDraft(silent = false) {
-        const userInput = document.getElementById('userInput').value.trim();
-        const draftTitle = document.getElementById('draftTitle').value.trim();
+    handleSaveDraft(isAutoSave = false) {
+        const userInput = document.getElementById('userInput')?.value.trim();
+        const draftTitle = document.getElementById('draftTitle')?.value.trim();
 
         if (!userInput) {
-            if (!silent) {
+            if (!isAutoSave) {
                 UI.showToast('請輸入需求描述', 'error');
             }
             return;
         }
 
-        try {
-            const draft = Storage.saveDraft({
-                id: this.currentDraftId,
-                title: draftTitle || '未命名草稿',
-                userInput: userInput,
-                attachments: this.uploadedFiles
-            });
+        const draft = Storage.saveDraft({
+            id: this.currentDraftId,
+            title: draftTitle || '採購簽呈草稿',
+            userInput: userInput,
+            attachments: this.uploadedFiles
+        });
 
-            this.currentDraftId = draft.id;
-            Storage.setCurrentDraftId(draft.id);
-
-            if (!silent) {
-                UI.showToast('草稿已儲存', 'success');
-            }
-            UI.updateLastSaved();
-
-            // Refresh recent drafts
-            this.loadRecentDrafts();
-        } catch (error) {
-            console.error('Save draft error:', error);
-            if (!silent) {
-                UI.showToast('儲存失敗', 'error');
-            }
-        }
-    }
-
-    /**
-     * Load draft
-     */
-    loadDraft(draftId) {
-        const draft = Storage.getDraftById(draftId);
-        if (!draft) {
-            UI.showToast('找不到草稿', 'error');
-            return;
-        }
-
-        document.getElementById('userInput').value = draft.userInput;
-        document.getElementById('draftTitle').value = draft.title;
-        this.uploadedFiles = draft.attachments || [];
         this.currentDraftId = draft.id;
         Storage.setCurrentDraftId(draft.id);
 
-        UI.renderUploadedFiles(this.uploadedFiles);
-        UI.showToast('已載入草稿', 'success');
-
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (!isAutoSave) {
+            UI.showToast('草稿已儲存', 'success');
+        } else {
+            // 更新自動儲存狀態
+            const statusElement = document.getElementById('lastSaved');
+            if (statusElement) {
+                const now = new Date();
+                statusElement.textContent = `上次儲存：${now.toLocaleTimeString('zh-TW')}`;
+            }
+        }
     }
 
     /**
-     * Delete draft
+     * 處理檔案上傳
      */
-    deleteDraft(draftId) {
-        if (!confirm('確定要刪除此草稿嗎？')) {
+    async handleFileUpload(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+
+        const file = files[0];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+
+        if (file.size > maxSize) {
+            UI.showToast('檔案大小不能超過 10MB', 'error');
             return;
         }
 
-        Storage.deleteDraft(draftId);
-        
-        if (this.currentDraftId === draftId) {
-            this.currentDraftId = null;
-            Storage.setCurrentDraftId(null);
-        }
-
-        this.loadRecentDrafts();
-        UI.showToast('草稿已刪除', 'info');
-    }
-
-    /**
-     * Load recent drafts
-     */
-    loadRecentDrafts() {
-        const drafts = Storage.getRecentDrafts();
-        UI.renderRecentDrafts(drafts);
-    }
-
-    /**
-     * Handle edit
-     */
-    handleEdit() {
-        if (!this.generatedApproval) return;
-
-        const editContent = document.getElementById('editContent');
-        editContent.value = this.generatedApproval.content;
-        UI.toggleEditMode(true);
-    }
-
-    /**
-     * Handle save edit
-     */
-    handleSaveEdit() {
-        const editContent = document.getElementById('editContent').value.trim();
-
-        if (!editContent) {
-            UI.showToast('內容不能為空', 'error');
-            return;
-        }
-
-        this.generatedApproval.content = editContent;
-        UI.updateApprovalContent(editContent);
-        UI.toggleEditMode(false);
-        UI.showToast('編輯已儲存', 'success');
-    }
-
-    /**
-     * Handle cancel edit
-     */
-    handleCancelEdit() {
-        UI.toggleEditMode(false);
-    }
-
-    /**
-     * Handle copy
-     */
-    async handleCopy() {
-        if (!this.generatedApproval) return;
+        UI.showToast('正在上傳檔案...', 'info');
 
         try {
-            await navigator.clipboard.writeText(this.generatedApproval.content);
-            UI.showToast('已複製到剪貼簿', 'success');
+            // 讀取檔案
+            const fileData = await this.readFileAsBase64(file);
+
+            // 模擬上傳（實際應用中應該上傳到伺服器）
+            const uploadedFile = {
+                fileName: file.name,
+                fileData: fileData,
+                fileSize: file.size,
+                mimeType: file.type
+            };
+
+            this.uploadedFiles.push(uploadedFile);
+            UI.showUploadedFile(uploadedFile);
+            UI.showToast(`檔案 ${file.name} 上傳成功`, 'success');
+
+            // 清除 input
+            event.target.value = '';
+
         } catch (error) {
-            console.error('Copy error:', error);
-            UI.showToast('複製失敗', 'error');
+            console.error('Upload error:', error);
+            UI.showToast('檔案上傳失敗', 'error');
         }
     }
 
     /**
-     * Show history
+     * 讀取檔案為 Base64
      */
-    showHistory() {
-        const history = Storage.getHistory();
-        UI.renderHistory(history);
-        UI.showModal('historyModal');
-    }
-
-    /**
-     * View history item
-     */
-    viewHistory(historyId) {
-        const item = Storage.getHistoryById(historyId);
-        if (!item) {
-            UI.showToast('找不到歷史記錄', 'error');
-            return;
-        }
-
-        this.generatedApproval = {
-            id: item.id,
-            title: item.title,
-            content: item.content
-        };
-
-        UI.showApproval(this.generatedApproval);
-        UI.hideModal('historyModal');
-
-        // Scroll to preview
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    /**
-     * Copy history item
-     */
-    async copyHistory(historyId) {
-        const item = Storage.getHistoryById(historyId);
-        if (!item) {
-            UI.showToast('找不到歷史記錄', 'error');
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(item.content);
-            UI.showToast('已複製到剪貼簿', 'success');
-        } catch (error) {
-            console.error('Copy error:', error);
-            UI.showToast('複製失敗', 'error');
-        }
-    }
-
-    /**
-     * Delete history item
-     */
-    deleteHistory(historyId) {
-        if (!confirm('確定要刪除此歷史記錄嗎？')) {
-            return;
-        }
-
-        Storage.deleteHistory(historyId);
-        this.showHistory(); // Refresh
-        UI.showToast('歷史記錄已刪除', 'info');
-    }
-
-    /**
-     * Show settings
-     */
-    showSettings() {
-        this.loadSettings();
-        UI.showModal('settingsModal');
-    }
-
-    /**
-     * Save settings
-     */
-    saveSettings() {
-        const apiKey = document.getElementById('apiKeyInput').value.trim();
-        const model = document.getElementById('modelSelect').value;
-        const autoSave = document.getElementById('autoSaveToggle').checked;
-
-        if (!apiKey) {
-            UI.showToast('請輸入 API Key', 'error');
-            return;
-        }
-
-        Storage.setApiKey(apiKey);
-        Storage.setModel(model);
-        Storage.setAutoSave(autoSave);
-
-        this.setupAutoSave();
-
-        UI.hideModal('settingsModal');
-        UI.showToast('設定已儲存', 'success');
+    readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target.result.split(',')[1];
+                resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
 }
 
-// Initialize app when DOM is ready
+// 初始化應用程式
+let app;
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new ProcurementApp();
+    // 等待 Auth 初始化
+    setTimeout(() => {
+        app = new ProcurementApp();
+    }, 200);
 });
+
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ProcurementApp;
+}
