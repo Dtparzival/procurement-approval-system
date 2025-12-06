@@ -210,11 +210,26 @@ https://www.yourdomain.com
 
 將 `data-auto_prompt` 設為 `true`。
 
+## 詳細程式碼實作
+
+如需完整的程式碼範例和實作說明，請參考：
+- **[GOOGLE_OAUTH_IMPLEMENTATION.md](GOOGLE_OAUTH_IMPLEMENTATION.md)** - 詳細的程式碼片段和逐步解釋
+
+該文件包含：
+- 完整的 `auth.js` 認證模組實作
+- JWT Token 解析方法
+- 多用戶儲存管理
+- UI 整合範例
+- 完整的登入/登出流程
+- 錯誤處理和最佳實踐
+- 測試檢查清單
+
 ## 參考資源
 
 - [Google Identity Services 文件](https://developers.google.com/identity/gsi/web/guides/overview)
 - [OAuth 2.0 說明](https://developers.google.com/identity/protocols/oauth2)
 - [Google Cloud Console](https://console.cloud.google.com/)
+- [詳細程式碼實作指南](GOOGLE_OAUTH_IMPLEMENTATION.md)
 
 ## 支援
 
