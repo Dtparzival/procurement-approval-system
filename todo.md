@@ -148,3 +148,13 @@
 - [x] 實作儲存編輯後的內容功能
 - [x] 確保編輯後的內容在手機版正常顯示
 - [x] 測試完整的編輯流程
+
+## GitHub 倉庫管理與協作開發
+- [x] 建立 GitHub 倉庫
+- [x] 初始化 Git 並推送程式碼
+- [x] 設定分支保護規則
+- [x] 建立 README.md 文件
+- [x] 建立 CONTRIBUTING.md 貢獻指南
+- [x] 設定 GitHub Issues 範本
+- [x] 設定 Pull Request 範本
+- [ ] 測試協作流程
