@@ -124,8 +124,8 @@ procurement-approval-system/  (DEV 分支)
 1. **開啟網站**
 2. **點擊右上角的設定按鈕**（齒輪圖示）
 3. **輸入 API Key**
-   - 可使用 OpenAI API Key
-   - 或使用 Manus Forge API Key（推薦）
+   - 推薦使用 Manus Forge API Key：[https://forge.manus.im](https://forge.manus.im)
+   - 或使用 OpenAI API Key：[https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 4. **選擇 AI 模型**
    - `gpt-4.1-mini` - 推薦，平衡效能和成本
    - `gpt-4.1-nano` - 最快速，成本最低
@@ -538,14 +538,15 @@ const CONFIG = {
 **A:** 您可以使用以下任一方式：
 
 1. **Manus Forge API** (推薦)
-   - 前往 https://manus.im
+   - 前往 https://forge.manus.im
    - 註冊帳號並取得 API Key
-   - 支援多種模型，價格合理
+   - 支援 gpt-4.1-mini, gpt-4.1-nano, gemini-2.5-flash
+   - 價格合理，無需修改配置
 
 2. **OpenAI API**
-   - 前往 https://platform.openai.com
+   - 前往 https://platform.openai.com/api-keys
    - 註冊帳號並取得 API Key
-   - 需要修改 `js/config.js` 中的 API 端點
+   - 需要手動修改 `js/config.js` 中的 `BASE_URL` 為 `https://api.openai.com/v1`
 
 ### Q: 資料會遺失嗎？
 
