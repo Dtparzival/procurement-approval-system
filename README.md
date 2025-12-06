@@ -5,6 +5,52 @@
 
 > **注意**: 這是靜態網頁版本，與 main 分支的全端應用程式版本在架構上有顯著差異。
 
+## 📚 文件導航
+
+### 快速開始（5 分鐘）
+
+| 文件 | 說明 | 適用對象 |
+|------|------|----------|
+| 📖 [README.md](README.md) | 專案概述和快速開始 | 所有使用者 |
+| ⚙️ [Google OAuth 快速設定](GOOGLE_OAUTH_SETUP.md) | Google 登入功能設定步驟 | 需要使用者認證功能 |
+| 🚀 [快速部署指南](DEPLOYMENT.md) | 基本的部署說明 | 需要快速部署 |
+
+### 詳細文件（深入學習）
+
+| 文件 | 說明 | 適用對象 |
+|------|------|----------|
+| 💻 [Google OAuth 詳細實作](GOOGLE_OAUTH_IMPLEMENTATION.md) | 完整的程式碼範例和技術細節 | 開發者、需要自訂功能 |
+| ☁️ [AWS S3 部署指南](AWS_S3_DEPLOYMENT_GUIDE.md) | 完整的 S3 部署教學（含成本分析） | 需要部署到 AWS |
+| 🌐 [CloudFront 設定指南](CLOUDFRONT_SETUP.md) | CDN 和 HTTPS 設定 | 需要 HTTPS 和全球加速 |
+| 📝 [變更記錄](CHANGELOG_DEV.md) | DEV 分支的更新歷史 | 關注專案進度 |
+| 🧪 [測試結果](TEST_RESULTS.md) | 功能測試報告 | 了解系統穩定性 |
+
+### 推薦閱讀順序
+
+#### 初次使用
+```
+1. README.md（本文件）→ 了解專案
+2. GOOGLE_OAUTH_SETUP.md → 設定 Google 登入
+3. 開始使用！
+```
+
+#### 部署到生產環境
+```
+1. GOOGLE_OAUTH_SETUP.md → 設定認證
+2. AWS_S3_DEPLOYMENT_GUIDE.md → 部署到 S3
+3. CLOUDFRONT_SETUP.md → 設定 HTTPS
+4. 完成部署！
+```
+
+#### 開發者深入學習
+```
+1. README.md → 了解架構
+2. GOOGLE_OAUTH_IMPLEMENTATION.md → 學習認證實作
+3. 查看原始碼 → 自訂功能
+```
+
+---
+
 ## 版本說明
 
 本專案包含兩個版本：
