@@ -420,6 +420,12 @@ const UI = {
             lucide.createIcons();
         });
         
+        // 首頁 Logo 按鈕 - 重新載入首頁
+        document.getElementById('heroLogoBtn')?.addEventListener('click', () => {
+            Auth.showHero();
+            lucide.createIcons();
+        });
+        
         // 歷史記錄
         document.getElementById('historyBtn')?.addEventListener('click', () => this.showHistoryModal());
         document.getElementById('closeHistoryBtn')?.addEventListener('click', () => this.hideHistoryModal());
