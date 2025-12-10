@@ -399,9 +399,15 @@ const UI = {
      * 初始化事件監聽器
      */
     initEventListeners() {
-        // 登入按鈕
-        document.getElementById('loginBtn')?.addEventListener('click', () => this.showLoginDialog());
-        document.getElementById('heroLoginBtn')?.addEventListener('click', () => this.showLoginDialog());
+        // 登入按鈕 - 直接進入主要功能頁面
+        document.getElementById('loginBtn')?.addEventListener('click', () => {
+            Auth.showApp();
+            lucide.createIcons();
+        });
+        document.getElementById('heroLoginBtn')?.addEventListener('click', () => {
+            Auth.showApp();
+            lucide.createIcons();
+        });
         document.getElementById('closeLoginDialog')?.addEventListener('click', () => this.hideLoginDialog());
         
         // 用戶選單

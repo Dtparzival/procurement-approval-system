@@ -14,11 +14,10 @@ class ProcurementApp {
     init() {
         // 等待 Auth 初始化完成
         setTimeout(() => {
-            if (Auth.isAuthenticated()) {
-                this.loadSettings();
-                this.bindEvents();
-                this.setupAutoSave();
-            }
+            // 直接載入應用程式，無需認證檢查
+            this.loadSettings();
+            this.bindEvents();
+            this.setupAutoSave();
             lucide.createIcons();
         }, 100);
     }

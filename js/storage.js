@@ -3,10 +3,10 @@
 const Storage = {
     /**
      * Get user-specific storage key
+     * 修改：直接使用通用 key，不再按用戶隔離
      */
     getUserKey(key) {
-        const userId = Auth.getUserId();
-        return userId ? `user_${userId}_${key}` : key;
+        return key;
     },
 
     /**
