@@ -6,8 +6,16 @@ const Auth = {
     
     /**
      * 初始化 Google 認證
+     * 註解：暫時停用 Gmail 登入機制，直接顯示應用程式
      */
     init() {
+        // ========== 暫時停用 Gmail 登入 ==========
+        // 直接顯示應用程式，無需登入
+        this.showApp();
+        return;
+        
+        // ========== 以下為原始登入邏輯（已註解） ==========
+        /*
         // 檢查是否已登入
         const user = this.getCurrentUser();
         if (user) {
@@ -19,6 +27,7 @@ const Auth = {
         
         // 設定 Google Sign-In 回調
         window.handleCredentialResponse = this.handleCredentialResponse.bind(this);
+        */
     },
     
     /**
