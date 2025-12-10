@@ -14,21 +14,11 @@ class ProcurementApp {
     init() {
         // 等待 Auth 初始化完成
         setTimeout(() => {
-            // ========== 暫時停用認證檢查 ==========
-            // 直接載入應用程式，無需登入
-            this.loadSettings();
-            this.bindEvents();
-            this.setupAutoSave();
-            
-            // ========== 原始認證檢查（已註解） ==========
-            /*
             if (Auth.isAuthenticated()) {
                 this.loadSettings();
                 this.bindEvents();
                 this.setupAutoSave();
             }
-            */
-            
             lucide.createIcons();
         }, 100);
     }

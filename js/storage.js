@@ -3,18 +3,10 @@
 const Storage = {
     /**
      * Get user-specific storage key
-     * 註解：暫時停用用戶 ID 隔離，直接使用通用 key
      */
     getUserKey(key) {
-        // ========== 暫時停用用戶 ID 隔離 ==========
-        // 直接返回 key，不再按用戶隔離
-        return key;
-        
-        // ========== 原始用戶 ID 隔離邏輯（已註解） ==========
-        /*
         const userId = Auth.getUserId();
         return userId ? `user_${userId}_${key}` : key;
-        */
     },
 
     /**
