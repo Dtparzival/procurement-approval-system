@@ -414,6 +414,12 @@ const UI = {
         document.getElementById('userMenuBtn')?.addEventListener('click', () => this.toggleUserMenu());
         document.getElementById('logoutBtn')?.addEventListener('click', () => Auth.logout());
         
+        // 回首頁按鈕
+        document.getElementById('backToHomeBtn')?.addEventListener('click', () => {
+            Auth.showHero();
+            lucide.createIcons();
+        });
+        
         // 歷史記錄
         document.getElementById('historyBtn')?.addEventListener('click', () => this.showHistoryModal());
         document.getElementById('closeHistoryBtn')?.addEventListener('click', () => this.hideHistoryModal());
