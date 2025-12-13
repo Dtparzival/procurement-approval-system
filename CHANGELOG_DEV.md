@@ -1,5 +1,36 @@
 # DEV 分支變更記錄
 
+## [v1.5.3] - 2025-12-13
+
+### 🐛 修復
+
+- **模型配置錯誤**: 修正不存在的模型名稱，從 `gpt-4.1-mini` 更新為 OpenAI 實際支援的 `gpt-4o-mini`。
+- **模型選項更新**: 更新模型選項為：
+  - `gpt-4o-mini` (GPT-4o Mini - 推薦)
+  - `gpt-3.5-turbo` (GPT-3.5 Turbo - 快速)
+  - `gpt-4o` (GPT-4o - 最強)
+- **Word 下載功能**: 改進 `handleDownload()` 函數，新增：
+  - 檢查 `docx` 和 `FileSaver` 庫是否已加載
+  - 詳細的調試日誌（console.log）
+  - 明確的錯誤訊息和解決方案
+
+### ✅ 驗證完成
+
+- ✅ 草稿功能代碼正確（事件委派機制）
+- ✅ Word 下載功能代碼正確（庫已加載）
+- ✅ 模型配置已更新為 OpenAI 支援的模型
+
+### 📝 文件更新
+
+- 新增 `BUGFIX_v1.5.3_comprehensive.md` 綜合修復報告
+- 整合了之前的所有 BUGFIX 文件
+
+### ⚠️ 重要提示
+
+**API Key 安全**: 如果您在對話中分享了 API Key，請立即前往 [OpenAI Platform](https://platform.openai.com/api-keys) 輪換 API Key。
+
+---
+
 ## [v1.5.1] - 2025-12-13
 
 ### 🐛 修復

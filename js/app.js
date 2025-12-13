@@ -339,13 +339,30 @@ class ProcurementApp {
      * 處理下載
      */
     async handleDownload() {
+        console.log('handleDownload called');
+        
         const generatedContent = document.getElementById('generatedContent');
         if (!generatedContent || !generatedContent.textContent.trim()) {
+            console.error('No content to download');
             UI.showToast('沒有可下載的內容', 'error');
             return;
         }
         
+        // 檢查 docx 庫是否加載
+        if (typeof docx === 'undefined') {
+            console.error('docx library not loaded');
+            UI.showToast('Word 文件庫未加載，請刷新頁面再試', 'error');
+            return;
+        }
+        
+        if (typeof saveAs === 'undefined') {
+            console.error('FileSaver library not loaded');
+            UI.showToast('文件下載庫未加載，請刷新頁面再試', 'error');
+            return;
+        }
+        
         try {
+            console.log('Starting Word document generation...');
             UI.showToast('正在生成 Word 文件...', 'info');
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
@@ -427,10 +444,15 @@ class ProcurementApp {
             });
             
             // 生成並下載
+            console.log('Generating blob...');
             const blob = await docx.Packer.toBlob(doc);
+            console.log('Blob generated:', blob.size, 'bytes');
+            
             const fileName = `${draftTitle}_${new Date().toISOString().split('T')[0]}.docx`;
+            console.log('Downloading file:', fileName);
             saveAs(blob, fileName);
             
+            console.log('Download completed successfully');
             UI.showToast('下載成功！', 'success');
         } catch (error) {
             console.error('Word 文件生成失敗:', error);

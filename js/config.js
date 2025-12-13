@@ -3,17 +3,17 @@
 const CONFIG = {
     // API Configuration
     API: {
-        // OpenAI-compatible API endpoint
-        // 預設使用環境變數中預配置的 API，支援 gpt-4.1-mini, gpt-4.1-nano, gemini-2.5-flash
-        // 如需使用 OpenAI 官方 API，請在設定中輸入 OpenAI API Key
+        // OpenAI API endpoint
+        // 支援 OpenAI 模型：gpt-4o-mini, gpt-3.5-turbo, gpt-4o
+        // 請在設定中輸入您的 OpenAI API Key
         BASE_URL: 'https://api.openai.com/v1',
         // Default model
-        DEFAULT_MODEL: 'gpt-4.1-mini',
+        DEFAULT_MODEL: 'gpt-4o-mini',
         // Available models
         MODELS: [
-            { value: 'gpt-4.1-mini', label: 'GPT-4.1 Mini (推薦)' },
-            { value: 'gpt-4.1-nano', label: 'GPT-4.1 Nano (快速)' },
-            { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' }
+            { value: 'gpt-4o-mini', label: 'GPT-4o Mini (推薦)' },
+            { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (快速)' },
+            { value: 'gpt-4o', label: 'GPT-4o (最強)' }
         ]
     },
 
