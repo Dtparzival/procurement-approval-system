@@ -117,6 +117,19 @@ const Auth = {
     showHero() {
         document.getElementById('heroSection').classList.remove('hidden');
         document.getElementById('appSection').classList.add('hidden');
+        
+        // 如果使用者已使用過系統（localStorage 中有資料），隱藏登入按鈕
+        const hasUsedSystem = localStorage.getItem('procurement_api_key') !== null || 
+                             localStorage.getItem('procurement_drafts') !== null || 
+                             localStorage.getItem('procurement_history') !== null;
+        const loginBtn = document.getElementById('loginBtn');
+        if (loginBtn) {
+            if (hasUsedSystem) {
+                loginBtn.classList.add('hidden');
+            } else {
+                loginBtn.classList.remove('hidden');
+            }
+        }
     },
     
     /**

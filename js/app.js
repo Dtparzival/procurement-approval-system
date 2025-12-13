@@ -54,6 +54,12 @@ class ProcurementApp {
         if (saveDraftBtn) {
             saveDraftBtn.addEventListener('click', () => this.handleSaveDraft());
         }
+        
+        // 查看草稿按鈕
+        const viewDraftsBtn = document.getElementById('viewDraftsBtn');
+        if (viewDraftsBtn) {
+            viewDraftsBtn.addEventListener('click', () => this.showDraftsModal());
+        }
 
         // 檔案上傳
         const fileInput = document.getElementById('fileInput');
@@ -90,6 +96,12 @@ class ProcurementApp {
                 this.setupAutoSave();
                 UI.showToast(e.target.checked ? '自動儲存已啟用' : '自動儲存已停用', 'info');
             });
+        }
+        
+        // 設定按鈕
+        const settingsBtn = document.getElementById('settingsBtn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => UI.showSettingsModal());
         }
         
         // 登出按鈕
@@ -373,9 +385,9 @@ class ProcurementApp {
                 <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start justify-between mb-2">
                         <h3 class="font-semibold text-gray-900">${draft.title || '無標題草稿'}</h3>
-                        <span class="text-sm text-gray-500">${new Date(draft.savedAt).toLocaleString('zh-TW')}</span>
+                        <span class="text-sm text-gray-500">${new Date(draft.updatedAt || draft.createdAt || draft.id).toLocaleString('zh-TW')}</span>
                     </div>
-                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">${draft.content.substring(0, 100)}...</p>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">${(draft.userInput || draft.content || '').substring(0, 100)}...</p>
                     <div class="flex gap-2">
                         <button onclick="app.loadDraft('${draft.id}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm">
                             載入
@@ -420,7 +432,7 @@ class ProcurementApp {
         const draftTitle = document.getElementById('draftTitle');
         
         if (userInput) {
-            userInput.value = draft.content;
+            userInput.value = draft.userInput || draft.content || '';
             UI.updateCharCount(userInput);
         }
         if (draftTitle) draftTitle.value = draft.title || '';
