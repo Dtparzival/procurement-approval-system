@@ -322,38 +322,101 @@ class ProcurementApp {
      */
     async handleDownload() {
         const generatedContent = document.getElementById('generatedContent');
-        if (!generatedContent || !generatedContent.textContent) {
+        if (!generatedContent || !generatedContent.textContent.trim()) {
             UI.showToast('沒有可下載的內容', 'error');
             return;
         }
         
         try {
+            UI.showToast('正在生成 Word 文件...', 'info');
+            
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
             const content = generatedContent.textContent;
             
+            // 解析內容並建立段落
+            const paragraphs = [];
+            const lines = content.split('\n');
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                
+                // 跳過空行
+                if (!trimmedLine) {
+                    paragraphs.push(
+                        new docx.Paragraph({
+                            text: '',
+                            spacing: { after: 100 },
+                        })
+                    );
+                    continue;
+                }
+                
+                // 判斷是否為標題（以 # 開頭或全大寫）
+                const isHeading = trimmedLine.startsWith('#') || 
+                                  trimmedLine.startsWith('一、') || 
+                                  trimmedLine.startsWith('二、') || 
+                                  trimmedLine.startsWith('三、') ||
+                                  trimmedLine.match(/^[\u4e00-\u9fa5]{2,10}：$/);
+                
+                paragraphs.push(
+                    new docx.Paragraph({
+                        text: trimmedLine.replace(/^#+\s*/, ''),
+                        spacing: {
+                            before: isHeading ? 240 : 120,
+                            after: isHeading ? 120 : 100,
+                        },
+                        style: isHeading ? 'Heading1' : undefined,
+                    })
+                );
+            }
+            
             // 使用 docx 庫生成 Word 文件
             const doc = new docx.Document({
-                sections: [{
-                    properties: {},
-                    children: content.split('\n').map(line => 
-                        new docx.Paragraph({
-                            text: line,
-                            spacing: {
-                                after: 200,
+                styles: {
+                    paragraphStyles: [
+                        {
+                            id: 'Heading1',
+                            name: 'Heading 1',
+                            basedOn: 'Normal',
+                            next: 'Normal',
+                            run: {
+                                size: 32,
+                                bold: true,
+                                color: '1E40AF',
                             },
-                        })
-                    ),
+                            paragraph: {
+                                spacing: {
+                                    before: 240,
+                                    after: 120,
+                                },
+                            },
+                        },
+                    ],
+                },
+                sections: [{
+                    properties: {
+                        page: {
+                            margin: {
+                                top: 1440,
+                                right: 1440,
+                                bottom: 1440,
+                                left: 1440,
+                            },
+                        },
+                    },
+                    children: paragraphs,
                 }],
             });
             
             // 生成並下載
             const blob = await docx.Packer.toBlob(doc);
-            saveAs(blob, `${draftTitle}.docx`);
+            const fileName = `${draftTitle}_${new Date().toISOString().split('T')[0]}.docx`;
+            saveAs(blob, fileName);
             
-            UI.showToast('下載成功', 'success');
+            UI.showToast('下載成功！', 'success');
         } catch (error) {
             console.error('Word 文件生成失敗:', error);
-            UI.showToast('Word 文件生成失敗', 'error');
+            UI.showToast(`Word 文件生成失敗：${error.message}`, 'error');
         }
     }
     
