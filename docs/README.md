@@ -12,13 +12,15 @@ docs/
 ├── business/                    # 商業分析和策略
 │   └── gpts-store-listing-analysis.md       # GPTs Store 上架可行性分析
 ├── bugfix/                      # Bug 修復報告
-│   ├── BUGFIX_HISTORY.md       # 合併的 Bug 修復歷史（推薦閱讀）
-│   ├── BUGFIX_v1.5.1.md        # v1.5.1 修復報告
-│   ├── BUGFIX_v1.5.1_hotfix.md # v1.5.1 Hotfix 報告
-│   ├── BUGFIX_v1.5.3_comprehensive.md # v1.5.3 綜合報告
-│   ├── BUGFIX_v1.5.4.md        # v1.5.4 Critical Hotfix
-│   ├── BUGFIX_generate_approval.md # 生成簽呈功能改進
-│   └── RCA_Report_v1.5.4.md    # v1.5.4 根本原因分析
+│   ├── BUGFIX_HISTORY.md       # 所有 Bug 修復的整合歷史
+│   ├── RCA_v1.5.4.md           # v1.5.4 根本原因分析
+│   └── archive/                # 歸檔的詳細報告
+│       ├── README.md           # 歸檔說明
+│       ├── BUGFIX_v1.5.1.md
+│       ├── BUGFIX_v1.5.1_hotfix.md
+│       ├── BUGFIX_v1.5.3_comprehensive.md
+│       ├── BUGFIX_v1.5.4.md
+│       └── BUGFIX_generate_approval.md
 ├── deployment/                  # 部署和設定文件
 │   ├── DEPLOYMENT.md           # 部署指南
 │   ├── CLOUDFRONT_SETUP.md     # CloudFront 設定
@@ -55,7 +57,7 @@ docs/
 
 1. **[預防措施實施指南](guides/PREVENTION_GUIDE.md)** - 如何避免常見錯誤
 2. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 了解過去的問題和解決方案
-3. **[根本原因分析](bugfix/RCA_Report_v1.5.4.md)** - 深入了解系統失效的原因
+3. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 深入了解系統失效的原因
 
 ### 運維人員
 
@@ -71,7 +73,7 @@ docs/
 
 1. **[測試報告](testing/TESTING_REPORT.md)** - 測試計劃和結果
 2. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 已知問題和修復
-3. **[根本原因分析](bugfix/RCA_Report_v1.5.4.md)** - 問題分析方法
+3. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 問題分析方法
 
 ---
 
@@ -93,15 +95,16 @@ docs/
 
 | 文件 | 描述 | 優先級 |
 |:---|:---|:---:|
-| **BUGFIX_HISTORY.md** | 合併的 Bug 修復歷史（推薦） | ⭐⭐⭐ |
-| RCA_Report_v1.5.4.md | v1.5.4 根本原因分析 | ⭐⭐⭐ |
-| BUGFIX_v1.5.4.md | v1.5.4 Critical Hotfix | ⭐⭐ |
-| BUGFIX_v1.5.3_comprehensive.md | v1.5.3 綜合報告 | ⭐⭐ |
-| BUGFIX_v1.5.1_hotfix.md | v1.5.1 Hotfix 報告 | ⭐ |
-| BUGFIX_v1.5.1.md | v1.5.1 修復報告 | ⭐ |
-| BUGFIX_generate_approval.md | 生成簽呈功能改進 | ⭐ |
+| **BUGFIX_HISTORY.md** | 所有 Bug 修復的整合歷史（推薦閱讀） | ⭐⭐⭐⭐⭐ |
+| **RCA_v1.5.4.md** | v1.5.4 根本原因分析報告 | ⭐⭐⭐⭐ |
+| **archive/** | 歸檔的詳細修復報告（5 個文件） | ⭐⭐ |
 
-**推薦閱讀**: 先閱讀 `BUGFIX_HISTORY.md`，它整合了所有 Bug 修復報告的關鍵信息。
+**推薦閱讀順序**：
+1. 先閱讀 `BUGFIX_HISTORY.md` 了解所有修復的摘要
+2. 如需深入了解 v1.5.4 的根本原因，閱讀 `RCA_v1.5.4.md`
+3. 如需查閱特定版本的詳細報告，查看 `archive/` 目錄
+
+**archive/ 目錄**：包含已歸檔的詳細 Bug 修復報告，這些報告的摘要已整合到 `BUGFIX_HISTORY.md`。
 
 ### 🚀 部署和設定 (deployment/)
 
@@ -164,7 +167,7 @@ docs/
 ### 質量保證
 
 - [預防措施實施指南](guides/PREVENTION_GUIDE.md)
-- [根本原因分析](bugfix/RCA_Report_v1.5.4.md)
+- [根本原因分析](bugfix/RCA_v1.5.4.md)
 - [測試報告](testing/TESTING_REPORT.md)
 
 ### 部署和運維
@@ -178,6 +181,8 @@ docs/
 
 | 日期 | 更新內容 | 版本 |
 |:---|:---|:---:|
+| 2025-12-13 | 整併 bugfix 目錄，歸檔詳細報告 | 1.2 |
+| 2025-12-13 | 重命名 RCA_Report_v1.5.4.md → RCA_v1.5.4.md | 1.2 |
 | 2025-12-13 | 新增 business/ 目錄和商業分析文件 | 1.1 |
 | 2025-12-13 | 重命名商業分析文件（使用小寫連字符） | 1.1 |
 | 2025-12-13 | 創建文件索引和目錄結構 | 1.0 |
@@ -216,6 +221,6 @@ docs/
 
 ---
 
-**文件版本**: 1.1  
+**文件版本**: 1.2  
 **最後更新**: 2025-12-13  
 **維護者**: 開發團隊
