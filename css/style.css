@@ -1,49 +1,110 @@
-/* Custom Styles for Procurement Approval System */
+/* 
+ * AI 智簽公文系統 - AI Agent 專業風格
+ * Professional AI Document Generation System
+ */
 
 :root {
-    --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    /* 主色調 - 深藍色系 (專業、智能、信賴) */
+    --color-primary: #1E40AF;
+    --color-primary-light: #DBEAFE;
+    --color-primary-dark: #1E3A8A;
+    --color-accent: #3B82F6;
+    --color-accent-light: #BFDBFE;
+    
+    /* 中性色 - 灰階系統 */
+    --color-white: #FFFFFF;
+    --color-gray-50: #F9FAFB;
+    --color-gray-100: #F3F4F6;
+    --color-gray-200: #E5E7EB;
+    --color-gray-300: #D1D5DB;
+    --color-gray-400: #9CA3AF;
+    --color-gray-500: #6B7280;
+    --color-gray-600: #4B5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1F2937;
+    --color-gray-900: #111827;
+    
+    /* 功能色 */
+    --color-success: #10B981;
+    --color-success-light: #D1FAE5;
+    --color-warning: #F59E0B;
+    --color-warning-light: #FEF3C7;
+    --color-error: #EF4444;
+    --color-error-light: #FEE2E2;
+    --color-info: #3B82F6;
+    --color-info-light: #DBEAFE;
+    
+    /* AI 智能色 */
+    --color-ai-gradient: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    --color-ai-gradient-hover: linear-gradient(135deg, #5568D3 0%, #6A4193 100%);
+    --color-ai-glow: rgba(59, 130, 246, 0.5);
+    
+    /* 陰影系統 */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    
+    /* 圓角系統 */
+    --radius-sm: 0.25rem;   /* 4px */
+    --radius-md: 0.5rem;    /* 8px */
+    --radius-lg: 0.75rem;   /* 12px */
+    --radius-xl: 1rem;      /* 16px */
+    --radius-2xl: 1.5rem;   /* 24px */
+    --radius-full: 9999px;
+    
+    /* 過渡效果 */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* ==================== 基礎樣式 ==================== */
 
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", 
+                 "Microsoft JhengHei", "PingFang TC", "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
+    color: var(--color-gray-900);
+    background-color: var(--color-gray-50);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scrolling */
 html {
     scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* ==================== 自訂捲軸 ==================== */
+
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+    background: var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--color-gray-100);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: var(--color-gray-400);
 }
 
-/* Animations */
+/* ==================== 動畫系統 ==================== */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -66,6 +127,17 @@ html {
     }
 }
 
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes pulse {
     0%, 100% {
         opacity: 1;
@@ -75,272 +147,334 @@ html {
     }
 }
 
-.animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slide-in {
-    animation: slideIn 0.3s ease-out;
-}
-
-.animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Prose styles for Markdown content */
-.prose {
-    color: #374151;
-    max-width: 65ch;
-}
-
-.prose h1 {
-    font-size: 2.25em;
-    font-weight: 800;
-    margin-top: 0;
-    margin-bottom: 0.8888889em;
-    line-height: 1.1111111;
-    color: #111827;
-}
-
-.prose h2 {
-    font-size: 1.5em;
-    font-weight: 700;
-    margin-top: 2em;
-    margin-bottom: 1em;
-    line-height: 1.3333333;
-    color: #111827;
-}
-
-.prose h3 {
-    font-size: 1.25em;
-    font-weight: 600;
-    margin-top: 1.6em;
-    margin-bottom: 0.6em;
-    line-height: 1.6;
-    color: #111827;
-}
-
-.prose p {
-    margin-top: 1.25em;
-    margin-bottom: 1.25em;
-}
-
-.prose strong {
-    font-weight: 600;
-    color: #111827;
-}
-
-.prose ul, .prose ol {
-    margin-top: 1.25em;
-    margin-bottom: 1.25em;
-    padding-left: 1.625em;
-}
-
-.prose li {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-.prose blockquote {
-    font-weight: 500;
-    font-style: italic;
-    color: #111827;
-    border-left-width: 0.25rem;
-    border-left-color: #e5e7eb;
-    quotes: "\201C""\201D""\2018""\2019";
-    margin-top: 1.6em;
-    margin-bottom: 1.6em;
-    padding-left: 1em;
-}
-
-.prose code {
-    color: #111827;
-    font-weight: 600;
-    font-size: 0.875em;
-    background-color: #f3f4f6;
-    padding: 0.2em 0.4em;
-    border-radius: 0.25rem;
-}
-
-.prose pre {
-    color: #e5e7eb;
-    background-color: #1f2937;
-    overflow-x: auto;
-    font-size: 0.875em;
-    line-height: 1.7142857;
-    margin-top: 1.7142857em;
-    margin-bottom: 1.7142857em;
-    border-radius: 0.375rem;
-    padding: 0.8571429em 1.1428571em;
-}
-
-.prose table {
-    width: 100%;
-    table-layout: auto;
-    text-align: left;
-    margin-top: 2em;
-    margin-bottom: 2em;
-    font-size: 0.875em;
-    line-height: 1.7142857;
-}
-
-.prose thead {
-    border-bottom-width: 1px;
-    border-bottom-color: #d1d5db;
-}
-
-.prose thead th {
-    font-weight: 600;
-    vertical-align: bottom;
-    padding-right: 0.5714286em;
-    padding-bottom: 0.5714286em;
-    padding-left: 0.5714286em;
-}
-
-.prose tbody tr {
-    border-bottom-width: 1px;
-    border-bottom-color: #e5e7eb;
-}
-
-.prose tbody td {
-    vertical-align: top;
-    padding: 0.5714286em;
-}
-
-/* Draft card styles */
-.draft-card {
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.draft-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* File upload area */
-#uploadArea {
-    transition: all 0.2s ease;
-}
-
-#uploadArea:hover {
-    background-color: #f9fafb;
-}
-
-#uploadArea.dragover {
-    background-color: #eff6ff;
-    border-color: #3b82f6;
-}
-
-/* Toast notification */
-.toast {
-    min-width: 300px;
-    padding: 1rem 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-xl);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    animation: slideIn 0.3s ease-out;
-}
-
-.toast.success {
-    background-color: #10b981;
-    color: white;
-}
-
-.toast.error {
-    background-color: #ef4444;
-    color: white;
-}
-
-.toast.info {
-    background-color: #3b82f6;
-    color: white;
-}
-
-.toast.warning {
-    background-color: #f59e0b;
-    color: white;
-}
-
-/* Loading spinner */
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
 
+@keyframes aiGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px var(--color-ai-glow);
+    }
+    50% {
+        box-shadow: 0 0 40px var(--color-ai-glow);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.animate-slide-in {
+    animation: slideIn var(--transition-slow) ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp var(--transition-slow) ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 .animate-spin {
     animation: spin 1s linear infinite;
 }
 
-/* Button hover effects */
+.animate-ai-glow {
+    animation: aiGlow 2s ease-in-out infinite;
+}
+
+/* ==================== Markdown 內容樣式 ==================== */
+
+.prose {
+    color: var(--color-gray-700);
+    max-width: 65ch;
+}
+
+.prose h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    line-height: 1.25;
+    color: var(--color-gray-900);
+}
+
+.prose h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    color: var(--color-gray-900);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary-light);
+}
+
+.prose h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    color: var(--color-gray-900);
+}
+
+.prose h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-gray-900);
+}
+
+.prose p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.75;
+}
+
+.prose strong {
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.prose ul, .prose ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.75rem;
+}
+
+.prose li {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.prose blockquote {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-gray-700);
+    border-left: 4px solid var(--color-primary);
+    background-color: var(--color-primary-light);
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+}
+
+.prose code {
+    color: var(--color-primary-dark);
+    font-weight: 500;
+    font-size: 0.875em;
+    background-color: var(--color-primary-light);
+    padding: 0.2em 0.5em;
+    border-radius: var(--radius-sm);
+    font-family: 'Courier New', monospace;
+}
+
+.prose pre {
+    color: var(--color-gray-100);
+    background-color: var(--color-gray-800);
+    overflow-x: auto;
+    font-size: 0.875em;
+    line-height: 1.7;
+    margin: 1.5rem 0;
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--color-gray-700);
+}
+
+.prose pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.prose table {
+    width: 100%;
+    table-layout: auto;
+    text-align: left;
+    margin: 2rem 0;
+    font-size: 0.875em;
+    line-height: 1.7;
+    border-collapse: collapse;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.prose thead {
+    background: linear-gradient(to bottom, var(--color-primary-light), var(--color-accent-light));
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.prose thead th {
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    vertical-align: bottom;
+    padding: 0.75rem 1rem;
+}
+
+.prose tbody tr {
+    border-bottom: 1px solid var(--color-gray-200);
+    transition: background-color var(--transition-fast);
+}
+
+.prose tbody tr:last-child {
+    border-bottom: none;
+}
+
+.prose tbody tr:hover {
+    background-color: var(--color-gray-50);
+}
+
+.prose tbody td {
+    vertical-align: top;
+    padding: 0.75rem 1rem;
+}
+
+/* ==================== 卡片樣式 ==================== */
+
+.draft-card {
+    transition: all var(--transition-base);
+    cursor: pointer;
+    border: 1px solid var(--color-gray-200);
+    background-color: var(--color-white);
+}
+
+.draft-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+}
+
+/* ==================== 檔案上傳區域 ==================== */
+
+#uploadArea {
+    transition: all var(--transition-base);
+    border: 2px dashed var(--color-gray-300);
+    background-color: var(--color-gray-50);
+}
+
+#uploadArea:hover {
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
+}
+
+#uploadArea.dragover {
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-accent-light);
+}
+
+/* ==================== Toast 通知 ==================== */
+
+.toast {
+    min-width: 320px;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideIn var(--transition-slow) ease-out;
+    border: 1px solid transparent;
+}
+
+.toast.success {
+    background-color: var(--color-success);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.toast.error {
+    background-color: var(--color-error);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.toast.info {
+    background-color: var(--color-info);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.toast.warning {
+    background-color: var(--color-warning);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ==================== 按鈕效果 ==================== */
+
 button {
-    transition: all 0.2s ease;
+    transition: all var(--transition-base);
+    font-weight: 500;
 }
 
-button:active {
-    transform: scale(0.98);
+button:hover:not(:disabled) {
+    transform: translateY(-1px);
 }
 
-/* Focus styles */
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 主要按鈕 */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
+    box-shadow: var(--shadow-md);
+}
+
+/* AI 生成按鈕 */
+.btn-ai {
+    background: var(--color-ai-gradient);
+    color: white;
+    border: none;
+}
+
+.btn-ai:hover:not(:disabled) {
+    background: var(--color-ai-gradient-hover);
+    box-shadow: var(--shadow-lg);
+}
+
+/* 次要按鈕 */
+.btn-secondary {
+    background-color: white;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-primary-light);
+}
+
+/* ==================== Focus 樣式 ==================== */
+
 *:focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
-/* Responsive utilities */
-@media (max-width: 640px) {
-    .prose {
-        font-size: 0.875rem;
-    }
-    
-    .prose h1 {
-        font-size: 1.75em;
-    }
-    
-    .prose h2 {
-        font-size: 1.375em;
-    }
-    
-    .prose h3 {
-        font-size: 1.125em;
-    }
+input:focus, textarea:focus, select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
-/* Print styles */
-@media print {
-    header, #historyBtn, #settingsBtn, #generateBtn, #editBtn, #copyBtn {
-        display: none !important;
-    }
-    
-    #approvalContent {
-        box-shadow: none !important;
-        border: 1px solid #e5e7eb;
-    }
-}
+/* ==================== 空狀態 ==================== */
 
-/* Utility classes */
-.text-gradient {
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.bg-gradient {
-    background: var(--primary-gradient);
-}
-
-/* Google Sign-In Button Styling */
-.g_id_signin {
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-}
-
-/* Empty State */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -353,15 +487,27 @@ button:active {
 .empty-state-icon {
     width: 80px;
     height: 80px;
-    background: #f3f4f6;
-    border-radius: 50%;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
 }
 
-/* Line Clamp Utility */
+.empty-state-icon svg {
+    color: var(--color-primary);
+}
+
+/* ==================== 文字截斷 ==================== */
+
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -376,11 +522,18 @@ button:active {
     overflow: hidden;
 }
 
-/* Skeleton loading */
+/* ==================== Skeleton Loading ==================== */
+
 .skeleton {
-    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background: linear-gradient(
+        90deg, 
+        var(--color-gray-200) 25%, 
+        var(--color-gray-100) 50%, 
+        var(--color-gray-200) 75%
+    );
     background-size: 200% 100%;
     animation: loading 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
 }
 
 @keyframes loading {
@@ -389,5 +542,172 @@ button:active {
     }
     100% {
         background-position: -200% 0;
+    }
+}
+
+/* ==================== Google Sign-In ==================== */
+
+.g_id_signin {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* ==================== 響應式設計 ==================== */
+
+@media (max-width: 640px) {
+    .prose {
+        font-size: 0.9375rem;
+    }
+    
+    .prose h1 {
+        font-size: 1.75rem;
+    }
+    
+    .prose h2 {
+        font-size: 1.375rem;
+    }
+    
+    .prose h3 {
+        font-size: 1.125rem;
+    }
+    
+    .toast {
+        min-width: 280px;
+        padding: 0.875rem 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        font-size: 15px;
+    }
+}
+
+/* ==================== 列印樣式 ==================== */
+
+@media print {
+    header, 
+    #historyBtn, 
+    #settingsBtn, 
+    #generateBtn, 
+    #editBtn, 
+    #copyBtn,
+    #logoutBtn,
+    #backToHomeBtn,
+    footer {
+        display: none !important;
+    }
+    
+    #approvalContent {
+        box-shadow: none !important;
+        border: 1px solid var(--color-gray-300);
+    }
+    
+    body {
+        background-color: white;
+    }
+}
+
+/* ==================== 工具類別 ==================== */
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+.bg-primary-light {
+    background-color: var(--color-primary-light);
+}
+
+.border-primary {
+    border-color: var(--color-primary);
+}
+
+.shadow-primary {
+    box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.1), 
+                0 2px 4px -1px rgba(30, 64, 175, 0.06);
+}
+
+/* ==================== AI 漸變背景 ==================== */
+
+.bg-gradient-ai {
+    background: var(--color-ai-gradient);
+}
+
+/* ==================== Badge ==================== */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-success {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.badge-warning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+}
+
+.badge-error {
+    background-color: var(--color-error-light);
+    color: var(--color-error);
+}
+
+.badge-info {
+    background-color: var(--color-info-light);
+    color: var(--color-info);
+}
+
+/* ==================== Divider ==================== */
+
+.divider {
+    height: 1px;
+    background-color: var(--color-gray-200);
+    margin: 1.5rem 0;
+}
+
+.divider-vertical {
+    width: 1px;
+    background-color: var(--color-gray-200);
+    height: 100%;
+}
+
+/* ==================== AI 特效 ==================== */
+
+.ai-processing {
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-processing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(59, 130, 246, 0.2),
+        transparent
+    );
+    animation: aiScan 2s linear infinite;
+}
+
+@keyframes aiScan {
+    to {
+        left: 100%;
     }
 }
