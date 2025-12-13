@@ -27,8 +27,9 @@ docs/
 │   ├── GOOGLE_OAUTH_SETUP.md   # Google OAuth 設定
 │   └── GOOGLE_OAUTH_IMPLEMENTATION.md # Google OAuth 實作
 ├── testing/                     # 測試報告
-│   ├── TESTING_REPORT.md       # 測試報告
-│   └── TEST_RESULTS.md         # 測試結果
+│   ├── README.md               # 測試報告索引
+│   ├── core-features-test-2025-12-13.md    # 核心功能測試
+│   └── ui-oauth-test-2025-12-06.md         # UI 優化和 Google 認證測試
 └── guides/                      # 開發指南
     └── PREVENTION_GUIDE.md     # 預防措施實施指南
 ```
@@ -71,9 +72,9 @@ docs/
 
 如果您負責質量保證，建議閱讀：
 
-1. **[測試報告](testing/TESTING_REPORT.md)** - 測試計劃和結果
-2. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 已知問題和修復
-3. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 問題分析方法
+1. **[測試報告索引](testing/README.md)** - 所有測試報告的索引和摘要
+2. **[核心功能測試](testing/core-features-test-2025-12-13.md)** - 最新的核心功能測試結果
+3. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 已知問題和修復
 
 ---
 
@@ -121,10 +122,18 @@ docs/
 
 記錄系統的測試計劃、測試用例和測試結果。
 
-| 文件 | 描述 | 內容 |
-|:---|:---|:---|
-| TESTING_REPORT.md | 測試報告 | 測試計劃和執行結果 |
-| TEST_RESULTS.md | 測試結果 | 詳細的測試數據 |
+| 文件 | 測試日期 | 描述 | 狀態 |
+|:---|:---|:---|:---:|
+| **README.md** | - | 測試報告索引和摘要 | ⭐⭐⭐⭐⭐ |
+| **core-features-test-2025-12-13.md** | 2025-12-13 | 核心功能測試（草稿、下載、API 等） | ✅ 通過 |
+| **ui-oauth-test-2025-12-06.md** | 2025-12-06 | UI 優化和 Google 認證測試 | ✅ 通過 |
+
+**推薦閱讀順序**：
+1. 先閱讀 `README.md` 了解測試覆蓋範圍和摘要
+2. 查看最新的 `core-features-test-2025-12-13.md` 了解核心功能測試結果
+3. 如需了解 UI 和認證測試，閱讀 `ui-oauth-test-2025-12-06.md`
+
+**測試覆蓋率**：100%（22/22 測試項目通過）
 
 ### 📖 開發指南 (guides/)
 
@@ -146,29 +155,34 @@ docs/
 
 - [Google OAuth 設定](deployment/GOOGLE_OAUTH_SETUP.md)
 - [Google OAuth 實作](deployment/GOOGLE_OAUTH_IMPLEMENTATION.md)
+- [UI/OAuth 測試報告](testing/ui-oauth-test-2025-12-06.md)
 - [v1.5.1 Hotfix - 初始化邏輯修復](bugfix/BUGFIX_HISTORY.md#v151-hotfix---初始化邏輯修復-2025-12-13)
 
 ### 草稿功能
 
+- [核心功能測試 - 草稿管理](testing/core-features-test-2025-12-13.md)
 - [v1.5.4 - 事件處理修復](bugfix/BUGFIX_HISTORY.md#v154---critical-hotfix-2025-12-13)
 - [v1.5.1 Hotfix - 事件委派機制](bugfix/BUGFIX_HISTORY.md#v151-hotfix---初始化邏輯修復-2025-12-13)
 - [v1.5.1 - 草稿管理功能驗證](bugfix/BUGFIX_HISTORY.md#v151---綜合功能修復-2025-12-13)
 
 ### Word 下載功能
 
+- [核心功能測試 - Word 下載](testing/core-features-test-2025-12-13.md)
 - [v1.5.3 - Word 下載改進](bugfix/BUGFIX_HISTORY.md#v153---模型配置和下載功能-2025-12-13)
 - [v1.5.1 - Word 下載功能修復](bugfix/BUGFIX_HISTORY.md#v151---綜合功能修復-2025-12-13)
 
 ### 簽呈生成
 
+- [核心功能測試 - API 生成](testing/core-features-test-2025-12-13.md)
 - [生成簽呈功能改進](bugfix/BUGFIX_HISTORY.md#生成簽呈功能改進-2025-12-13)
 - [v1.5.3 - 模型配置修復](bugfix/BUGFIX_HISTORY.md#v153---模型配置和下載功能-2025-12-13)
 
 ### 質量保證
 
+- [測試報告索引](testing/README.md)
+- [核心功能測試](testing/core-features-test-2025-12-13.md)
 - [預防措施實施指南](guides/PREVENTION_GUIDE.md)
 - [根本原因分析](bugfix/RCA_v1.5.4.md)
-- [測試報告](testing/TESTING_REPORT.md)
 
 ### 部署和運維
 
@@ -181,6 +195,8 @@ docs/
 
 | 日期 | 更新內容 | 版本 |
 |:---|:---|:---:|
+| 2025-12-13 | 優化 testing 目錄，重命名測試報告 | 1.3 |
+| 2025-12-13 | 新增 testing/README.md 測試報告索引 | 1.3 |
 | 2025-12-13 | 整併 bugfix 目錄，歸檔詳細報告 | 1.2 |
 | 2025-12-13 | 重命名 RCA_Report_v1.5.4.md → RCA_v1.5.4.md | 1.2 |
 | 2025-12-13 | 新增 business/ 目錄和商業分析文件 | 1.1 |
@@ -221,6 +237,6 @@ docs/
 
 ---
 
-**文件版本**: 1.2  
+**文件版本**: 1.3  
 **最後更新**: 2025-12-13  
 **維護者**: 開發團隊
