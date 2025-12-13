@@ -8,13 +8,13 @@ const Auth = {
      * 初始化 Google 認證
      */
     init() {
-        // 檢查是否已登入
+        // 預設顯示應用程式，不需要登入
+        this.showApp();
+        
+        // 如果已登入，更新用戶 UI
         const user = this.getCurrentUser();
         if (user) {
-            this.showApp();
             this.updateUserUI(user);
-        } else {
-            this.showHero();
         }
         
         // 設定 Google Sign-In 回調

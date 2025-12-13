@@ -60,6 +60,24 @@ class ProcurementApp {
         if (viewDraftsBtn) {
             viewDraftsBtn.addEventListener('click', () => this.showDraftsModal());
         }
+        
+        // 草稿 Modal 中的按鈕事件委派
+        const draftsModal = document.getElementById('draftsModal');
+        if (draftsModal) {
+            draftsModal.addEventListener('click', (e) => {
+                const target = e.target.closest('button[data-action]');
+                if (!target) return;
+                
+                const action = target.dataset.action;
+                const draftId = target.dataset.draftId;
+                
+                if (action === 'load-draft') {
+                    this.loadDraft(parseInt(draftId));
+                } else if (action === 'delete-draft') {
+                    this.deleteDraft(parseInt(draftId));
+                }
+            });
+        }
 
         // 檔案上傳
         const fileInput = document.getElementById('fileInput');
@@ -452,10 +470,10 @@ class ProcurementApp {
                     </div>
                     <p class="text-sm text-gray-600 mb-3 line-clamp-2">${(draft.userInput || draft.content || '').substring(0, 100)}...</p>
                     <div class="flex gap-2">
-                        <button onclick="app.loadDraft('${draft.id}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm">
+                        <button data-action="load-draft" data-draft-id="${draft.id}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm">
                             載入
                         </button>
-                        <button onclick="app.deleteDraft('${draft.id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
+                        <button data-action="delete-draft" data-draft-id="${draft.id}" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
                             刪除
                         </button>
                     </div>
