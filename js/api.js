@@ -15,6 +15,12 @@ const API = {
         const maxTokens = options.maxTokens || 4000;
 
         try {
+            console.log('Calling LLM API:', {
+                baseUrl: CONFIG.API.BASE_URL,
+                model: model,
+                messageCount: messages.length
+            });
+
             const response = await fetch(`${CONFIG.API.BASE_URL}/chat/completions`, {
                 method: 'POST',
                 headers: {
@@ -29,15 +35,41 @@ const API = {
                 })
             });
 
+            console.log('API Response status:', response.status);
+
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error?.message || `API 請求失敗: ${response.status}`);
+                console.error('API Error Response:', errorData);
+                
+                // 提供更詳細的錯誤訊息
+                let errorMessage = errorData.error?.message || `API 請求失敗 (HTTP ${response.status})`;
+                
+                if (response.status === 401) {
+                    errorMessage = 'API Key 無效或已過期，請在設定中更新 API Key';
+                } else if (response.status === 429) {
+                    errorMessage = 'API 請求次數過多，請稍後再試';
+                } else if (response.status === 500 || response.status === 502 || response.status === 503) {
+                    errorMessage = 'API 服務器錯誤，請稍後再試';
+                }
+                
+                throw new Error(errorMessage);
             }
 
             const data = await response.json();
+            console.log('API Response received:', {
+                hasChoices: !!data.choices,
+                choicesCount: data.choices?.length
+            });
+            
             return data;
         } catch (error) {
             console.error('LLM API Error:', error);
+            
+            // 如果是網路錯誤
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                throw new Error('網路連線失敗，請檢查網路連線後再試');
+            }
+            
             throw error;
         }
     },
@@ -88,6 +120,11 @@ const API = {
      * Generate procurement approval document
      */
     async generateApproval(userInput, attachments = []) {
+        console.log('Generating approval document:', {
+            inputLength: userInput.length,
+            attachmentsCount: attachments.length
+        });
+
         let userContent = `請根據以下採購需求生成簽呈：\n\n${userInput}`;
 
         if (attachments.length > 0) {
@@ -108,21 +145,38 @@ const API = {
             }
         ];
 
-        const response = await this.callLLM(messages, {
-            temperature: 0.7,
-            maxTokens: 4000
-        });
+        try {
+            const response = await this.callLLM(messages, {
+                temperature: 0.7,
+                maxTokens: 4000
+            });
 
-        const content = response.choices[0]?.message?.content || '';
-        
-        // Extract title from content (first heading)
-        const titleMatch = content.match(/^#\s+(.+)$/m);
-        const title = titleMatch ? titleMatch[1] : '採購簽呈';
+            if (!response.choices || response.choices.length === 0) {
+                throw new Error('API 回應格式錯誤，請稍後再試');
+            }
 
-        return {
-            title: title,
-            content: content
-        };
+            const content = response.choices[0]?.message?.content || '';
+            
+            if (!content || content.trim().length === 0) {
+                throw new Error('生成的內容為空，請再試一次');
+            }
+            
+            console.log('Approval generated successfully:', {
+                contentLength: content.length
+            });
+            
+            // Extract title from content (first heading)
+            const titleMatch = content.match(/^#\s+(.+)$/m);
+            const title = titleMatch ? titleMatch[1] : '採購簽呈';
+
+            return {
+                title: title,
+                content: content
+            };
+        } catch (error) {
+            console.error('Generate approval error:', error);
+            throw error;
+        }
     },
 
     /**

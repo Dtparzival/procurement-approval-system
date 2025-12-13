@@ -4,9 +4,8 @@ const CONFIG = {
     // API Configuration
     API: {
         // OpenAI-compatible API endpoint
-        // 使用者可以選擇：
-        // 1. Manus Forge API: https://forge.manus.im (推薦，支援 gpt-4.1-mini, gpt-4.1-nano, gemini-2.5-flash)
-        // 2. OpenAI API: https://api.openai.com/v1 (需要 OpenAI API Key)
+        // 預設使用環境變數中預配置的 API，支援 gpt-4.1-mini, gpt-4.1-nano, gemini-2.5-flash
+        // 如需使用 OpenAI 官方 API，請在設定中輸入 OpenAI API Key
         BASE_URL: 'https://api.openai.com/v1',
         // Default model
         DEFAULT_MODEL: 'gpt-4.1-mini',
