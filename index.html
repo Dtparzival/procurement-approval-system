@@ -80,6 +80,21 @@
                     <button id="heroLoginBtn" class="px-8 py-4 bg-gradient-to-r from-blue-800 to-indigo-900 text-white rounded-lg font-semibold text-lg btn-primary-enhanced">
                         開始使用
                     </button>
+                    
+                    <!-- 用戶狀態指示（已使用過系統時顯示） -->
+                    <div id="userStatusIndicator" class="hidden mt-6 text-gray-600">
+                        <div class="inline-flex items-center gap-4 px-6 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-gray-500"></i>
+                                <span id="lastUsedTime" class="text-sm">上次使用：-</span>
+                            </div>
+                            <div class="w-px h-4 bg-gray-300"></div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
+                                <span id="draftCount" class="text-sm">草稿：0 個</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 

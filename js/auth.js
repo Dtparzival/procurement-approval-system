@@ -1,5 +1,13 @@
 // Google Authentication Module
 
+// 用戶狀態常量
+const UserState = {
+    FIRST_VISIT: 'first_visit',      // 首次訪問
+    ENTERED: 'entered',               // 已進入應用程式
+    HAS_DATA: 'has_data',            // 有資料（API Key/草稿/歷史）
+    LOGGED_IN: 'logged_in'           // 已登入（Google OAuth）
+};
+
 const Auth = {
     // Google Client ID (需要替換為實際的 Client ID)
     GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
@@ -93,6 +101,7 @@ const Auth = {
         // 清除用戶資訊和已進入標記
         localStorage.removeItem('current_user');
         localStorage.removeItem('procurement_has_entered');
+        localStorage.removeItem('procurement_last_used');
         
         // 重新載入頁面
         window.location.reload();
@@ -141,12 +150,17 @@ const Auth = {
         }
         
         if (heroLoginBtn) {
+            // 保留「開始使用」按鈕，但根據狀態改變文字
+            heroLoginBtn.classList.remove('hidden');
             if (hasUsed) {
-                heroLoginBtn.classList.add('hidden');
+                heroLoginBtn.textContent = '繼續使用';
             } else {
-                heroLoginBtn.classList.remove('hidden');
+                heroLoginBtn.textContent = '開始使用';
             }
         }
+        
+        // 顯示用戶狀態指示（已使用過系統時）
+        this.updateUserStatusIndicator(hasUsed);
     },
     
     /**
@@ -158,6 +172,9 @@ const Auth = {
         
         // 標記用戶已經進入應用程式（即使沒有 localStorage 資料）
         localStorage.setItem('procurement_has_entered', 'true');
+        
+        // 記錄上次使用時間
+        localStorage.setItem('procurement_last_used', Date.now().toString());
     },
     
     /**
@@ -210,6 +227,102 @@ const Auth = {
         const hasEntered = localStorage.getItem('procurement_has_entered');
         
         return !!(apiKey || drafts || history || hasEntered);
+    },
+    
+    /**
+     * 獲取當前用戶狀態
+     * @returns {string} 用戶狀態（UserState 常量）
+     */
+    getUserState() {
+        // 優先級：LOGGED_IN > HAS_DATA > ENTERED > FIRST_VISIT
+        
+        // 1. 檢查是否已登入（Google OAuth）
+        const currentUser = this.getCurrentUser();
+        if (currentUser) {
+            return UserState.LOGGED_IN;
+        }
+        
+        // 2. 檢查是否有資料（API Key/草稿/歷史）
+        const apiKey = localStorage.getItem('procurement_api_key');
+        const drafts = localStorage.getItem('procurement_drafts');
+        const history = localStorage.getItem('procurement_history');
+        if (apiKey || drafts || history) {
+            return UserState.HAS_DATA;
+        }
+        
+        // 3. 檢查是否已進入應用程式
+        const hasEntered = localStorage.getItem('procurement_has_entered');
+        if (hasEntered) {
+            return UserState.ENTERED;
+        }
+        
+        // 4. 首次訪問
+        return UserState.FIRST_VISIT;
+    },
+    
+    /**
+     * 更新用戶狀態指示
+     * @param {boolean} hasUsed - 是否已使用過系統
+     */
+    updateUserStatusIndicator(hasUsed) {
+        const indicator = document.getElementById('userStatusIndicator');
+        if (!indicator) return;
+        
+        if (hasUsed) {
+            // 顯示用戶狀態指示
+            indicator.classList.remove('hidden');
+            
+            // 更新上次使用時間
+            const lastUsedTime = localStorage.getItem('procurement_last_used');
+            const lastUsedTimeEl = document.getElementById('lastUsedTime');
+            if (lastUsedTimeEl && lastUsedTime) {
+                const date = new Date(parseInt(lastUsedTime));
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                let timeStr;
+                if (diffMins < 1) {
+                    timeStr = '剛剛';
+                } else if (diffMins < 60) {
+                    timeStr = `${diffMins} 分鐘前`;
+                } else if (diffHours < 24) {
+                    timeStr = `${diffHours} 小時前`;
+                } else if (diffDays < 7) {
+                    timeStr = `${diffDays} 天前`;
+                } else {
+                    timeStr = date.toLocaleDateString('zh-TW');
+                }
+                
+                lastUsedTimeEl.textContent = `上次使用：${timeStr}`;
+            }
+            
+            // 更新草稿數量
+            const draftsStr = localStorage.getItem('procurement_drafts');
+            const draftCountEl = document.getElementById('draftCount');
+            if (draftCountEl) {
+                let count = 0;
+                if (draftsStr) {
+                    try {
+                        const drafts = JSON.parse(draftsStr);
+                        count = Array.isArray(drafts) ? drafts.length : 0;
+                    } catch (e) {
+                        count = 0;
+                    }
+                }
+                draftCountEl.textContent = `草稿：${count} 個`;
+            }
+            
+            // 更新 Lucide 圖示
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        } else {
+            // 隱藏用戶狀態指示
+            indicator.classList.add('hidden');
+        }
     }
 };
 
