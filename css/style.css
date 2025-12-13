@@ -55,10 +55,16 @@
     --radius-2xl: 1.5rem;   /* 24px */
     --radius-full: 9999px;
     
-    /* 過渡效果 */
+    /* 過渡效果 - 絲滑感優化 */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 緩動函數 */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 /* ==================== 基礎樣式 ==================== */
@@ -1395,4 +1401,147 @@ input:focus, textarea:focus, select:focus {
     border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
+}
+
+/* ==================== 增強 Hover 效果 ==================== */
+
+/* 主要按鈕增強 hover 效果 */
+.btn-primary-enhanced {
+    transition: transform var(--transition-smooth), 
+                box-shadow var(--transition-smooth), 
+                background-color var(--transition-base);
+    will-change: transform, box-shadow;
+}
+
+.btn-primary-enhanced:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 20px 40px -12px rgba(30, 64, 175, 0.4),
+                0 10px 20px -8px rgba(30, 64, 175, 0.3);
+}
+
+.btn-primary-enhanced:active {
+    transform: translateY(-1px) scale(1.01);
+    transition-duration: 100ms;
+}
+
+/* 次要按鈕增強 hover 效果 */
+.btn-secondary-enhanced {
+    transition: transform var(--transition-base), 
+                box-shadow var(--transition-base), 
+                background-color var(--transition-base);
+    will-change: transform, box-shadow;
+}
+
+.btn-secondary-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary-enhanced:active {
+    transform: translateY(-1px);
+    transition-duration: 100ms;
+}
+
+/* 卡片增強 hover 效果 */
+.card-enhanced {
+    transition: transform var(--transition-smooth), 
+                box-shadow var(--transition-smooth),
+                background-color var(--transition-base);
+    will-change: transform, box-shadow;
+}
+
+.card-enhanced:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12),
+                0 10px 20px -8px rgba(0, 0, 0, 0.08);
+}
+
+/* 卡片內圖示 hover 動畫 */
+.card-enhanced:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
+    transition: transform var(--transition-base);
+}
+
+/* 輸入框增強 focus 效果 */
+.input-enhanced {
+    transition: transform var(--transition-base),
+                box-shadow var(--transition-base),
+                border-color var(--transition-base),
+                background-color var(--transition-base);
+}
+
+.input-enhanced:focus {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1),
+                0 4px 12px rgba(30, 64, 175, 0.15);
+    border-color: var(--color-primary);
+    background-color: var(--color-white);
+}
+
+/* 連結增強 hover 效果 */
+.link-enhanced {
+    position: relative;
+    transition: color var(--transition-base);
+}
+
+.link-enhanced::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width var(--transition-smooth) var(--ease-out);
+}
+
+.link-enhanced:hover::after {
+    width: 100%;
+}
+
+/* 圖示 hover 動畫 */
+.icon-hover {
+    transition: transform var(--transition-base), 
+                color var(--transition-base);
+}
+
+.icon-hover:hover {
+    transform: scale(1.15) rotate(5deg);
+    color: var(--color-primary);
+}
+
+/* 平滑滾動 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 通用 hover 提升效果 */
+.hover-lift {
+    transition: transform var(--transition-smooth), 
+                box-shadow var(--transition-smooth);
+    will-change: transform;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
+
+/* 通用 hover 放大效果 */
+.hover-scale {
+    transition: transform var(--transition-base);
+    will-change: transform;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* 通用 hover 發光效果 */
+.hover-glow {
+    transition: box-shadow var(--transition-smooth);
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(30, 64, 175, 0.3),
+                0 0 40px rgba(30, 64, 175, 0.2);
 }
