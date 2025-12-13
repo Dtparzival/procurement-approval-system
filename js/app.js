@@ -151,15 +151,6 @@ class ProcurementApp {
         if (closeDraftsBtn) {
             closeDraftsBtn.addEventListener('click', () => this.closeDraftsModal());
         }
-        
-        const draftsModal = document.getElementById('draftsModal');
-        if (draftsModal) {
-            draftsModal.addEventListener('click', (e) => {
-                if (e.target === draftsModal) {
-                    this.closeDraftsModal();
-                }
-            });
-        }
     }
 
     /**
@@ -558,12 +549,10 @@ class ProcurementApp {
 }
 
 // 初始化應用程式
-let app;
 document.addEventListener('DOMContentLoaded', () => {
-    // 等待 Auth 初始化
-    setTimeout(() => {
-        app = new ProcurementApp();
-    }, 200);
+    // 創建應用程式實例並暴露到全局作用域
+    window.app = new ProcurementApp();
+    console.log('ProcurementApp initialized:', window.app);
 });
 
 // Export for use in other modules
