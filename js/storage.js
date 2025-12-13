@@ -222,6 +222,16 @@ const Storage = {
     },
 
     /**
+     * Clear authentication data
+     */
+    clearAuth() {
+        // 清除認證相關的 localStorage 項目
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('user');
+        // 可以保留設定和草稿，不清除
+    },
+    
+    /**
      * Import data from JSON
      */
     importData(data) {

@@ -2,6 +2,42 @@
 
 const UI = {
     /**
+     * 更新字數統計
+     */
+    updateCharCount(textarea) {
+        const charCountEl = document.getElementById('charCount');
+        if (charCountEl && textarea) {
+            const count = textarea.value.length;
+            charCountEl.textContent = `${count} / 最少 10 個字元`;
+        }
+    },
+    
+    /**
+     * 更新上次儲存時間
+     */
+    updateLastSaved() {
+        const lastSavedEl = document.getElementById('lastSaved');
+        if (lastSavedEl) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+            lastSavedEl.innerHTML = `
+                <i data-lucide="clock" class="w-3 h-3"></i>
+                上次儲存: ${timeStr}
+            `;
+            lucide.createIcons();
+        }
+    },
+    
+    /**
+     * 更新使用者資訊
+     */
+    updateUserInfo(user) {
+        const userInfoEl = document.getElementById('userInfo');
+        if (userInfoEl && user) {
+            userInfoEl.textContent = `歡迎, ${user.name || user.email || '使用者'}`;
+        }
+    },
+    /**
      * 顯示 Toast 通知
      */
     showToast(message, type = 'info') {

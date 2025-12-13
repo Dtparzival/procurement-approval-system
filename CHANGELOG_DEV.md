@@ -1,5 +1,59 @@
 # DEV 分支變更記錄
 
+## [2025-12-12] 復刻 main 分支 UI/UX 設計
+
+### 🎨 UI/UX 全面升級
+
+**參考 main 分支的專業設計**
+- 復刻 main 分支的應用程式介面設計，提供更專業、清晰的 UI/UX
+- 保留 DEV 分支的 AI Agent 風格首頁和深藍色主題
+- 保留已優化的 hover 效果和絲滑感
+
+**頂部導航優化**
+- 新增使用者資訊顯示
+- 新增登出按鈕
+- 統一按鈕樣式
+
+**卡片設計優化**
+- 所有卡片改用 `shadow-lg`，增強層次感
+- 邊框改為 `border-gray-100`，更柔和
+
+**採購需求描述區域優化**
+- 新增卡片標題和說明文字
+- 新增字數統計功能
+- 改善上次儲存時間顯示
+
+**生成結果區域優化**
+- 新增下載按鈕
+- 改善按鈕樣式
+
+### ✨ 新功能
+
+- **登出功能**: 點擊登出按鈕可清除認證狀態並重新載入頁面
+- **下載功能**: 可將生成結果下載為 .txt 檔案
+- **字數統計**: 即時顯示輸入框的字數
+
+### 📝 程式碼重構
+
+**HTML**
+- `index.html`: 大幅重構應用程式介面，參考 main 分支的結構
+
+**CSS**
+- `css/style.css`: 保持不變，保留增強的 hover 效果
+
+**JavaScript**
+- `js/app.js`: 新增 `handleLogout`, `handleDownload` 方法，並在 `bindEvents` 中添加新按鈕的事件監聽
+- `js/ui.js`: 新增 `updateCharCount`, `updateLastSaved`, `updateUserInfo` 方法
+- `js/storage.js`: 新增 `clearAuth` 方法
+
+### 📚 文件更新
+
+- `README.md`: 更新核心特色，反映新的 UI/UX 設計
+- `CHANGELOG_DEV.md`: 新增本次變更記錄
+
+---
+
+
 ## [2025-12-06] UI 優化和 Google 認證整合
 
 ### 🎨 視覺設計升級

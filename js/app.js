@@ -91,6 +91,25 @@ class ProcurementApp {
                 UI.showToast(e.target.checked ? '自動儲存已啟用' : '自動儲存已停用', 'info');
             });
         }
+        
+        // 登出按鈕
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => this.handleLogout());
+        }
+        
+        // 下載按鈕
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => this.handleDownload());
+        }
+        
+        // 字數統計
+        const userInput = document.getElementById('userInput');
+        if (userInput) {
+            userInput.addEventListener('input', () => UI.updateCharCount(userInput));
+            UI.updateCharCount(userInput); // 初始化
+        }
     }
 
     /**
@@ -191,14 +210,10 @@ class ProcurementApp {
 
         if (!isAutoSave) {
             UI.showToast('草稿已儲存', 'success');
-        } else {
-            // 更新自動儲存狀態
-            const statusElement = document.getElementById('lastSaved');
-            if (statusElement) {
-                const now = new Date();
-                statusElement.textContent = `上次儲存：${now.toLocaleTimeString('zh-TW')}`;
-            }
         }
+        
+        // 更新上次儲存時間
+        UI.updateLastSaved();
     }
 
     /**
@@ -256,6 +271,42 @@ class ProcurementApp {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
+    }
+    
+    /**
+     * 處理登出
+     */
+    handleLogout() {
+        if (confirm('確定要登出嗎？')) {
+            // 清除認證狀態
+            Storage.clearAuth();
+            // 重新載入頁面
+            window.location.reload();
+        }
+    }
+    
+    /**
+     * 處理下載
+     */
+    handleDownload() {
+        const content = document.getElementById('generatedContent')?.textContent;
+        if (!content) {
+            UI.showToast('沒有可下載的內容', 'error');
+            return;
+        }
+        
+        const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${draftTitle}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        UI.showToast('下載成功', 'success');
     }
 }
 
