@@ -15,15 +15,8 @@ const UI = {
             warning: 'alert-triangle'
         };
         
-        const colorMap = {
-            success: 'bg-green-50 text-green-800 border-green-200',
-            error: 'bg-red-50 text-red-800 border-red-200',
-            info: 'bg-blue-50 text-blue-800 border-blue-200',
-            warning: 'bg-yellow-50 text-yellow-800 border-yellow-200'
-        };
-        
-        toast.className = `flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg transition-all ${colorMap[type]}`;
-        toast.style.cssText = 'animation: slideIn 0.3s ease-out;';
+        // 使用新的 toast 樣式類別
+        toast.className = `toast ${type}`;
         
         toast.innerHTML = `
             <i data-lucide="${iconMap[type]}" class="w-5 h-5 flex-shrink-0"></i>
@@ -34,9 +27,94 @@ const UI = {
         lucide.createIcons();
         
         setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease-in';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
             setTimeout(() => toast.remove(), 300);
         }, CONFIG.UI.TOAST_DURATION);
+    },
+
+    /**
+     * 顯示錯誤訊息容器
+     */
+    showError(title, message, actions = []) {
+        const container = document.createElement('div');
+        container.className = 'error-container ai-shake';
+        
+        container.innerHTML = `
+            <div class="error-icon">
+                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+            </div>
+            <div class="error-content">
+                <div class="error-title">${title}</div>
+                <div class="error-message">${message}</div>
+                ${actions.length > 0 ? `
+                    <div class="error-actions">
+                        ${actions.map(action => `
+                            <button onclick="${action.onClick}" class="px-3 py-1.5 text-sm font-medium rounded-md ${action.primary ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'}">
+                                ${action.label}
+                            </button>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        
+        return container;
+    },
+
+    /**
+     * 顯示空狀態
+     */
+    showEmptyState(config) {
+        const { icon = 'inbox', title, description, actionLabel, actionOnClick, compact = false } = config;
+        
+        const container = document.createElement('div');
+        container.className = `empty-state ${compact ? 'empty-state-compact' : ''}`;
+        
+        container.innerHTML = `
+            <div class="empty-state-icon">
+                <i data-lucide="${icon}" class="w-16 h-16"></i>
+            </div>
+            <div class="empty-state-title">${title}</div>
+            <div class="empty-state-description">${description}</div>
+            ${actionLabel ? `
+                <button onclick="${actionOnClick}" class="empty-state-action px-6 py-3 bg-blue-700 text-white rounded-lg font-medium hover:bg-blue-800 transition-colors">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    <span>${actionLabel}</span>
+                </button>
+            ` : ''}
+        `;
+        
+        lucide.createIcons();
+        return container;
+    },
+
+    /**
+     * 顯示載入狀態
+     */
+    showLoading(text = '處理中...', type = 'block') {
+        const container = document.createElement('div');
+        
+        if (type === 'page') {
+            container.className = 'page-loading';
+            container.innerHTML = `
+                <div class="page-loading-spinner"></div>
+                <div class="page-loading-text">${text}</div>
+            `;
+        } else if (type === 'block') {
+            container.className = 'block-loading';
+            container.innerHTML = `
+                <div class="block-loading-spinner"></div>
+            `;
+        } else {
+            container.className = 'inline-loading';
+            container.innerHTML = `
+                <div class="inline-loading-spinner"></div>
+                <span>${text}</span>
+            `;
+        }
+        
+        return container;
     },
 
     /**
