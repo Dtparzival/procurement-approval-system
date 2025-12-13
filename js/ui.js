@@ -202,6 +202,9 @@ const UI = {
             `).join('');
         }
         
+        // 禁用背景滿動
+        document.body.style.overflow = 'hidden';
+        
         modal.classList.remove('hidden');
         lucide.createIcons();
     },
@@ -211,6 +214,8 @@ const UI = {
      */
     hideHistoryModal() {
         document.getElementById('historyModal').classList.add('hidden');
+        // 恢復背景滿動
+        document.body.style.overflow = '';
     },
 
     /**
@@ -357,8 +362,12 @@ const UI = {
         if (!this.currentApproval) return;
         
         try {
-            await navigator.clipboard.writeText(this.currentApproval.content);
-            this.showToast('已複製到剪貼簿', 'success');
+            // 從顯示區域取得純文字內容（已經由 marked 轉換為 HTML）
+            const generatedContent = document.getElementById('generatedContent');
+            const plainText = generatedContent ? generatedContent.textContent : this.currentApproval.content;
+            
+            await navigator.clipboard.writeText(plainText);
+            this.showToast('已複製純文字到剪貼簿', 'success');
             
             // 更新按鈕圖示
             const copyBtn = document.getElementById('copyBtn');

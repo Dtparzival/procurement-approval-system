@@ -32,6 +32,10 @@
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
+    <!-- docx library for Word document generation -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
@@ -63,8 +67,9 @@
             <!-- Hero 區塊 -->
             <section class="py-20 px-4">
                 <div class="container mx-auto max-w-4xl text-center">
-                    <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-3xl mb-8 shadow-xl ai-beam">
-                        <i data-lucide="file-text" class="w-12 h-12 text-white"></i>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full mb-8 text-sm font-medium">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span>AI 驅動的智能公文生成</span>
                     </div>
                     <h2 class="text-5xl font-bold text-gray-900 mb-6">
                         Agent 智簽公文
@@ -155,10 +160,10 @@
                                 <i data-lucide="upload" class="w-4 h-4"></i>
                                 文件識別
                             </a></li>
-                            <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2">
+                            <li><button id="sidebarDraftsBtn" class="hover:text-blue-400 transition-colors flex items-center gap-2 w-full text-left">
                                 <i data-lucide="save" class="w-4 h-4"></i>
                                 草稿管理
-                            </a></li>
+                            </button></li>
                             <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                                 歷史記錄
@@ -436,10 +441,10 @@
                                 <i data-lucide="upload" class="w-4 h-4"></i>
                                 文件識別
                             </a></li>
-                            <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2">
+                            <li><button id="sidebarDraftsBtn" class="hover:text-blue-400 transition-colors flex items-center gap-2 w-full text-left">
                                 <i data-lucide="save" class="w-4 h-4"></i>
                                 草稿管理
-                            </a></li>
+                            </button></li>
                             <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                                 歷史記錄
@@ -565,6 +570,28 @@
                 <div id="emptyHistory" class="hidden text-center py-12">
                     <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-300 mb-4"></i>
                     <p class="text-gray-500">尚無歷史記錄</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 草稿瀏覽 Modal -->
+    <div id="draftsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="file-edit" class="w-6 h-6"></i>
+                    草稿管理
+                </h2>
+                <button id="closeDraftsBtn" class="text-gray-500 hover:text-gray-700">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+                <div id="draftsList" class="space-y-4"></div>
+                <div id="emptyDrafts" class="hidden text-center py-12">
+                    <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">尚無儲存的草稿</p>
                 </div>
             </div>
         </div>

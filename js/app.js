@@ -110,6 +110,26 @@ class ProcurementApp {
             userInput.addEventListener('input', () => UI.updateCharCount(userInput));
             UI.updateCharCount(userInput); // 初始化
         }
+        
+        // 草稿瀏覽按鈕
+        const sidebarDraftsBtns = document.querySelectorAll('#sidebarDraftsBtn');
+        sidebarDraftsBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.showDraftsModal());
+        });
+        
+        const closeDraftsBtn = document.getElementById('closeDraftsBtn');
+        if (closeDraftsBtn) {
+            closeDraftsBtn.addEventListener('click', () => this.closeDraftsModal());
+        }
+        
+        const draftsModal = document.getElementById('draftsModal');
+        if (draftsModal) {
+            draftsModal.addEventListener('click', (e) => {
+                if (e.target === draftsModal) {
+                    this.closeDraftsModal();
+                }
+            });
+        }
     }
 
     /**
@@ -288,25 +308,137 @@ class ProcurementApp {
     /**
      * 處理下載
      */
-    handleDownload() {
-        const content = document.getElementById('generatedContent')?.textContent;
-        if (!content) {
+    async handleDownload() {
+        const generatedContent = document.getElementById('generatedContent');
+        if (!generatedContent || !generatedContent.textContent) {
             UI.showToast('沒有可下載的內容', 'error');
             return;
         }
         
-        const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
-        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${draftTitle}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        try {
+            const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
+            const content = generatedContent.textContent;
+            
+            // 使用 docx 庫生成 Word 文件
+            const doc = new docx.Document({
+                sections: [{
+                    properties: {},
+                    children: content.split('\n').map(line => 
+                        new docx.Paragraph({
+                            text: line,
+                            spacing: {
+                                after: 200,
+                            },
+                        })
+                    ),
+                }],
+            });
+            
+            // 生成並下載
+            const blob = await docx.Packer.toBlob(doc);
+            saveAs(blob, `${draftTitle}.docx`);
+            
+            UI.showToast('下載成功', 'success');
+        } catch (error) {
+            console.error('Word 文件生成失敗:', error);
+            UI.showToast('Word 文件生成失敗', 'error');
+        }
+    }
+    
+    /**
+     * 顯示草稿瀏覽 Modal
+     */
+    showDraftsModal() {
+        const modal = document.getElementById('draftsModal');
+        const draftsList = document.getElementById('draftsList');
+        const emptyDrafts = document.getElementById('emptyDrafts');
         
-        UI.showToast('下載成功', 'success');
+        if (!modal || !draftsList || !emptyDrafts) return;
+        
+        // 禁用背景滿動
+        document.body.style.overflow = 'hidden';
+        
+        // 顯示 modal
+        modal.classList.remove('hidden');
+        
+        // 載入草稿
+        const drafts = Storage.getDrafts();
+        
+        if (drafts.length === 0) {
+            draftsList.innerHTML = '';
+            emptyDrafts.classList.remove('hidden');
+        } else {
+            emptyDrafts.classList.add('hidden');
+            draftsList.innerHTML = drafts.map(draft => `
+                <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-gray-900">${draft.title || '無標題草稿'}</h3>
+                        <span class="text-sm text-gray-500">${new Date(draft.savedAt).toLocaleString('zh-TW')}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">${draft.content.substring(0, 100)}...</p>
+                    <div class="flex gap-2">
+                        <button onclick="app.loadDraft('${draft.id}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm">
+                            載入
+                        </button>
+                        <button onclick="app.deleteDraft('${draft.id}')" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
+                            刪除
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        lucide.createIcons();
+    }
+    
+    /**
+     * 關閉草稿瀏覽 Modal
+     */
+    closeDraftsModal() {
+        const modal = document.getElementById('draftsModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            // 恢復背景滿動
+            document.body.style.overflow = '';
+        }
+    }
+    
+    /**
+     * 載入草稿
+     */
+    loadDraft(draftId) {
+        const drafts = Storage.getDrafts();
+        const draft = drafts.find(d => d.id === draftId);
+        
+        if (!draft) {
+            UI.showToast('草稿不存在', 'error');
+            return;
+        }
+        
+        // 填入內容
+        const userInput = document.getElementById('userInput');
+        const draftTitle = document.getElementById('draftTitle');
+        
+        if (userInput) {
+            userInput.value = draft.content;
+            UI.updateCharCount(userInput);
+        }
+        if (draftTitle) draftTitle.value = draft.title || '';
+        
+        this.currentDraftId = draftId;
+        this.closeDraftsModal();
+        UI.showToast('草稿已載入', 'success');
+    }
+    
+    /**
+     * 刪除草稿
+     */
+    deleteDraft(draftId) {
+        if (!confirm('確定要刪除這個草稿嗎？')) return;
+        
+        Storage.deleteDraft(draftId);
+        UI.showToast('草稿已刪除', 'success');
+        this.showDraftsModal(); // 重新載入列表
     }
 }
 
