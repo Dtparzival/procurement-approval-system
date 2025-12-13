@@ -117,7 +117,18 @@ const API = {
     },
 
     /**
-     * Generate procurement approval document
+     * Generate UUID for session ID
+     */
+    generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    },
+
+    /**
+     * Generate procurement approval document using external API
      */
     async generateApproval(userInput, attachments = []) {
         console.log('Generating approval document:', {
@@ -125,56 +136,98 @@ const API = {
             attachmentsCount: attachments.length
         });
 
-        let userContent = `請根據以下採購需求生成簽呈：\n\n${userInput}`;
+        // 獲取草稿標題
+        const draftTitle = document.getElementById('draftTitle')?.value.trim() || '';
+        
+        // 組合 inputText：草稿標題 + 需求描述
+        let inputText = '';
+        if (draftTitle) {
+            inputText = `標題：${draftTitle}\n\n`;
+        }
+        inputText += `需求描述：\n${userInput}`;
 
         if (attachments.length > 0) {
-            userContent += `\n\n參考文件：\n`;
+            inputText += `\n\n參考文件：\n`;
             attachments.forEach(att => {
-                userContent += `- ${att.fileName}\n`;
+                inputText += `- ${att.fileName}\n`;
             });
         }
 
-        const messages = [
-            {
-                role: "system",
-                content: CONFIG.PROMPTS.APPROVAL_GENERATION
-            },
-            {
-                role: "user",
-                content: userContent
-            }
-        ];
+        // 生成 sessionId
+        const sessionId = this.generateUUID();
 
         try {
-            const response = await this.callLLM(messages, {
-                temperature: 0.7,
-                maxTokens: 4000
+            console.log('Calling external API:', {
+                url: 'https://8081-i60g56ut7q0xbu1gw42s7-678f7fd9.manus-asia.computer/api/chat',
+                sessionId: sessionId,
+                inputTextLength: inputText.length
             });
 
-            if (!response.choices || response.choices.length === 0) {
-                throw new Error('API 回應格式錯誤，請稍後再試');
+            const response = await fetch('https://8081-i60g56ut7q0xbu1gw42s7-678f7fd9.manus-asia.computer/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    inputText: inputText,
+                    sessionId: sessionId
+                })
+            });
+
+            console.log('API Response status:', response.status);
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('API Error Response:', errorData);
+                throw new Error(`API 請求失敗 (HTTP ${response.status})`);
             }
 
-            const content = response.choices[0]?.message?.content || '';
+            const data = await response.json();
+            console.log('API Response received:', data);
+
+            // 解析多層 JSON 響應
+            // response.body 是一個 JSON 字符串
+            if (!data.body) {
+                throw new Error('API 回應格式錯誤：缺少 body');
+            }
+
+            const bodyData = JSON.parse(data.body);
+            console.log('Parsed body data:', bodyData);
+
+            if (!bodyData.response || !bodyData.response.body) {
+                throw new Error('API 回應格式錯誤：缺少 response.body');
+            }
+
+            const responseBody = JSON.parse(bodyData.response.body);
+            console.log('Parsed response body:', responseBody);
+
+            const draftText = responseBody.draft_text;
             
-            if (!content || content.trim().length === 0) {
+            if (!draftText || draftText.trim().length === 0) {
                 throw new Error('生成的內容為空，請再試一次');
             }
             
             console.log('Approval generated successfully:', {
-                contentLength: content.length
+                contentLength: draftText.length
             });
             
-            // Extract title from content (first heading)
-            const titleMatch = content.match(/^#\s+(.+)$/m);
-            const title = titleMatch ? titleMatch[1] : '採購簽呈';
+            // 提取標題（從草稿文本中尋找【主旨】）
+            const titleMatch = draftText.match(/【主旨】[\s\S]*?\n\n([^\n]+)/);
+            const title = titleMatch ? titleMatch[1].trim() : (draftTitle || '採購簽呈');
 
             return {
                 title: title,
-                content: content
+                content: draftText,
+                sessionId: sessionId
             };
         } catch (error) {
             console.error('Generate approval error:', error);
+            
+            // 如果是網路錯誤
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                throw new Error('網路連線失敗，請檢查網路連線後再試');
+            }
+            
             throw error;
         }
     },

@@ -185,13 +185,6 @@ class ProcurementApp {
             return;
         }
 
-        const apiKey = Storage.getApiKey();
-        if (!apiKey) {
-            UI.showToast('請先設定 API Key', 'error');
-            UI.showSettingsModal();
-            return;
-        }
-
         try {
             // 顯示載入狀態
             UI.showLoading('正在分析您的需求...');
@@ -541,6 +534,12 @@ class ProcurementApp {
      */
     deleteDraft(draftId) {
         if (!confirm('確定要刪除這個草稿嗎？')) return;
+        
+        // 如果刪除的是當前正在編輯的草稿，清除 currentDraftId
+        if (this.currentDraftId === draftId) {
+            this.currentDraftId = null;
+            Storage.setCurrentDraftId(null);
+        }
         
         Storage.deleteDraft(draftId);
         UI.showToast('草稿已刪除', 'success');
