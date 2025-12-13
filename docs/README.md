@@ -31,7 +31,8 @@ docs/
 │   ├── core-features-test-2025-12-13.md    # 核心功能測試
 │   └── ui-oauth-test-2025-12-06.md         # UI 優化和 Google 認證測試
 └── guides/                      # 開發指南
-    └── PREVENTION_GUIDE.md     # 預防措施實施指南
+    ├── PREVENTION_GUIDE.md     # 預防措施實施指南
+    └── login-state-management.md # 登入狀態管理指南
 ```
 
 ---
@@ -56,9 +57,10 @@ docs/
 
 如果您是開發人員，建議閱讀：
 
-1. **[預防措施實施指南](guides/PREVENTION_GUIDE.md)** - 如何避免常見錯誤
-2. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 了解過去的問題和解決方案
-3. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 深入了解系統失效的原因
+1. **[登入狀態管理指南](guides/login-state-management.md)** - 了解登入狀態管理機制
+2. **[預防措施實施指南](guides/PREVENTION_GUIDE.md)** - 如何避免常見錯誤
+3. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 了解過去的問題和解決方案
+4. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 深入了解系統失效的原因
 
 ### 運維人員
 
@@ -141,6 +143,7 @@ docs/
 
 | 文件 | 描述 | 目標 |
 |:---|:---|:---|
+| **login-state-management.md** | 登入狀態管理指南 | 了解 Hero 區塊顯示邏輯、登入按鈕控制、用戶體驗優化 |
 | PREVENTION_GUIDE.md | 預防措施實施指南 | 避免語法錯誤和質量問題 |
 
 ---
@@ -153,6 +156,7 @@ docs/
 
 ### 登入和認證
 
+- **[登入狀態管理指南](guides/login-state-management.md)** - 了解 Hero 區塊顯示邏輯、登入按鈕控制、用戶體驗優化
 - [Google OAuth 設定](deployment/GOOGLE_OAUTH_SETUP.md)
 - [Google OAuth 實作](deployment/GOOGLE_OAUTH_IMPLEMENTATION.md)
 - [UI/OAuth 測試報告](testing/ui-oauth-test-2025-12-06.md)
@@ -195,6 +199,7 @@ docs/
 
 | 日期 | 更新內容 | 版本 |
 |:---|:---|:---:|
+| 2025-12-13 | 新增登入狀態管理指南 | 1.4 |
 | 2025-12-13 | 優化 testing 目錄，重命名測試報告 | 1.3 |
 | 2025-12-13 | 新增 testing/README.md 測試報告索引 | 1.3 |
 | 2025-12-13 | 整併 bugfix 目錄，歸檔詳細報告 | 1.2 |

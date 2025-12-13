@@ -90,8 +90,9 @@ const Auth = {
      * 登出
      */
     logout() {
-        // 清除用戶資訊
+        // 清除用戶資訊和已進入標記
         localStorage.removeItem('current_user');
+        localStorage.removeItem('procurement_has_entered');
         
         // 重新載入頁面
         window.location.reload();
@@ -126,13 +127,13 @@ const Auth = {
         document.getElementById('heroSection').classList.remove('hidden');
         document.getElementById('appSection').classList.add('hidden');
         
-        // 如果使用者已登入，隱藏登入按鈕
-        const isLoggedIn = this.getCurrentUser() !== null;
+        // 如果使用者已經使用過系統（有 localStorage 資料），隱藏登入按鈕
+        const hasUsed = this.hasUsedBefore();
         const loginBtn = document.getElementById('loginBtn');
         const heroLoginBtn = document.getElementById('heroLoginBtn');
         
         if (loginBtn) {
-            if (isLoggedIn) {
+            if (hasUsed) {
                 loginBtn.classList.add('hidden');
             } else {
                 loginBtn.classList.remove('hidden');
@@ -140,7 +141,7 @@ const Auth = {
         }
         
         if (heroLoginBtn) {
-            if (isLoggedIn) {
+            if (hasUsed) {
                 heroLoginBtn.classList.add('hidden');
             } else {
                 heroLoginBtn.classList.remove('hidden');
@@ -154,6 +155,9 @@ const Auth = {
     showApp() {
         document.getElementById('heroSection').classList.add('hidden');
         document.getElementById('appSection').classList.remove('hidden');
+        
+        // 標記用戶已經進入應用程式（即使沒有 localStorage 資料）
+        localStorage.setItem('procurement_has_entered', 'true');
     },
     
     /**
@@ -197,14 +201,15 @@ const Auth = {
     
     /**
      * 檢查是否已經使用過系統
-     * 檢查 localStorage 中是否有任何資料（API Key、草稿、歷史記錄）
+     * 檢查 localStorage 中是否有任何資料（API Key、草稿、歷史記錄、已進入標記）
      */
     hasUsedBefore() {
         const apiKey = localStorage.getItem('procurement_api_key');
         const drafts = localStorage.getItem('procurement_drafts');
         const history = localStorage.getItem('procurement_history');
+        const hasEntered = localStorage.getItem('procurement_has_entered');
         
-        return !!(apiKey || drafts || history);
+        return !!(apiKey || drafts || history || hasEntered);
     }
 };
 
