@@ -98,13 +98,21 @@ const Auth = {
      * 登出
      */
     logout() {
-        // 清除用戶資訊和已進入標記
+        // 清除所有 localStorage 資料
         localStorage.removeItem('current_user');
         localStorage.removeItem('procurement_has_entered');
         localStorage.removeItem('procurement_last_used');
+        localStorage.removeItem('procurement_api_key');
+        localStorage.removeItem('procurement_drafts');
+        localStorage.removeItem('procurement_history');
+        localStorage.removeItem('procurement_model');
+        localStorage.removeItem('procurement_auto_save');
         
-        // 重新載入頁面
-        window.location.reload();
+        // 清空頁面上的輸入欄位
+        this.clearFormFields();
+        
+        // 顯示 Hero 區塊
+        this.showHero();
     },
     
     /**
@@ -227,6 +235,35 @@ const Auth = {
         const hasEntered = localStorage.getItem('procurement_has_entered');
         
         return !!(apiKey || drafts || history || hasEntered);
+    },
+    
+    /**
+     * 清空表單欄位
+     */
+    clearFormFields() {
+        // 清空草稿標題
+        const draftTitle = document.getElementById('draftTitle');
+        if (draftTitle) {
+            draftTitle.value = '';
+        }
+        
+        // 清空需求描述
+        const userInput = document.getElementById('userInput');
+        if (userInput) {
+            userInput.value = '';
+        }
+        
+        // 清空生成結果
+        const resultContent = document.getElementById('resultContent');
+        if (resultContent) {
+            resultContent.innerHTML = '';
+        }
+        
+        // 隱藏結果區塊
+        const resultSection = document.getElementById('resultSection');
+        if (resultSection) {
+            resultSection.classList.add('hidden');
+        }
     },
     
     /**
