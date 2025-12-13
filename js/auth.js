@@ -8,8 +8,16 @@ const Auth = {
      * 初始化 Google 認證
      */
     init() {
-        // 預設顯示應用程式，不需要登入
-        this.showApp();
+        // 檢查是否已經使用過系統（有 localStorage 資料）
+        const hasUsedBefore = this.hasUsedBefore();
+        
+        if (hasUsedBefore) {
+            // 如果使用過，直接顯示應用程式
+            this.showApp();
+        } else {
+            // 如果是首次訪問，顯示 Hero 區塊
+            this.showHero();
+        }
         
         // 如果已登入，更新用戶 UI
         const user = this.getCurrentUser();
@@ -185,6 +193,18 @@ const Auth = {
     getUserId() {
         const user = this.getCurrentUser();
         return user ? user.id : null;
+    },
+    
+    /**
+     * 檢查是否已經使用過系統
+     * 檢查 localStorage 中是否有任何資料（API Key、草稿、歷史記錄）
+     */
+    hasUsedBefore() {
+        const apiKey = localStorage.getItem('procurement_api_key');
+        const drafts = localStorage.getItem('procurement_drafts');
+        const history = localStorage.getItem('procurement_history');
+        
+        return !!(apiKey || drafts || history);
     }
 };
 
