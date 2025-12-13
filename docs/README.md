@@ -9,6 +9,8 @@
 ```
 docs/
 ├── README.md                    # 本文件（索引）
+├── business/                    # 商業分析和策略
+│   └── gpts-store-listing-analysis.md       # GPTs Store 上架可行性分析
 ├── bugfix/                      # Bug 修復報告
 │   ├── BUGFIX_HISTORY.md       # 合併的 Bug 修復歷史（推薦閱讀）
 │   ├── BUGFIX_v1.5.1.md        # v1.5.1 修復報告
@@ -41,6 +43,12 @@ docs/
 2. **[CHANGELOG_DEV.md](../CHANGELOG_DEV.md)** - 版本變更記錄
 3. **[部署指南](deployment/DEPLOYMENT.md)** - 如何部署系統
 
+### 商業決策
+
+如果您負責商業決策和策略規劃，建議閱讀：
+
+1. **[GPTs Store 上架分析](business/gpts-store-listing-analysis.md)** - 評估上架 GPTs Store 的優劣勢和實施方案
+
 ### 開發人員
 
 如果您是開發人員，建議閱讀：
@@ -68,6 +76,16 @@ docs/
 ---
 
 ## 📋 文件分類
+
+### 💼 商業分析和策略 (business/)
+
+記錄系統的商業模式分析、市場研究和策略規劃。
+
+| 文件 | 描述 | 優先級 |
+|:---|:---|:---:|
+| **gpts-store-listing-analysis.md** | GPTs Store 上架可行性分析 | ⭐⭐⭐⭐⭐ |
+
+**推薦閱讀**: 這份報告深入分析了智簽公文是否適合在 GPTs Store 上架，評估優劣勢並提供「雙軌並行」策略建議。對於商業決策和策略規劃至關重要。
 
 ### 🐛 Bug 修復報告 (bugfix/)
 
@@ -117,6 +135,10 @@ docs/
 
 ## 🔍 按主題查找
 
+### GPTs 商業模式
+
+- [GPTs Store 上架可行性分析](business/gpts-store-listing-analysis.md) - 評估智簽公文是否適合在 GPTs Store 上架，分析優劣勢和實施方案
+
 ### 登入和認證
 
 - [Google OAuth 設定](deployment/GOOGLE_OAUTH_SETUP.md)
@@ -156,6 +178,8 @@ docs/
 
 | 日期 | 更新內容 | 版本 |
 |:---|:---|:---:|
+| 2025-12-13 | 新增 business/ 目錄和商業分析文件 | 1.1 |
+| 2025-12-13 | 重命名商業分析文件（使用小寫連字符） | 1.1 |
 | 2025-12-13 | 創建文件索引和目錄結構 | 1.0 |
 | 2025-12-13 | 合併 BUGFIX 文件為 BUGFIX_HISTORY.md | 1.0 |
 | 2025-12-13 | 整理文件到分類目錄 | 1.0 |
@@ -192,6 +216,6 @@ docs/
 
 ---
 
-**文件版本**: 1.0  
+**文件版本**: 1.1  
 **最後更新**: 2025-12-13  
 **維護者**: 開發團隊
