@@ -66,16 +66,31 @@ const Storage = {
     saveDraft(draft) {
         const drafts = this.getDrafts();
         const timestamp = new Date().toISOString();
+        let savedDraft;
 
         if (draft.id) {
             // Update existing draft
             const index = drafts.findIndex(d => d.id === draft.id);
             if (index !== -1) {
+                // 草稿存在，更新它
                 drafts[index] = {
                     ...drafts[index],
                     ...draft,
                     updatedAt: timestamp
                 };
+                savedDraft = drafts[index];
+            } else {
+                // 草稿不存在（可能已被刪除），創建新草稿
+                const newDraft = {
+                    id: Date.now(),
+                    title: draft.title || '未命名草稿',
+                    userInput: draft.userInput,
+                    attachments: draft.attachments || [],
+                    createdAt: timestamp,
+                    updatedAt: timestamp
+                };
+                drafts.unshift(newDraft);
+                savedDraft = newDraft;
             }
         } else {
             // Create new draft
@@ -88,10 +103,11 @@ const Storage = {
                 updatedAt: timestamp
             };
             drafts.unshift(newDraft);
+            savedDraft = newDraft;
         }
 
         localStorage.setItem(this.getUserKey(CONFIG.STORAGE.DRAFTS), JSON.stringify(drafts));
-        return drafts[0];
+        return savedDraft;
     },
 
     /**
@@ -100,7 +116,7 @@ const Storage = {
     deleteDraft(id) {
         const drafts = this.getDrafts();
         const filtered = drafts.filter(d => d.id !== id);
-        localStorage.setItem(CONFIG.STORAGE.DRAFTS, JSON.stringify(filtered));
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.DRAFTS), JSON.stringify(filtered));
     },
 
     /**
@@ -179,7 +195,7 @@ const Storage = {
     deleteHistory(id) {
         const history = this.getHistory();
         const filtered = history.filter(h => h.id !== id);
-        localStorage.setItem(CONFIG.STORAGE.HISTORY, JSON.stringify(filtered));
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify(filtered));
     },
 
     /**
@@ -236,10 +252,10 @@ const Storage = {
      */
     importData(data) {
         if (data.drafts) {
-            localStorage.setItem(CONFIG.STORAGE.DRAFTS, JSON.stringify(data.drafts));
+            localStorage.setItem(this.getUserKey(CONFIG.STORAGE.DRAFTS), JSON.stringify(data.drafts));
         }
         if (data.history) {
-            localStorage.setItem(CONFIG.STORAGE.HISTORY, JSON.stringify(data.history));
+            localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify(data.history));
         }
         if (data.settings) {
             if (data.settings.model) {
