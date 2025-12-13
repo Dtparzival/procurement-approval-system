@@ -13,15 +13,23 @@
 
 為了提供更清晰的指引，我們將文件整理如下：
 
+### 📂 主要文件
+
 | 文件 | 說明 | 適用對象 |
 | :--- | :--- | :--- |
 | 📖 **[README.md](README.md)** | **(本文件)** 專案總覽、功能介紹與快速開始。 | **所有使用者** |
-| 🚀 **[DEPLOYMENT.md](DEPLOYMENT.md)** | **部署指南**：提供 AWS S3、GitHub Pages 等多種平台的詳細部署方法。 | **需要部署網站者** |
-| ⚙️ **[GOOGLE_OAUTH_SETUP.md](GOOGLE_OAUTH_SETUP.md)** | **Google 登入設定**：設定 Google OAuth 2.0 客戶端 ID 的步驟。 | **需要啟用登入功能者** |
-| 🌐 **[CLOUDFRONT_SETUP.md](CLOUDFRONT_SETUP.md)** | **CDN 設定指南**：為 S3 網站設定 HTTPS 和全球加速。 | **進階使用者** |
-| 💻 **[GOOGLE_OAUTH_IMPLEMENTATION.md](GOOGLE_OAUTH_IMPLEMENTATION.md)** | **OAuth 技術文件**：深入解析 Google 登入的程式碼實作細節。 | **開發者** |
 | 📝 **[CHANGELOG_DEV.md](CHANGELOG_DEV.md)** | **變更記錄**：DEV 分支的所有功能更新與修復歷史。 | **關注專案進度者** |
-| 🧪 **[TEST_RESULTS.md](TEST_RESULTS.md)** | **測試報告**：系統的功能、效能與相容性測試結果。 | **品質保證、開發者** |
+
+### 📚 技術文件索引
+
+完整的技術文件和報告請參閱 **[docs/README.md](docs/README.md)**
+
+**快速連結**:
+
+- 📋 [Bug 修復歷史](docs/bugfix/BUGFIX_HISTORY.md) - 所有 Bug 修復記錄
+- 🛡️ [預防措施指南](docs/guides/PREVENTION_GUIDE.md) - 開發最佳實踐
+- 🚀 [部署指南](docs/deployment/DEPLOYMENT.md) - 部署流程
+- 📊 [測試報告](docs/testing/TESTING_REPORT.md) - 測試結果
 
 ---
 
