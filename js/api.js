@@ -157,13 +157,16 @@ const API = {
         const sessionId = this.generateUUID();
 
         try {
+            // 從配置中讀取 API URL
+            const apiUrl = CONFIG.API.GENERATE_ENDPOINT;
+            
             console.log('Calling external API:', {
-                url: 'https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat',
+                url: apiUrl,
                 sessionId: sessionId,
                 inputTextLength: inputText.length
             });
 
-            const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat', {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

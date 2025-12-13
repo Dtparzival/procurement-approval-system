@@ -14,7 +14,10 @@ const CONFIG = {
             { value: 'gpt-4o-mini', label: 'GPT-4o Mini (推薦)' },
             { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (快速)' },
             { value: 'gpt-4o', label: 'GPT-4o (最強)' }
-        ]
+        ],
+        // 生成簽呈 API 端點
+        // AWS API Gateway endpoint for document generation
+        GENERATE_ENDPOINT: 'https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat'
     },
 
     // Storage keys for localStorage
