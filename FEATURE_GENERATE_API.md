@@ -38,15 +38,22 @@
 2. 第二次解析：`JSON.parse(bodyData.response.body)` → 得到 `responseBody`
 3. 提取內容：`responseBody.draft_text`
 
-### 3. CORS 問題解決
+### 3. CORS 問題說明
 
-由於 AWS API Gateway 未配置 CORS，瀏覽器會阻止跨域請求。解決方案：
+由於 AWS API Gateway 未配置 CORS，瀏覽器會阻止跨域請求。本分支提供了以下解決方案：
 
-**創建 Python 代理服務器** (`proxy_server.py`)：
+**方案 A：配置 AWS API Gateway CORS（推薦）**
+- 在 AWS API Gateway 中添加 CORS 配置
+- 前端可直接調用 API，無需代理
+- 當前代碼已配置為直接調用 AWS API
+
+**方案 B：使用代理服務器**
+- 提供 `proxy_server.py` 作為參考實現
 - 監聽端口：8081
 - 代理端點：`/api/chat`
-- 功能：接收瀏覽器請求，轉發到 AWS API Gateway，返回響應
+- 功能：接收瀏覽器請求，轉發到 AWS API Gateway
 - CORS 配置：添加 `Access-Control-Allow-Origin: *` 頭部
+- 注意：需要修改 `js/api.js` 中的 API URL 為代理地址
 
 ### 4. 修改的文件
 
@@ -149,8 +156,8 @@ const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws
 
 ## 注意事項
 
-1. **API URL 硬編碼**：當前代碼中 API URL 是硬編碼的 Manus 沙箱域名，生產環境需要修改
-2. **代理服務器**：當前使用 Python 簡易代理，生產環境建議使用更穩定的方案
+1. **CORS 配置**：當前代碼配置為直接調用 AWS API Gateway，需要在 AWS 端配置 CORS。如果無法配置，請使用 `proxy_server.py` 並修改 `js/api.js` 中的 API URL
+2. **代理服務器**：`proxy_server.py` 僅供開發測試使用，生產環境建議使用 Nginx、Node.js 或 Cloudflare Workers
 3. **錯誤處理**：已添加網路錯誤和 API 錯誤處理，但可能需要更詳細的錯誤訊息
 4. **超時處理**：當前沒有設置請求超時，建議添加 timeout 配置
 

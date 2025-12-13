@@ -158,12 +158,12 @@ const API = {
 
         try {
             console.log('Calling external API:', {
-                url: 'https://8081-i60g56ut7q0xbu1gw42s7-678f7fd9.manus-asia.computer/api/chat',
+                url: 'https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat',
                 sessionId: sessionId,
                 inputTextLength: inputText.length
             });
 
-            const response = await fetch('https://8081-i60g56ut7q0xbu1gw42s7-678f7fd9.manus-asia.computer/api/chat', {
+            const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
