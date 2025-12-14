@@ -443,8 +443,7 @@ class ProcurementApp {
                             position: relative;
                         }
                         /* 浮水印樣式 */
-                        body::before {
-                            content: '公司內部文件\A請勿外流傳閱';
+                        .watermark {
                             position: fixed;
                             top: 50%;
                             left: 50%;
@@ -452,11 +451,11 @@ class ProcurementApp {
                             font-size: 80px;
                             font-weight: bold;
                             color: rgba(200, 200, 200, 0.15);
-                            white-space: pre;
                             text-align: center;
                             line-height: 1.5;
                             z-index: -1;
                             pointer-events: none;
+                            white-space: nowrap;
                         }
                         h1 {
                             font-size: 24px;
@@ -506,6 +505,7 @@ class ProcurementApp {
                     </style>
                 </head>
                 <body>
+                    <div class="watermark">公司內部文件<br>請勿外流傳閱</div>
                     ${generatedContent.innerHTML}
                     <div class="document-footer">
                         本文件為公司內部文件，僅供內部使用，請勿外流或傳閱。未經授權之複製、傳播或公開展示均屬違反內控規定。
