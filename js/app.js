@@ -421,23 +421,22 @@ class ProcurementApp {
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
             
-            // 設定 PDF 選項，使用固定寬度確保跨裝置一致性
+            // 設定 PDF 選項
             const opt = {
-                margin: [15, 15, 15, 15],
+                margin: [10, 10, 10, 10],
                 filename: `${draftTitle}_${new Date().toISOString().split('T')[0]}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: { 
                     scale: 2,
                     useCORS: true,
                     letterRendering: true,
-                    logging: true,
-                    width: 794,  // A4 寬度（210mm = 794px at 96dpi）
-                    windowWidth: 794
+                    logging: false
                 },
                 jsPDF: { 
                     unit: 'mm', 
                     format: 'a4', 
-                    orientation: 'portrait'
+                    orientation: 'portrait',
+                    compress: true
                 },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
