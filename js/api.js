@@ -125,14 +125,28 @@ const API = {
             attachmentsCount: attachments.length
         });
 
+        // 組合完整的輸入文本
         let userContent = `請根據以下採購需求生成簽呈：\n\n${userInput}`;
 
+        // 添加文件內容
         if (attachments.length > 0) {
-            userContent += `\n\n參考文件：\n`;
-            attachments.forEach(att => {
-                userContent += `- ${att.fileName}\n`;
+            userContent += `\n\n=== 參考文件內容 ===\n`;
+            attachments.forEach((att, index) => {
+                userContent += `\n\n【文件 ${index + 1}：${att.fileName}】\n`;
+                if (att.textContent && att.textContent.length > 0) {
+                    // 限制文本長度，避免超過 API 限制
+                    const maxLength = 10000;  // 每個文件最多 10000 字
+                    const content = att.textContent.length > maxLength 
+                        ? att.textContent.substring(0, maxLength) + '\n\n[文件內容過長，已截斷]'
+                        : att.textContent;
+                    userContent += content;
+                } else {
+                    userContent += '[無法提取文件內容]';
+                }
             });
         }
+
+        console.log('Final userContent length:', userContent.length);
 
         const messages = [
             {

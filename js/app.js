@@ -278,30 +278,93 @@ class ProcurementApp {
             return;
         }
 
-        UI.showToast('正在上傳檔案...', 'info');
+        UI.showToast('正在處理檔案...', 'info');
 
         try {
-            // 讀取檔案
-            const fileData = await this.readFileAsBase64(file);
+            // 提取文件文本內容
+            let textContent = '';
+            
+            if (file.type === 'application/pdf') {
+                // PDF 文件
+                textContent = await this.extractPdfText(file);
+            } else if (file.type.includes('word') || file.type.includes('document')) {
+                // Word 文件
+                textContent = await this.extractWordText(file);
+            } else if (file.type === 'text/plain') {
+                // 純文本文件
+                textContent = await file.text();
+            } else if (file.type.startsWith('image/')) {
+                // 圖片文件（暫不支持 OCR）
+                textContent = `[圖片文件：${file.name}，需要視覺識別功能]`;
+            } else {
+                // 其他格式
+                textContent = `[不支持的文件格式：${file.type}]`;
+            }
 
-            // 模擬上傳（實際應用中應該上傳到伺服器）
+            // 保存文件信息和文本內容
             const uploadedFile = {
                 fileName: file.name,
-                fileData: fileData,
                 fileSize: file.size,
-                mimeType: file.type
+                mimeType: file.type,
+                textContent: textContent  // 文本內容
             };
 
             this.uploadedFiles.push(uploadedFile);
             UI.showUploadedFile(uploadedFile);
-            UI.showToast(`檔案 ${file.name} 上傳成功`, 'success');
+            UI.showToast(`檔案 ${file.name} 處理成功`, 'success');
 
             // 清除 input
             event.target.value = '';
 
         } catch (error) {
-            console.error('Upload error:', error);
-            UI.showToast('檔案上傳失敗', 'error');
+            console.error('File processing error:', error);
+            UI.showToast(`檔案處理失敗：${error.message}`, 'error');
+        }
+    }
+
+    /**
+     * 提取 PDF 文本
+     */
+    async extractPdfText(file) {
+        try {
+            if (typeof pdfjsLib === 'undefined') {
+                throw new Error('PDF.js 庫未加載');
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += `\n\n--- 第 ${i} 頁 ---\n${pageText}`;
+            }
+            
+            return fullText.trim();
+        } catch (error) {
+            console.error('PDF text extraction error:', error);
+            return `[無法提取 PDF 文本：${error.message}]`;
+        }
+    }
+
+    /**
+     * 提取 Word 文本
+     */
+    async extractWordText(file) {
+        try {
+            if (typeof mammoth === 'undefined') {
+                throw new Error('Mammoth.js 庫未加載');
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+            
+            return result.value || '[Word 文件內容為空]';
+        } catch (error) {
+            console.error('Word text extraction error:', error);
+            return `[無法提取 Word 文本：${error.message}]`;
         }
     }
 
