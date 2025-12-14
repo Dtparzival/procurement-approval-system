@@ -396,7 +396,7 @@ class ProcurementApp {
     }
     
     /**
-     * 處理下載
+     * 處理下載 - 使用瀏覽器原生列印功能
      */
     async handleDownload() {
         console.log('handleDownload called');
@@ -408,48 +408,92 @@ class ProcurementApp {
             return;
         }
         
-        // 檢查 html2pdf 庫是否加載
-        if (typeof html2pdf === 'undefined') {
-            console.error('html2pdf library not loaded');
-            UI.showToast('PDF 文件庫未加載，請刷新頁面再試', 'error');
-            return;
-        }
-        
         try {
             console.log('Starting PDF document generation...');
-            UI.showToast('正在生成 PDF 文件...', 'info');
+            UI.showToast('正在準備 PDF 下載...', 'info');
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
             
-            // 設定 PDF 選項
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: `${draftTitle}_${new Date().toISOString().split('T')[0]}.pdf`,
-                image: { type: 'jpeg', quality: 0.95 },
-                html2canvas: { 
-                    scale: 2,
-                    useCORS: true,
-                    letterRendering: true,
-                    logging: false
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: 'a4', 
-                    orientation: 'portrait',
-                    compress: true
-                },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            // 創建一個隱藏的列印專用視窗
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                UI.showToast('無法開啟列印視窗，請檢查瀏覽器設定', 'error');
+                return;
+            }
+            
+            // 建立列印頁面的 HTML
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${draftTitle}</title>
+                    <style>
+                        @page {
+                            size: A4;
+                            margin: 20mm;
+                        }
+                        body {
+                            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+                            line-height: 1.8;
+                            color: #333;
+                            max-width: 100%;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        h1 {
+                            font-size: 24px;
+                            font-weight: bold;
+                            margin: 0 0 20px 0;
+                            padding-bottom: 10px;
+                            border-bottom: 2px solid #333;
+                        }
+                        h2 {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin: 20px 0 10px 0;
+                            padding-bottom: 5px;
+                            border-bottom: 1px solid #666;
+                        }
+                        h3 {
+                            font-size: 16px;
+                            font-weight: bold;
+                            margin: 15px 0 10px 0;
+                        }
+                        p {
+                            margin: 10px 0;
+                            text-align: justify;
+                        }
+                        ul, ol {
+                            margin: 10px 0;
+                            padding-left: 30px;
+                        }
+                        li {
+                            margin: 5px 0;
+                        }
+                        strong {
+                            font-weight: bold;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${generatedContent.innerHTML}
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            
+            // 等待內容加載完成
+            printWindow.onload = function() {
+                setTimeout(() => {
+                    printWindow.print();
+                    UI.showToast('請在列印對話框中選擇「另存為 PDF」', 'success');
+                }, 500);
             };
             
-            // 等待一小段時間確保內容完全渲染
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
-            // 直接從原始元素生成 PDF
-            console.log('Generating PDF...');
-            await html2pdf().set(opt).from(generatedContent).save();
-            
-            console.log('Download completed successfully');
-            UI.showToast('下載成功！', 'success');
+            console.log('Print dialog opened');
         } catch (error) {
             console.error('PDF 文件生成失敗:', error);
             UI.showToast(`PDF 文件生成失敗：${error.message}`, 'error');
