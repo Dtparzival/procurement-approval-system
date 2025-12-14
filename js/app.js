@@ -440,6 +440,23 @@ class ProcurementApp {
                             max-width: 100%;
                             margin: 0;
                             padding: 0;
+                            position: relative;
+                        }
+                        /* 浮水印樣式 */
+                        body::before {
+                            content: '公司內部文件\A請勿外流傳閱';
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                            font-size: 80px;
+                            font-weight: bold;
+                            color: rgba(200, 200, 200, 0.15);
+                            white-space: pre;
+                            text-align: center;
+                            line-height: 1.5;
+                            z-index: -1;
+                            pointer-events: none;
                         }
                         h1 {
                             font-size: 24px;
@@ -474,10 +491,25 @@ class ProcurementApp {
                         strong {
                             font-weight: bold;
                         }
+                        /* 頁面底部聲明 */
+                        .document-footer {
+                            position: fixed;
+                            bottom: 10mm;
+                            left: 20mm;
+                            right: 20mm;
+                            text-align: center;
+                            font-size: 10px;
+                            color: #999;
+                            border-top: 1px solid #ddd;
+                            padding-top: 5px;
+                        }
                     </style>
                 </head>
                 <body>
                     ${generatedContent.innerHTML}
+                    <div class="document-footer">
+                        本文件為公司內部文件，僅供內部使用，請勿外流或傳閱。未經授權之複製、傳播或公開展示均屬違反內控規定。
+                    </div>
                 </body>
                 </html>
             `;
