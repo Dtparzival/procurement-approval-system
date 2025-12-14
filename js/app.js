@@ -408,115 +408,47 @@ class ProcurementApp {
             return;
         }
         
-        // 檢查 docx 庫是否加載
-        if (typeof docx === 'undefined') {
-            console.error('docx library not loaded');
-            UI.showToast('Word 文件庫未加載，請刷新頁面再試', 'error');
-            return;
-        }
-        
-        if (typeof saveAs === 'undefined') {
-            console.error('FileSaver library not loaded');
-            UI.showToast('文件下載庫未加載，請刷新頁面再試', 'error');
+        // 檢查 html2pdf 庫是否加載
+        if (typeof html2pdf === 'undefined') {
+            console.error('html2pdf library not loaded');
+            UI.showToast('PDF 文件庫未加載，請刷新頁面再試', 'error');
             return;
         }
         
         try {
-            console.log('Starting Word document generation...');
-            UI.showToast('正在生成 Word 文件...', 'info');
+            console.log('Starting PDF document generation...');
+            UI.showToast('正在生成 PDF 文件...', 'info');
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
-            const content = generatedContent.textContent;
             
-            // 解析內容並建立段落
-            const paragraphs = [];
-            const lines = content.split('\n');
-            
-            for (const line of lines) {
-                const trimmedLine = line.trim();
-                
-                // 跳過空行
-                if (!trimmedLine) {
-                    paragraphs.push(
-                        new docx.Paragraph({
-                            text: '',
-                            spacing: { after: 100 },
-                        })
-                    );
-                    continue;
-                }
-                
-                // 判斷是否為標題（以 # 開頭或全大寫）
-                const isHeading = trimmedLine.startsWith('#') || 
-                                  trimmedLine.startsWith('一、') || 
-                                  trimmedLine.startsWith('二、') || 
-                                  trimmedLine.startsWith('三、') ||
-                                  trimmedLine.match(/^[\u4e00-\u9fa5]{2,10}：$/);
-                
-                paragraphs.push(
-                    new docx.Paragraph({
-                        text: trimmedLine.replace(/^#+\s*/, ''),
-                        spacing: {
-                            before: isHeading ? 240 : 120,
-                            after: isHeading ? 120 : 100,
-                        },
-                        style: isHeading ? 'Heading1' : undefined,
-                    })
-                );
-            }
-            
-            // 使用 docx 庫生成 Word 文件
-            const doc = new docx.Document({
-                styles: {
-                    paragraphStyles: [
-                        {
-                            id: 'Heading1',
-                            name: 'Heading 1',
-                            basedOn: 'Normal',
-                            next: 'Normal',
-                            run: {
-                                size: 32,
-                                bold: true,
-                                color: '1E40AF',
-                            },
-                            paragraph: {
-                                spacing: {
-                                    before: 240,
-                                    after: 120,
-                                },
-                            },
-                        },
-                    ],
+            // 設定 PDF 選項
+            const opt = {
+                margin: [15, 15, 15, 15],
+                filename: `${draftTitle}_${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    logging: false
                 },
-                sections: [{
-                    properties: {
-                        page: {
-                            margin: {
-                                top: 1440,
-                                right: 1440,
-                                bottom: 1440,
-                                left: 1440,
-                            },
-                        },
-                    },
-                    children: paragraphs,
-                }],
-            });
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait'
+                },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
             
-            // 生成並下載
-            console.log('Generating blob...');
-            const blob = await docx.Packer.toBlob(doc);
-            console.log('Blob generated:', blob.size, 'bytes');
-            
-            const fileName = `${draftTitle}_${new Date().toISOString().split('T')[0]}.docx`;
-            console.log('Downloading file:', fileName);
-            saveAs(blob, fileName);
+            // 生成並下載 PDF
+            console.log('Generating PDF...');
+            await html2pdf().set(opt).from(generatedContent).save();
             
             console.log('Download completed successfully');
             UI.showToast('下載成功！', 'success');
         } catch (error) {
-            console.error('Word 文件生成失敗:', error);
-            UI.showToast(`Word 文件生成失敗：${error.message}`, 'error');
+            console.error('PDF 文件生成失敗:', error);
+            UI.showToast(`PDF 文件生成失敗：${error.message}`, 'error');
         }
     }
     
