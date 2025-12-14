@@ -38,22 +38,17 @@
 2. 第二次解析：`JSON.parse(bodyData.response.body)` → 得到 `responseBody`
 3. 提取內容：`responseBody.draft_text`
 
-### 3. CORS 問題說明
+### 3. CORS 配置
 
-由於 AWS API Gateway 未配置 CORS，瀏覽器會阻止跨域請求。本分支提供了以下解決方案：
+**✅ AWS API Gateway CORS 已配置完成**
 
-**方案 A：配置 AWS API Gateway CORS（推薦）**
-- 在 AWS API Gateway 中添加 CORS 配置
-- 前端可直接調用 API，無需代理
-- 當前代碼已配置為直接調用 AWS API
+前端代碼直接調用 AWS API Gateway，無需代理服務器。
 
-**方案 B：使用代理服務器**
-- 提供 `proxy_server.py` 作為參考實現
-- 監聽端口：8081
-- 代理端點：`/api/chat`
-- 功能：接收瀏覽器請求，轉發到 AWS API Gateway
-- CORS 配置：添加 `Access-Control-Allow-Origin: *` 頭部
-- 注意：需要修改 `js/api.js` 中的 API URL 為代理地址
+CORS 配置項：
+- `Access-Control-Allow-Origin`: `*`
+- `Access-Control-Allow-Methods`: `POST, OPTIONS`
+- `Access-Control-Allow-Headers`: `Content-Type`
+- `Gateway responses`: Default 4XX, Default 5XX
 
 ### 4. 修改的文件
 
@@ -123,19 +118,22 @@ http://localhost:8080
 
 ### 生產環境
 
-**重要**：生產環境需要解決 CORS 問題，有以下方案：
+**✅ CORS 已配置完成**
 
-#### 方案 1：配置 AWS API Gateway CORS（推薦）
-在 AWS API Gateway 中添加 CORS 配置：
-- Access-Control-Allow-Origin: *（或指定域名）
-- Access-Control-Allow-Methods: POST, OPTIONS
-- Access-Control-Allow-Headers: Content-Type
+AWS API Gateway 的 CORS 已經配置完成，前端可以直接調用 API。
 
-配置完成後，可以直接從前端調用 API，無需代理服務器。
-
-修改 `js/api.js` 中的 URL：
+API URL 已配置在 `js/config.js` 中：
 ```javascript
-const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat', {
+// config.js
+API: {
+    GENERATE_ENDPOINT: 'https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat'
+}
+```
+
+`js/api.js` 從配置中讀取 URL：
+```javascript
+const apiUrl = CONFIG.API.GENERATE_ENDPOINT;
+const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -147,23 +145,16 @@ const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws
 });
 ```
 
-#### 方案 2：部署代理服務器
-如果無法修改 AWS API Gateway 配置，需要部署代理服務器：
-
-1. 使用 Nginx 反向代理
-2. 使用 Node.js/Python 代理服務
-3. 使用 Cloudflare Workers
-
 ## 注意事項
 
-1. **CORS 配置**：當前代碼配置為直接調用 AWS API Gateway，需要在 AWS 端配置 CORS。如果無法配置，請使用 `proxy_server.py` 並修改 `js/api.js` 中的 API URL
-2. **代理服務器**：`proxy_server.py` 僅供開發測試使用，生產環境建議使用 Nginx、Node.js 或 Cloudflare Workers
+1. **API URL 配置**：✅ API URL 已配置在 `js/config.js` 中，便於管理和修改
+2. **CORS 配置**：✅ AWS API Gateway CORS 已配置完成，前端可直接調用
 3. **錯誤處理**：已添加網路錯誤和 API 錯誤處理，但可能需要更詳細的錯誤訊息
 4. **超時處理**：當前沒有設置請求超時，建議添加 timeout 配置
 
 ## 後續優化建議
 
-1. **配置化 API URL**：將 API URL 移到 `config.js` 中
+1. **✅ 配置化 API URL**：已完成 - API URL 已移到 `config.js` 中
 2. **添加請求超時**：設置 30-60 秒的超時時間
 3. **添加重試機制**：API 失敗時自動重試 2-3 次
 4. **改進錯誤提示**：根據不同錯誤類型顯示更友好的提示
@@ -178,6 +169,7 @@ const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws
 
 ## 相關文件
 
-- API 請求/響應範例：`/home/ubuntu/upload/api去回內容.txt`
-- 代理服務器：`proxy_server.py`
-- 修改的文件：`js/api.js`, `js/app.js`
+- API 配置：`js/config.js`
+- API 整合邏輯：`js/api.js`
+- 應用主邏輯：`js/app.js`
+- 分支說明：`BRANCH_README.md`

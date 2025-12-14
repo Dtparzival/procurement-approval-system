@@ -11,25 +11,25 @@
 1. **FEATURE_GENERATE_API.md**
    - 功能開發說明文檔
    - API 請求/響應格式
-   - CORS 問題解決方案
+   - CORS 配置說明
    - 部署指南
 
-2. **proxy_server.py**
-   - Python CORS 代理服務器（可選）
-   - 用於開發測試環境
-   - 解決瀏覽器跨域限制
-
-3. **BRANCH_README.md**（本文件）
+2. **BRANCH_README.md**（本文件）
    - 分支說明文檔
 
 ### 修改文件
 
-1. **js/api.js**
+1. **js/config.js**
+   - 添加 `API.GENERATE_ENDPOINT` 配置項
+   - 集中管理 API 端點
+
+2. **js/api.js**
    - 添加 `generateUUID()` 方法
    - 修改 `generateApproval()` 方法以調用外部 API
    - 實現多層 JSON 響應解析
+   - 從配置中讀取 API URL
 
-2. **js/app.js**
+3. **js/app.js**
    - 移除 API Key 檢查（外部 API 不需要）
 
 ## 功能說明
@@ -62,35 +62,21 @@
 }
 ```
 
-## CORS 問題處理
+## CORS 配置
 
-### 當前配置
+**✅ AWS API Gateway CORS 已配置完成**
 
-代碼配置為**直接調用 AWS API Gateway**，這需要在 AWS 端配置 CORS：
+前端代碼直接調用 AWS API Gateway，無需代理服務器。
 
+CORS 配置項：
 ```
-Access-Control-Allow-Origin: *（或指定域名）
+Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: POST, OPTIONS
 Access-Control-Allow-Headers: Content-Type
+Gateway responses: Default 4XX, Default 5XX
 ```
 
-### 備選方案
-
-如果無法在 AWS 端配置 CORS，可以使用 `proxy_server.py` 代理服務器：
-
-1. 啟動代理服務器：
-```bash
-python3 proxy_server.py
-```
-
-2. 修改 `js/api.js` 中的 API URL：
-```javascript
-// 從
-const response = await fetch('https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat', {
-
-// 改為
-const response = await fetch('http://localhost:8081/api/chat', {
-```
+API URL 已配置在 `js/config.js` 中，便於管理和修改。
 
 ## 測試狀態
 
@@ -102,13 +88,11 @@ const response = await fetch('http://localhost:8081/api/chat', {
 | 響應解析 | ✅ 通過 | 多層 JSON 正確解析 |
 | 內容提取 | ✅ 通過 | draft_text 正確提取 |
 | 內容顯示 | ✅ 通過 | Markdown 格式正確渲染 |
-| CORS 處理 | ⚠️ 需配置 | 需要 AWS CORS 配置或使用代理 |
+| CORS 處理 | ✅ 完成 | AWS API Gateway CORS 已配置完成 |
 
 ## 部署指南
 
 ### 開發環境
-
-#### 方案 1：直接使用（需要 AWS CORS 配置）
 
 ```bash
 # 啟動 HTTP 服務器
@@ -118,35 +102,21 @@ python3 -m http.server 8080
 # http://localhost:8080
 ```
 
-#### 方案 2：使用代理服務器
-
-```bash
-# 1. 啟動代理服務器
-python3 proxy_server.py &
-
-# 2. 修改 js/api.js 中的 API URL（見上文）
-
-# 3. 啟動 HTTP 服務器
-python3 -m http.server 8080
-
-# 4. 訪問應用
-# http://localhost:8080
-```
-
 ### 生產環境
 
-**推薦方案**：在 AWS API Gateway 中配置 CORS
+**✅ 已就緒**：AWS API Gateway CORS 已配置完成，可直接部署静態文件。
 
-**備選方案**：
-1. 使用 Nginx 反向代理
-2. 使用 Node.js/Express 代理服務
-3. 使用 Cloudflare Workers
+部署方式：
+- AWS S3 + CloudFront
+- GitHub Pages
+- Netlify / Vercel
+- 任何静態文件託管服務
 
 詳細說明請參考 `FEATURE_GENERATE_API.md`。
 
 ## 合併前檢查清單
 
-- [ ] 確認 AWS API Gateway 已配置 CORS
+- [x] 確認 AWS API Gateway 已配置 CORS
 - [ ] 測試 API 調用功能
 - [ ] 驗證錯誤處理
 - [ ] 檢查文檔完整性
