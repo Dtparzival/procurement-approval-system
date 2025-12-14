@@ -421,6 +421,31 @@ class ProcurementApp {
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
             
+            // 創建固定寬度的隱藏容器，確保跨裝置一致性
+            const pdfContainer = document.createElement('div');
+            pdfContainer.style.cssText = `
+                position: fixed;
+                left: -9999px;
+                top: 0;
+                width: 210mm;
+                background: white;
+                padding: 20mm;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            `;
+            
+            // 克隆內容
+            const clonedContent = generatedContent.cloneNode(true);
+            clonedContent.style.cssText = `
+                width: 100%;
+                max-width: none;
+                font-size: 14px;
+                line-height: 1.6;
+                color: #333;
+            `;
+            
+            pdfContainer.appendChild(clonedContent);
+            document.body.appendChild(pdfContainer);
+            
             // 設定 PDF 選項
             const opt = {
                 margin: [15, 15, 15, 15],
@@ -430,7 +455,9 @@ class ProcurementApp {
                     scale: 2,
                     useCORS: true,
                     letterRendering: true,
-                    logging: false
+                    logging: false,
+                    width: 794,  // A4 寬度（210mm = 794px at 96dpi）
+                    windowWidth: 794
                 },
                 jsPDF: { 
                     unit: 'mm', 
@@ -442,7 +469,10 @@ class ProcurementApp {
             
             // 生成並下載 PDF
             console.log('Generating PDF...');
-            await html2pdf().set(opt).from(generatedContent).save();
+            await html2pdf().set(opt).from(pdfContainer).save();
+            
+            // 清理臨時容器
+            document.body.removeChild(pdfContainer);
             
             console.log('Download completed successfully');
             UI.showToast('下載成功！', 'success');
