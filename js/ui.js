@@ -315,7 +315,7 @@ const UI = {
     },
 
     /**
-     * 顯示載入狀態 - 增強 AI 動畫效果
+     * 顯示載入狀態
      */
     showLoading(message) {
         const emptyState = document.getElementById('emptyState');
@@ -328,66 +328,7 @@ const UI = {
         loadingState.classList.remove('hidden');
         loadingText.textContent = message;
         
-        // 增強生成按鈕動畫
-        const generateBtn = document.getElementById('generateBtn');
-        if (generateBtn) {
-            generateBtn.classList.add('btn-generating');
-            generateBtn.disabled = true;
-        }
-        
-        // 生成 AI 粒子效果
-        this.createAIParticles();
-        
         lucide.createIcons();
-    },
-    
-    /**
-     * 創建 AI 粒子效果
-     */
-    createAIParticles() {
-        // 檢查是否已經存在粒子容器
-        let container = document.getElementById('aiParticlesContainer');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'aiParticlesContainer';
-            container.className = 'ai-particles-container';
-            document.body.appendChild(container);
-        }
-        
-        // 清空舊粒子
-        container.innerHTML = '';
-        
-        // 生成 30 個粒子
-        const generateBtn = document.getElementById('generateBtn');
-        if (!generateBtn) return;
-        
-        const btnRect = generateBtn.getBoundingClientRect();
-        const centerX = btnRect.left + btnRect.width / 2;
-        const centerY = btnRect.top + btnRect.height / 2;
-        
-        for (let i = 0; i < 30; i++) {
-            setTimeout(() => {
-                const particle = document.createElement('div');
-                particle.className = 'ai-particle';
-                
-                // 隨機位置
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 50;
-                const startX = centerX + Math.cos(angle) * distance;
-                const startY = centerY + Math.sin(angle) * distance;
-                
-                particle.style.left = startX + 'px';
-                particle.style.top = startY + 'px';
-                
-                // 隨機延遲
-                particle.style.animationDelay = Math.random() * 0.5 + 's';
-                
-                container.appendChild(particle);
-                
-                // 2秒後移除
-                setTimeout(() => particle.remove(), 2500);
-            }, i * 50);
-        }
     },
 
     /**
@@ -395,19 +336,6 @@ const UI = {
      */
     hideLoading() {
         document.getElementById('loadingState').classList.add('hidden');
-        
-        // 移除生成按鈕動畫
-        const generateBtn = document.getElementById('generateBtn');
-        if (generateBtn) {
-            generateBtn.classList.remove('btn-generating');
-            generateBtn.disabled = false;
-        }
-        
-        // 清除粒子容器
-        const container = document.getElementById('aiParticlesContainer');
-        if (container) {
-            container.remove();
-        }
     },
 
     /**

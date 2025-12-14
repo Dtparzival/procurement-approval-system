@@ -335,10 +335,37 @@
                             </p>
                         </div>
 
-                        <!-- 載入狀態 -->
+                        <!-- 載入狀態 - AI 智能思考效果 -->
                         <div id="loadingState" class="hidden flex flex-col items-center justify-center h-[500px]">
-                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-                            <p id="loadingText" class="text-gray-600 font-medium">正在生成簽呈...</p>
+                            <!-- AI 思考圖示 -->
+                            <div class="relative mb-8">
+                                <!-- 外層脈衝光環 -->
+                                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 animate-pulse-slow"></div>
+                                
+                                <!-- 中層旋轉光環 -->
+                                <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 border-r-purple-500 animate-spin" style="width: 80px; height: 80px; top: -10px; left: -10px;"></div>
+                                
+                                <!-- 內層核心 -->
+                                <div class="relative w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                    <i data-lucide="brain" class="w-8 h-8 text-white"></i>
+                                </div>
+                                
+                                <!-- 思考波紋 -->
+                                <div class="absolute inset-0 rounded-full border-2 border-blue-300 opacity-40 animate-ping" style="animation-duration: 2s;"></div>
+                            </div>
+                            
+                            <!-- 文字提示 -->
+                            <div class="text-center">
+                                <p id="loadingText" class="text-gray-700 font-semibold text-lg mb-2">正在生成簽呈...</p>
+                                <p class="text-gray-500 text-sm">AI 正在深度分析您的需求</p>
+                            </div>
+                            
+                            <!-- 思考點動畫 -->
+                            <div class="flex items-center gap-2 mt-6">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+                            </div>
                         </div>
 
                         <!-- 生成內容 -->
