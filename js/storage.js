@@ -185,7 +185,24 @@ const Storage = {
             history.splice(CONFIG.UI.MAX_HISTORY_ITEMS);
         }
 
-        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify(history));
+        try {
+            localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify(history));
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                // 儲存空間不足，刪除較舊的歷史記錄
+                console.warn('localStorage quota exceeded, removing old history items');
+                history.splice(Math.floor(CONFIG.UI.MAX_HISTORY_ITEMS / 2));
+                try {
+                    localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify(history));
+                } catch (e2) {
+                    // 仍然失敗，清空歷史記錄
+                    console.error('Failed to save history even after cleanup:', e2);
+                    localStorage.setItem(this.getUserKey(CONFIG.STORAGE.HISTORY), JSON.stringify([newItem]));
+                }
+            } else {
+                throw e;
+            }
+        }
         return newItem;
     },
 

@@ -202,12 +202,18 @@ class ProcurementApp {
             // 呼叫 API 生成簽呈
             const result = await API.generateApproval(userInput, this.uploadedFiles);
 
-            // 儲存到歷史記錄
+            // 儲存到歷史記錄（只保存文件元數據，不保存文件內容）
+            const attachmentMetadata = this.uploadedFiles.map(file => ({
+                name: file.name,
+                size: file.size,
+                type: file.type
+            }));
+            
             const historyItem = Storage.saveHistory({
                 title: result.title,
                 content: result.content,
                 userInput: userInput,
-                attachments: this.uploadedFiles
+                attachments: attachmentMetadata
             });
 
             // 顯示結果
