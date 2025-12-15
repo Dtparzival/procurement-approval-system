@@ -160,16 +160,51 @@ const API = {
         ];
 
         try {
-            const response = await this.callLLM(messages, {
-                temperature: 0.7,
-                maxTokens: 4000
+            // 從配置中讀取 API URL
+            const apiUrl = CONFIG.API.GENERATE_ENDPOINT;
+            
+            console.log('Calling AWS API:', {
+                url: apiUrl,
+                userContentLength: userContent.length
             });
 
-            if (!response.choices || response.choices.length === 0) {
-                throw new Error('API 回應格式錯誤，請稍後再試');
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: messages
+                })
+            });
+
+            console.log('API Response status:', response.status);
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('API Error Response:', errorData);
+                throw new Error(`API 請求失敗 (HTTP ${response.status})`);
             }
 
-            const content = response.choices[0]?.message?.content || '';
+            const data = await response.json();
+            console.log('API Response received:', data);
+
+            // 解析多層 JSON 響應
+            if (!data.body) {
+                throw new Error('API 回應格式錯誤：缺少 body');
+            }
+
+            const bodyData = JSON.parse(data.body);
+            console.log('Parsed body data:', bodyData);
+
+            if (!bodyData.response || !bodyData.response.body) {
+                throw new Error('API 回應格式錯誤：缺少 response.body');
+            }
+
+            const responseBody = JSON.parse(bodyData.response.body);
+            console.log('Parsed response body:', responseBody);
+
+            const content = responseBody.draft_text;
             
             if (!content || content.trim().length === 0) {
                 throw new Error('生成的內容為空，請再試一次');
