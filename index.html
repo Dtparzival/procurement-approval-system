@@ -32,8 +32,8 @@
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
-    <!-- docx library for Word document generation -->
-    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <!-- html2pdf.js library for PDF document generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     
     <!-- Google Identity Services -->
@@ -117,8 +117,8 @@
                             <div class="w-12 h-12 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-lg flex items-center justify-center mb-4 card-icon">
                                 <i data-lucide="upload" class="w-6 h-6 text-white"></i>
                             </div>
-                            <h4 class="text-xl font-semibold text-gray-900 mb-2">文件識別</h4>
-                            <p class="text-gray-600">上傳參考文件，AI 自動識別並提取關鍵資訊，快速填入採購需求。</p>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">文件智能讀取</h4>
+                            <p class="text-gray-600">上傳 PDF、Word 等參考文件，AI 自動讀取內容並理解脈絡，生成更精準的簽呈。</p>
                         </div>
 
                         <!-- 功能卡片 3 -->
@@ -335,10 +335,37 @@
                             </p>
                         </div>
 
-                        <!-- 載入狀態 -->
+                        <!-- 載入狀態 - AI 智能思考效果 -->
                         <div id="loadingState" class="hidden flex flex-col items-center justify-center h-[500px]">
-                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-                            <p id="loadingText" class="text-gray-600 font-medium">正在生成簽呈...</p>
+                            <!-- AI 思考圖示 -->
+                            <div class="relative mb-8">
+                                <!-- 外層脈衝光環 -->
+                                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 animate-pulse-slow"></div>
+                                
+                                <!-- 中層旋轉光環 -->
+                                <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 border-r-purple-500 animate-spin" style="width: 80px; height: 80px; top: -10px; left: -10px;"></div>
+                                
+                                <!-- 內層核心 -->
+                                <div class="relative w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                    <i data-lucide="brain" class="w-8 h-8 text-white"></i>
+                                </div>
+                                
+                                <!-- 思考波紋 -->
+                                <div class="absolute inset-0 rounded-full border-2 border-blue-300 opacity-40 animate-ping" style="animation-duration: 2s;"></div>
+                            </div>
+                            
+                            <!-- 文字提示 -->
+                            <div class="text-center">
+                                <p id="loadingText" class="text-gray-700 font-semibold text-lg mb-2">正在生成簽呈...</p>
+                                <p class="text-gray-500 text-sm">AI 正在深度分析您的需求</p>
+                            </div>
+                            
+                            <!-- 思考點動畫 -->
+                            <div class="flex items-center gap-2 mt-6">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+                            </div>
                         </div>
 
                         <!-- 生成內容 -->
@@ -569,6 +596,18 @@
     <!-- Toast 通知容器 -->
     <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
 
+    <!-- PDF.js for PDF text extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
+    
+    <!-- Mammoth.js for Word document text extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    
     <!-- Custom JavaScript -->
     <script src="js/config.js"></script>
     <script src="js/storage.js"></script>

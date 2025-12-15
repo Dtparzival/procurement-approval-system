@@ -117,18 +117,7 @@ const API = {
     },
 
     /**
-     * Generate UUID for session ID
-     */
-    generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    },
-
-    /**
-     * Generate procurement approval document using external API
+     * Generate procurement approval document
      */
     async generateApproval(userInput, attachments = []) {
         console.log('Generating approval document:', {
@@ -136,101 +125,70 @@ const API = {
             attachmentsCount: attachments.length
         });
 
-        // 獲取草稿標題
-        const draftTitle = document.getElementById('draftTitle')?.value.trim() || '';
-        
-        // 組合 inputText：草稿標題 + 需求描述
-        let inputText = '';
-        if (draftTitle) {
-            inputText = `標題：${draftTitle}\n\n`;
-        }
-        inputText += `需求描述：\n${userInput}`;
+        // 組合完整的輸入文本
+        let userContent = `請根據以下採購需求生成簽呈：\n\n${userInput}`;
 
+        // 添加文件內容
         if (attachments.length > 0) {
-            inputText += `\n\n參考文件：\n`;
-            attachments.forEach(att => {
-                inputText += `- ${att.fileName}\n`;
+            userContent += `\n\n=== 參考文件內容 ===\n`;
+            attachments.forEach((att, index) => {
+                userContent += `\n\n【文件 ${index + 1}：${att.fileName}】\n`;
+                if (att.textContent && att.textContent.length > 0) {
+                    // 限制文本長度，避免超過 API 限制
+                    const maxLength = 10000;  // 每個文件最多 10000 字
+                    const content = att.textContent.length > maxLength 
+                        ? att.textContent.substring(0, maxLength) + '\n\n[文件內容過長，已截斷]'
+                        : att.textContent;
+                    userContent += content;
+                } else {
+                    userContent += '[無法提取文件內容]';
+                }
             });
         }
 
-        // 生成 sessionId
-        const sessionId = this.generateUUID();
+        console.log('Final userContent length:', userContent.length);
+
+        const messages = [
+            {
+                role: "system",
+                content: CONFIG.PROMPTS.APPROVAL_GENERATION
+            },
+            {
+                role: "user",
+                content: userContent
+            }
+        ];
 
         try {
-            // 從配置中讀取 API URL
-            const apiUrl = CONFIG.API.GENERATE_ENDPOINT;
-            
-            console.log('Calling external API:', {
-                url: apiUrl,
-                sessionId: sessionId,
-                inputTextLength: inputText.length
+            const response = await this.callLLM(messages, {
+                temperature: 0.7,
+                maxTokens: 4000
             });
 
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    inputText: inputText,
-                    sessionId: sessionId
-                })
-            });
-
-            console.log('API Response status:', response.status);
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error('API Error Response:', errorData);
-                throw new Error(`API 請求失敗 (HTTP ${response.status})`);
+            if (!response.choices || response.choices.length === 0) {
+                throw new Error('API 回應格式錯誤，請稍後再試');
             }
 
-            const data = await response.json();
-            console.log('API Response received:', data);
-
-            // 解析多層 JSON 響應
-            // response.body 是一個 JSON 字符串
-            if (!data.body) {
-                throw new Error('API 回應格式錯誤：缺少 body');
-            }
-
-            const bodyData = JSON.parse(data.body);
-            console.log('Parsed body data:', bodyData);
-
-            if (!bodyData.response || !bodyData.response.body) {
-                throw new Error('API 回應格式錯誤：缺少 response.body');
-            }
-
-            const responseBody = JSON.parse(bodyData.response.body);
-            console.log('Parsed response body:', responseBody);
-
-            const draftText = responseBody.draft_text;
+            const content = response.choices[0]?.message?.content || '';
             
-            if (!draftText || draftText.trim().length === 0) {
+            if (!content || content.trim().length === 0) {
                 throw new Error('生成的內容為空，請再試一次');
             }
             
             console.log('Approval generated successfully:', {
-                contentLength: draftText.length
+                contentLength: content.length
             });
             
-            // 提取標題（從草稿文本中尋找【主旨】）
-            const titleMatch = draftText.match(/【主旨】[\s\S]*?\n\n([^\n]+)/);
-            const title = titleMatch ? titleMatch[1].trim() : (draftTitle || '採購簽呈');
+            // Extract title from content (first heading)
+            const titleMatch = content.match(/^#\s+(.+)$/m);
+            const title = titleMatch ? titleMatch[1] : '採購簽呈';
 
             return {
                 title: title,
-                content: draftText,
-                sessionId: sessionId
+                content: content
             };
         } catch (error) {
             console.error('Generate approval error:', error);
-            
-            // 如果是網路錯誤
-            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                throw new Error('網路連線失敗，請檢查網路連線後再試');
-            }
-            
             throw error;
         }
     },
