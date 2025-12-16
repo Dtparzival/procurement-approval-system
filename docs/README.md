@@ -9,6 +9,8 @@
 ```
 docs/
 ├── README.md                    # 本文件（索引）
+├── API資料流程完整分析.md      # API 資料流程完整分析
+├── Request_Response資料驗證與轉換深度分析.md  # Request/Response 資料驗證與轉換深度分析
 ├── business/                    # 商業分析和策略
 │   └── gpts-store-listing-analysis.md       # GPTs Store 上架可行性分析
 ├── bugfix/                      # Bug 修復報告
@@ -57,10 +59,12 @@ docs/
 
 如果您是開發人員，建議閱讀：
 
-1. **[登入狀態管理指南](guides/login-state-management.md)** - 了解登入狀態管理機制
-2. **[預防措施實施指南](guides/PREVENTION_GUIDE.md)** - 如何避免常見錯誤
-3. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 了解過去的問題和解決方案
-4. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 深入了解系統失效的原因
+1. **[API 資料流程完整分析](API資料流程完整分析.md)** - 了解 API 呼叫的完整資料流程
+2. **[Request/Response 資料驗證與轉換深度分析](Request_Response資料驗證與轉換深度分析.md)** - 深入了解資料驗證與轉換機制
+3. **[登入狀態管理指南](guides/login-state-management.md)** - 了解登入狀態管理機制
+4. **[預防措施實施指南](guides/PREVENTION_GUIDE.md)** - 如何避免常見錯誤
+5. **[Bug 修復歷史](bugfix/BUGFIX_HISTORY.md)** - 了解過去的問題和解決方案
+6. **[根本原因分析](bugfix/RCA_v1.5.4.md)** - 深入了解系統失效的原因
 
 ### 運維人員
 
@@ -81,6 +85,17 @@ docs/
 ---
 
 ## 📋 文件分類
+
+### 🔧 技術分析文件
+
+深入分析系統的技術實作細節，包括 API 呼叫流程、資料驗證與轉換機制。
+
+| 文件 | 描述 | 優先級 |
+|:---|:---|:---:|
+| **API資料流程完整分析.md** | 從畫面觸發到顯示結果的完整 API 資料流程分析 | ⭐⭐⭐⭐⭐ |
+| **Request_Response資料驗證與轉換深度分析.md** | Request/Response 過程中的資料驗證與轉換機制 | ⭐⭐⭐⭐⭐ |
+
+**推薦閱讀**: 這兩份文件詳細說明了系統如何處理 API 請求與響應，包括資料組裝、驗證、轉換與錯誤處理。對於理解系統核心運作機制至關重要。
 
 ### 💼 商業分析和策略 (business/)
 
@@ -177,6 +192,8 @@ docs/
 
 ### 簽呈生成
 
+- **[API 資料流程完整分析](API資料流程完整分析.md)** - 完整的 API 呼叫流程分析
+- **[Request/Response 資料驗證與轉換深度分析](Request_Response資料驗證與轉換深度分析.md)** - 資料驗證與轉換機制
 - [核心功能測試 - API 生成](testing/core-features-test-2025-12-13.md)
 - [生成簽呈功能改進](bugfix/BUGFIX_HISTORY.md#生成簽呈功能改進-2025-12-13)
 - [v1.5.3 - 模型配置修復](bugfix/BUGFIX_HISTORY.md#v153---模型配置和下載功能-2025-12-13)
@@ -199,6 +216,7 @@ docs/
 
 | 日期 | 更新內容 | 版本 |
 |:---|:---|:---:|
+| 2025-12-15 | 新增 API 資料流程完整分析與 Request/Response 資料驗證轉換深度分析 | 1.5 |
 | 2025-12-13 | 新增登入狀態管理指南 | 1.4 |
 | 2025-12-13 | 優化 testing 目錄，重命名測試報告 | 1.3 |
 | 2025-12-13 | 新增 testing/README.md 測試報告索引 | 1.3 |
@@ -242,6 +260,6 @@ docs/
 
 ---
 
-**文件版本**: 1.3  
-**最後更新**: 2025-12-13  
+**文件版本**: 1.5  
+**最後更新**: 2025-12-15  
 **維護者**: 開發團隊
