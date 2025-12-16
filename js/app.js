@@ -195,12 +195,18 @@ class ProcurementApp {
             // 呼叫 API 生成簽呈
             const result = await API.generateApproval(userInput, this.uploadedFiles);
 
-            // 儲存到歷史記錄
+            // 儲存到歷史記錄（只保存文件元數據，不保存文件內容）
+            const attachmentMetadata = this.uploadedFiles.map(file => ({
+                name: file.name,
+                size: file.size,
+                type: file.type
+            }));
+            
             const historyItem = Storage.saveHistory({
                 title: result.title,
                 content: result.content,
                 userInput: userInput,
-                attachments: this.uploadedFiles
+                attachments: attachmentMetadata
             });
 
             // 顯示結果
@@ -265,30 +271,93 @@ class ProcurementApp {
             return;
         }
 
-        UI.showToast('正在上傳檔案...', 'info');
+        UI.showToast('正在處理檔案...', 'info');
 
         try {
-            // 讀取檔案
-            const fileData = await this.readFileAsBase64(file);
+            // 提取文件文本內容
+            let textContent = '';
+            
+            if (file.type === 'application/pdf') {
+                // PDF 文件
+                textContent = await this.extractPdfText(file);
+            } else if (file.type.includes('word') || file.type.includes('document')) {
+                // Word 文件
+                textContent = await this.extractWordText(file);
+            } else if (file.type === 'text/plain') {
+                // 純文本文件
+                textContent = await file.text();
+            } else if (file.type.startsWith('image/')) {
+                // 圖片文件（暫不支持 OCR）
+                textContent = `[圖片文件：${file.name}，需要視覺識別功能]`;
+            } else {
+                // 其他格式
+                textContent = `[不支持的文件格式：${file.type}]`;
+            }
 
-            // 模擬上傳（實際應用中應該上傳到伺服器）
+            // 保存文件信息和文本內容
             const uploadedFile = {
                 fileName: file.name,
-                fileData: fileData,
                 fileSize: file.size,
-                mimeType: file.type
+                mimeType: file.type,
+                textContent: textContent  // 文本內容
             };
 
             this.uploadedFiles.push(uploadedFile);
             UI.showUploadedFile(uploadedFile);
-            UI.showToast(`檔案 ${file.name} 上傳成功`, 'success');
+            UI.showToast(`檔案 ${file.name} 處理成功`, 'success');
 
             // 清除 input
             event.target.value = '';
 
         } catch (error) {
-            console.error('Upload error:', error);
-            UI.showToast('檔案上傳失敗', 'error');
+            console.error('File processing error:', error);
+            UI.showToast(`檔案處理失敗：${error.message}`, 'error');
+        }
+    }
+
+    /**
+     * 提取 PDF 文本
+     */
+    async extractPdfText(file) {
+        try {
+            if (typeof pdfjsLib === 'undefined') {
+                throw new Error('PDF.js 庫未加載');
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += `\n\n--- 第 ${i} 頁 ---\n${pageText}`;
+            }
+            
+            return fullText.trim();
+        } catch (error) {
+            console.error('PDF text extraction error:', error);
+            return `[無法提取 PDF 文本：${error.message}]`;
+        }
+    }
+
+    /**
+     * 提取 Word 文本
+     */
+    async extractWordText(file) {
+        try {
+            if (typeof mammoth === 'undefined') {
+                throw new Error('Mammoth.js 庫未加載');
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+            
+            return result.value || '[Word 文件內容為空]';
+        } catch (error) {
+            console.error('Word text extraction error:', error);
+            return `[無法提取 Word 文本：${error.message}]`;
         }
     }
 
@@ -320,7 +389,7 @@ class ProcurementApp {
     }
     
     /**
-     * 處理下載
+     * 處理下載 - 使用瀏覽器原生列印功能
      */
     async handleDownload() {
         console.log('handleDownload called');
@@ -332,115 +401,127 @@ class ProcurementApp {
             return;
         }
         
-        // 檢查 docx 庫是否加載
-        if (typeof docx === 'undefined') {
-            console.error('docx library not loaded');
-            UI.showToast('Word 文件庫未加載，請刷新頁面再試', 'error');
-            return;
-        }
-        
-        if (typeof saveAs === 'undefined') {
-            console.error('FileSaver library not loaded');
-            UI.showToast('文件下載庫未加載，請刷新頁面再試', 'error');
-            return;
-        }
-        
         try {
-            console.log('Starting Word document generation...');
-            UI.showToast('正在生成 Word 文件...', 'info');
+            console.log('Starting PDF document generation...');
+            UI.showToast('正在準備 PDF 下載...', 'info');
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
-            const content = generatedContent.textContent;
             
-            // 解析內容並建立段落
-            const paragraphs = [];
-            const lines = content.split('\n');
-            
-            for (const line of lines) {
-                const trimmedLine = line.trim();
-                
-                // 跳過空行
-                if (!trimmedLine) {
-                    paragraphs.push(
-                        new docx.Paragraph({
-                            text: '',
-                            spacing: { after: 100 },
-                        })
-                    );
-                    continue;
-                }
-                
-                // 判斷是否為標題（以 # 開頭或全大寫）
-                const isHeading = trimmedLine.startsWith('#') || 
-                                  trimmedLine.startsWith('一、') || 
-                                  trimmedLine.startsWith('二、') || 
-                                  trimmedLine.startsWith('三、') ||
-                                  trimmedLine.match(/^[\u4e00-\u9fa5]{2,10}：$/);
-                
-                paragraphs.push(
-                    new docx.Paragraph({
-                        text: trimmedLine.replace(/^#+\s*/, ''),
-                        spacing: {
-                            before: isHeading ? 240 : 120,
-                            after: isHeading ? 120 : 100,
-                        },
-                        style: isHeading ? 'Heading1' : undefined,
-                    })
-                );
+            // 創建一個隱藏的列印專用視窗
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                UI.showToast('無法開啟列印視窗，請檢查瀏覽器設定', 'error');
+                return;
             }
             
-            // 使用 docx 庫生成 Word 文件
-            const doc = new docx.Document({
-                styles: {
-                    paragraphStyles: [
-                        {
-                            id: 'Heading1',
-                            name: 'Heading 1',
-                            basedOn: 'Normal',
-                            next: 'Normal',
-                            run: {
-                                size: 32,
-                                bold: true,
-                                color: '1E40AF',
-                            },
-                            paragraph: {
-                                spacing: {
-                                    before: 240,
-                                    after: 120,
-                                },
-                            },
-                        },
-                    ],
-                },
-                sections: [{
-                    properties: {
-                        page: {
-                            margin: {
-                                top: 1440,
-                                right: 1440,
-                                bottom: 1440,
-                                left: 1440,
-                            },
-                        },
-                    },
-                    children: paragraphs,
-                }],
-            });
+            // 建立列印頁面的 HTML
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${draftTitle}</title>
+                    <style>
+                        @page {
+                            size: A4;
+                            margin: 20mm;
+                        }
+                        body {
+                            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+                            line-height: 1.8;
+                            color: #333;
+                            max-width: 100%;
+                            margin: 0;
+                            padding: 0;
+                            position: relative;
+                        }
+                        /* 浮水印樣式 */
+                        .watermark {
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                            font-size: 80px;
+                            font-weight: bold;
+                            color: rgba(200, 200, 200, 0.15);
+                            text-align: center;
+                            line-height: 1.5;
+                            z-index: -1;
+                            pointer-events: none;
+                            white-space: nowrap;
+                        }
+                        h1 {
+                            font-size: 24px;
+                            font-weight: bold;
+                            margin: 0 0 20px 0;
+                            padding-bottom: 10px;
+                            border-bottom: 2px solid #333;
+                        }
+                        h2 {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin: 20px 0 10px 0;
+                            padding-bottom: 5px;
+                            border-bottom: 1px solid #666;
+                        }
+                        h3 {
+                            font-size: 16px;
+                            font-weight: bold;
+                            margin: 15px 0 10px 0;
+                        }
+                        p {
+                            margin: 10px 0;
+                            text-align: justify;
+                        }
+                        ul, ol {
+                            margin: 10px 0;
+                            padding-left: 30px;
+                        }
+                        li {
+                            margin: 5px 0;
+                        }
+                        strong {
+                            font-weight: bold;
+                        }
+                        /* 頁面底部聲明 */
+                        .document-footer {
+                            position: fixed;
+                            bottom: 10mm;
+                            left: 20mm;
+                            right: 20mm;
+                            text-align: center;
+                            font-size: 10px;
+                            color: #999;
+                            border-top: 1px solid #ddd;
+                            padding-top: 5px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="watermark">公司內部文件<br>請勿外流傳閱</div>
+                    ${generatedContent.innerHTML}
+                    <div class="document-footer">
+                        本文件為公司內部文件，僅供內部使用，請勿外流或傳閱。未經授權之複製、傳播或公開展示均屬違反內控規定。
+                    </div>
+                </body>
+                </html>
+            `;
             
-            // 生成並下載
-            console.log('Generating blob...');
-            const blob = await docx.Packer.toBlob(doc);
-            console.log('Blob generated:', blob.size, 'bytes');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
             
-            const fileName = `${draftTitle}_${new Date().toISOString().split('T')[0]}.docx`;
-            console.log('Downloading file:', fileName);
-            saveAs(blob, fileName);
+            // 等待內容加載完成
+            printWindow.onload = function() {
+                setTimeout(() => {
+                    printWindow.print();
+                    UI.showToast('請在列印對話框中選擇「另存為 PDF」', 'success');
+                }, 500);
+            };
             
-            console.log('Download completed successfully');
-            UI.showToast('下載成功！', 'success');
+            console.log('Print dialog opened');
         } catch (error) {
-            console.error('Word 文件生成失敗:', error);
-            UI.showToast(`Word 文件生成失敗：${error.message}`, 'error');
+            console.error('PDF 文件生成失敗:', error);
+            UI.showToast(`PDF 文件生成失敗：${error.message}`, 'error');
         }
     }
     
