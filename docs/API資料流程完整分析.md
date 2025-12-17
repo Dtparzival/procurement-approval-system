@@ -163,7 +163,8 @@ async generateApproval(userInput, attachments = []) {
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-api-key': CONFIG.API.GENERATE_API_KEY
             },
             body: JSON.stringify({
                 inputText: inputText,
@@ -240,7 +241,9 @@ async generateApproval(userInput, attachments = []) {
 ```javascript
 // 生成簽呈 API 端點
 // AWS API Gateway endpoint for document generation
-GENERATE_ENDPOINT: 'https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat'
+GENERATE_ENDPOINT: 'https://nfj2ce6ht1.execute-api.us-east-1.amazonaws.com/Prod/Chat',
+// AWS API Key
+GENERATE_API_KEY: '0ikLOD3Ck76b1o3ZauRbm5Q2KAXenVAoacfaOjd9'
 ```
 
 **Request 格式：**
@@ -396,7 +399,8 @@ showApproval(approval) {
     └────────────────────────────────┘
          ↓
 [AWS API Gateway]
-https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat
+https://nfj2ce6ht1.execute-api.us-east-1.amazonaws.com/Prod/Chat
+(需要 x-api-key 認證)
          ↓
     ┌────────────────────────────────┐
     │ Request Body:                  │

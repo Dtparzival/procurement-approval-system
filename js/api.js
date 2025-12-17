@@ -179,7 +179,8 @@ const API = {
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'x-api-key': CONFIG.API.GENERATE_API_KEY
                 },
                 body: JSON.stringify({
                     inputText: inputText,

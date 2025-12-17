@@ -16,7 +16,10 @@ const CONFIG = {
             { value: 'gpt-4o', label: 'GPT-4o (最強)' }
         ],
         // 生成簽呈 API 端點
-        // AWS API Gateway endpoint for document generation        GENERATE_ENDPOINT: 'https://bzlc53x57k.execute-api.us-east-1.amazonaws.com/Prod/Chat'
+        // AWS API Gateway endpoint for document generation
+        GENERATE_ENDPOINT: 'https://nfj2ce6ht1.execute-api.us-east-1.amazonaws.com/Prod/Chat',
+        // AWS API Key
+        GENERATE_API_KEY: '0ikLOD3Ck76b1o3ZauRbm5Q2KAXenVAoacfaOjd9'
     },
 
     // Storage keys for localStorage
