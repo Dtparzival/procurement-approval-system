@@ -125,39 +125,42 @@ const API = {
             attachmentsCount: attachments.length
         });
 
-        // 組合完整的輸入文本
-        let userContent = `請根據以下採購需求生成簽呈：\n\n${userInput}`;
+        // 組合完整的 inputText（符合 AWS API 格式）
+        let inputText = '';
 
-        // 添加文件內容
+        // 添加標題（如果有）
+        const draftTitle = document.getElementById('draftTitle')?.value.trim();
+        if (draftTitle) {
+            inputText = `標題：${draftTitle}\n\n`;
+        }
+
+        // 添加需求描述
+        inputText += `需求描述：\n${userInput}`;
+
+        // 添加參考文件及其內容
         if (attachments.length > 0) {
-            userContent += `\n\n=== 參考文件內容 ===\n`;
+            inputText += `\n\n參考文件：\n`;
             attachments.forEach((att, index) => {
-                userContent += `\n\n【文件 ${index + 1}：${att.fileName}】\n`;
+                inputText += `- ${att.fileName}\n`;
+            });
+            
+            // 添加文件實際內容
+            attachments.forEach((att, index) => {
                 if (att.textContent && att.textContent.length > 0) {
                     // 限制文本長度，避免超過 API 限制
                     const maxLength = 10000;  // 每個文件最多 10000 字
                     const content = att.textContent.length > maxLength 
                         ? att.textContent.substring(0, maxLength) + '\n\n[文件內容過長，已截斷]'
                         : att.textContent;
-                    userContent += content;
-                } else {
-                    userContent += '[無法提取文件內容]';
+                    inputText += `\n\n【${att.fileName} 內容】\n${content}\n`;
                 }
             });
         }
 
-        console.log('Final userContent length:', userContent.length);
+        console.log('Final inputText length:', inputText.length);
 
-        const messages = [
-            {
-                role: "system",
-                content: CONFIG.PROMPTS.APPROVAL_GENERATION
-            },
-            {
-                role: "user",
-                content: userContent
-            }
-        ];
+        // 生成 sessionId
+        const sessionId = this.generateUUID();
 
         try {
             // 從配置中讀取 API URL
@@ -165,7 +168,8 @@ const API = {
             
             console.log('Calling AWS API:', {
                 url: apiUrl,
-                userContentLength: userContent.length
+                sessionId: sessionId,
+                inputTextLength: inputText.length
             });
 
             const response = await fetch(apiUrl, {
@@ -174,7 +178,8 @@ const API = {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    messages: messages
+                    inputText: inputText,
+                    sessionId: sessionId
                 })
             });
 
