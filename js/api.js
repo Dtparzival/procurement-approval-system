@@ -159,8 +159,12 @@ const API = {
 
         console.log('Final inputText length:', inputText.length);
 
-        // 生成 sessionId
-        const sessionId = this.generateUUID();
+        // 生成 sessionId（使用簡單的 UUID 生成方法）
+        const sessionId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
 
         try {
             // 從配置中讀取 API URL
