@@ -1,17 +1,17 @@
 /* 
- * AI 智簽公文系統 - AI Agent 專業風格
- * Professional AI Document Generation System
+ * Agent 智簽公文系統 - 國泰金控品牌風格
+ * Cathay Financial Holdings Brand Style
  */
 
 :root {
-    /* 主色調 - 深藍色系 (專業、智能、信賴) */
-    --color-primary: #1E40AF;
-    --color-primary-light: #DBEAFE;
-    --color-primary-dark: #1E3A8A;
-    --color-accent: #3B82F6;
-    --color-accent-light: #BFDBFE;
+    /* 主色調 - 國泰綠色系 (專業、穩健、信賴) */
+    --color-primary: #009142;
+    --color-primary-light: #E8F5EE;
+    --color-primary-dark: #007A38;
+    --color-accent: #6FBA2C;
+    --color-accent-light: #EBF7E3;
     
-    /* 中性色 - 灰階系統 */
+    /* 中性色 - 灰階系統 (質感金融風格) */
     --color-white: #FFFFFF;
     --color-gray-50: #F9FAFB;
     --color-gray-100: #F3F4F6;
@@ -25,19 +25,19 @@
     --color-gray-900: #111827;
     
     /* 功能色 */
-    --color-success: #10B981;
-    --color-success-light: #D1FAE5;
+    --color-success: #009142;
+    --color-success-light: #E8F5EE;
     --color-warning: #F59E0B;
     --color-warning-light: #FEF3C7;
     --color-error: #EF4444;
     --color-error-light: #FEE2E2;
-    --color-info: #3B82F6;
-    --color-info-light: #DBEAFE;
+    --color-info: #009142;
+    --color-info-light: #E8F5EE;
     
-    /* AI 智能色 */
-    --color-ai-gradient: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-    --color-ai-gradient-hover: linear-gradient(135deg, #5568D3 0%, #6A4193 100%);
-    --color-ai-glow: rgba(59, 130, 246, 0.5);
+    /* AI 智能色 - 國泰綠漸層 */
+    --color-ai-gradient: linear-gradient(135deg, #6FBA2C 0%, #009142 100%);
+    --color-ai-gradient-hover: linear-gradient(135deg, #5FA824 0%, #007A38 100%);
+    --color-ai-glow: rgba(0, 145, 66, 0.5);
     
     /* 陰影系統 */
     --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
@@ -634,8 +634,8 @@ input:focus, textarea:focus, select:focus {
 }
 
 .shadow-primary {
-    box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.1), 
-                0 2px 4px -1px rgba(30, 64, 175, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 145, 66, 0.1), 
+                0 2px 4px -1px rgba(0, 145, 66, 0.06);
 }
 
 /* ==================== AI 漸變背景 ==================== */
@@ -706,7 +706,7 @@ input:focus, textarea:focus, select:focus {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(59, 130, 246, 0.2),
+        rgba(0, 145, 66, 0.2),
         transparent
     );
     animation: aiScan 2s linear infinite;
@@ -734,26 +734,26 @@ input:focus, textarea:focus, select:focus {
 .ai-thinking {
     background: linear-gradient(
         270deg,
-        #667EEA,
-        #764BA2,
-        #667EEA,
-        #667EEA
+        #6FBA2C,
+        #009142,
+        #6FBA2C,
+        #6FBA2C
     );
     background-size: 300% 300%;
     animation: aiThinking 2s ease infinite;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 145, 66, 0.4);
 }
 
 /* AI 脈衝光環 - 增強版 */
 @keyframes aiPulseRing {
     0% {
-        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.9), 0 0 20px 0 rgba(102, 126, 234, 0.3);
+        box-shadow: 0 0 0 0 rgba(0, 145, 66, 0.9), 0 0 20px 0 rgba(0, 145, 66, 0.3);
     }
     70% {
-        box-shadow: 0 0 0 25px rgba(102, 126, 234, 0), 0 0 30px 10px rgba(102, 126, 234, 0);
+        box-shadow: 0 0 0 25px rgba(0, 145, 66, 0), 0 0 30px 10px rgba(0, 145, 66, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0), 0 0 20px 0 rgba(102, 126, 234, 0);
+        box-shadow: 0 0 0 0 rgba(0, 145, 66, 0), 0 0 20px 0 rgba(0, 145, 66, 0);
     }
 }
 
@@ -776,7 +776,7 @@ input:focus, textarea:focus, select:focus {
     background: linear-gradient(
         45deg,
         transparent 30%,
-        rgba(102, 126, 234, 0.1) 50%,
+        rgba(0, 145, 66, 0.1) 50%,
         transparent 70%
     );
     background-size: 200% 200%;
@@ -866,7 +866,7 @@ input:focus, textarea:focus, select:focus {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(102, 126, 234, 0.3),
+        rgba(0, 145, 66, 0.3),
         transparent
     );
     animation: aiBeam 2s ease-in-out infinite;
@@ -919,7 +919,7 @@ input:focus, textarea:focus, select:focus {
 
 .ai-card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 145, 66, 0.2);
 }
 
 /* AI 按鈕載入狀態 */
