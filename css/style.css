@@ -87,6 +87,17 @@ html {
     scroll-behavior: smooth;
 }
 
+/* 彈跳視窗開啟時禁用背景滾動 */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 /* ==================== 自訂捲軸 ==================== */
 
 ::-webkit-scrollbar {

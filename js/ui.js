@@ -248,8 +248,10 @@ const UI = {
             `).join('');
         }
         
-        // 禁用背景滿動
-        document.body.style.overflow = 'hidden';
+        // 禁用背景滾動，記錄當前滾動位置
+        this._scrollY = window.scrollY;
+        document.body.style.top = `-${this._scrollY}px`;
+        document.body.classList.add('modal-open');
         
         modal.classList.remove('hidden');
         lucide.createIcons();
@@ -260,8 +262,10 @@ const UI = {
      */
     hideHistoryModal() {
         document.getElementById('historyModal').classList.add('hidden');
-        // 恢復背景滿動
-        document.body.style.overflow = '';
+        // 恢復背景滾動和位置
+        document.body.classList.remove('modal-open');
+        document.body.style.top = '';
+        window.scrollTo(0, this._scrollY || 0);
     },
 
     /**
@@ -300,6 +304,11 @@ const UI = {
         modelSelect.value = Storage.getModel();
         autoSaveToggle.checked = Storage.getAutoSave();
         
+        // 禁用背景滾動，記錄當前滾動位置
+        this._scrollY = window.scrollY;
+        document.body.style.top = `-${this._scrollY}px`;
+        document.body.classList.add('modal-open');
+        
         modal.classList.remove('hidden');
         lucide.createIcons();
     },
@@ -309,6 +318,10 @@ const UI = {
      */
     hideSettingsModal() {
         document.getElementById('settingsModal').classList.add('hidden');
+        // 恢復背景滾動和位置
+        document.body.classList.remove('modal-open');
+        document.body.style.top = '';
+        window.scrollTo(0, this._scrollY || 0);
     },
 
     /**

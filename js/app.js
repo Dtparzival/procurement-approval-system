@@ -583,8 +583,10 @@ class ProcurementApp {
         
         if (!modal || !draftsList || !emptyDrafts) return;
         
-        // 禁用背景滿動
-        document.body.style.overflow = 'hidden';
+        // 禁用背景滾動，記錄當前滾動位置
+        this._scrollY = window.scrollY;
+        document.body.style.top = `-${this._scrollY}px`;
+        document.body.classList.add('modal-open');
         
         // 顯示 modal
         modal.classList.remove('hidden');
@@ -626,8 +628,10 @@ class ProcurementApp {
         const modal = document.getElementById('draftsModal');
         if (modal) {
             modal.classList.add('hidden');
-            // 恢復背景滿動
-            document.body.style.overflow = '';
+            // 恢復背景滾動和位置
+            document.body.classList.remove('modal-open');
+            document.body.style.top = '';
+            window.scrollTo(0, this._scrollY || 0);
         }
     }
     
