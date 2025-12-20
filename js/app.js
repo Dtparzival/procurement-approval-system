@@ -185,15 +185,22 @@ class ProcurementApp {
             return;
         }
 
+        // 用於儲存 timeout ID,以便在錯誤時清除
+        const loadingTimeouts = [];
+
         try {
             // 顯示載入狀態
             UI.showLoading('正在分析您的需求...');
             
-            setTimeout(() => UI.showLoading('正在組織簽呈內容...'), 2000);
-            setTimeout(() => UI.showLoading('正在優化公文格式...'), 4000);
+            // 使用可清除的 timeout
+            loadingTimeouts.push(setTimeout(() => UI.showLoading('正在組織簽呈內容...'), 2000));
+            loadingTimeouts.push(setTimeout(() => UI.showLoading('正在優化公文格式...'), 4000));
 
             // 呼叫 API 生成簽呈
             const result = await API.generateApproval(userInput, this.uploadedFiles);
+
+            // 清除所有 timeout (成功時也要清除,避免不必要的更新)
+            loadingTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
 
             // 儲存到歷史記錄（只保存文件元數據，不保存文件內容）
             const attachmentMetadata = this.uploadedFiles.map(file => ({
@@ -219,6 +226,10 @@ class ProcurementApp {
 
         } catch (error) {
             console.error('Generate error:', error);
+            
+            // 重要: 先清除所有 timeout,避免錯誤狀態被覆蓋
+            loadingTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+            
             UI.hideLoading();
             
             // 判斷錯誤類型並顯示適當的錯誤 UI
