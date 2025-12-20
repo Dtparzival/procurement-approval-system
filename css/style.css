@@ -1885,7 +1885,7 @@ body {
 /* 功能特色區塊延伸到 Footer */
 #heroSection main > section:last-child {
     margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    padding-bottom: 4rem !important;
 }
 
 /* 移除 heroSection 的綠色背景，只保留 Hero 區塊的綠色 */
