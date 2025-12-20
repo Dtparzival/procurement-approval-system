@@ -2898,3 +2898,129 @@ section.bg-white.py-20 {
 #autoSaveToggle:focus + div {
     box-shadow: 0 0 0 4px rgba(0, 145, 66, 0.2);
 }
+
+
+/* ==================== 自訂下拉選單玻璃效果 ==================== */
+
+/* 下拉選單容器 */
+.custom-select-container {
+    position: relative;
+}
+
+/* 下拉選單按鈕 */
+.custom-select-btn {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 145, 66, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.custom-select-btn:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 4px 12px rgba(0, 145, 66, 0.1);
+}
+
+.custom-select-btn:focus {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 4px rgba(0, 145, 66, 0.1);
+}
+
+/* 下拉選單展開時的箭頭旋轉 */
+.custom-select-container.open #selectArrow {
+    transform: rotate(180deg);
+}
+
+/* 下拉選單選項列表 */
+.custom-select-dropdown {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 145, 66, 0.1) !important;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.1),
+        0 2px 10px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 下拉選單選項 */
+.custom-select-option {
+    background: transparent;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.custom-select-option:hover {
+    background: linear-gradient(90deg, rgba(0, 145, 66, 0.08) 0%, rgba(0, 145, 66, 0.02) 100%) !important;
+    border-left-color: var(--color-primary);
+}
+
+.custom-select-option.selected {
+    background: linear-gradient(90deg, rgba(0, 145, 66, 0.12) 0%, rgba(0, 145, 66, 0.04) 100%) !important;
+    border-left-color: var(--color-primary);
+}
+
+/* 選項之間的分隔線 */
+.custom-select-option:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 選項標籤樣式 */
+.custom-select-option .bg-green-100 {
+    background: linear-gradient(135deg, #E8F5EE 0%, #d4edda 100%);
+}
+
+.custom-select-option .bg-blue-100 {
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.custom-select-option .bg-purple-100 {
+    background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+}
+
+/* 勾選圖示動畫 */
+.custom-select-option .check-icon {
+    transition: all 0.2s ease;
+}
+
+.custom-select-option:hover .check-icon:not(.hidden) {
+    transform: scale(1.1);
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .custom-select-dropdown {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .custom-select-option {
+        padding: 0.875rem 1rem;
+    }
+}
+
+/* 橫向模式調整 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .custom-select-dropdown {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    
+    .custom-select-option {
+        padding: 0.625rem 1rem;
+    }
+}

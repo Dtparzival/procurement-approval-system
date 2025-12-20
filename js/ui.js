@@ -301,8 +301,12 @@ const UI = {
         
         // 載入當前設定
         apiKeyInput.value = Storage.getApiKey();
-        modelSelect.value = Storage.getModel();
+        const savedModel = Storage.getModel();
+        modelSelect.value = savedModel;
         autoSaveToggle.checked = Storage.getAutoSave();
+        
+        // 更新自訂下拉選單的顯示
+        this.setCustomSelectValue(savedModel);
         
         // 禁用背景滾動，記錄當前滾動位置
         this._scrollY = window.scrollY;
@@ -582,6 +586,139 @@ const UI = {
     },
 
     /**
+     * 初始化自訂下拉選單
+     */
+    initCustomSelect() {
+        const container = document.getElementById('customModelSelect');
+        const btn = document.getElementById('customSelectBtn');
+        const dropdown = document.getElementById('customSelectDropdown');
+        const hiddenInput = document.getElementById('modelSelect');
+        const selectedText = document.getElementById('selectedModelText');
+        const options = document.querySelectorAll('.custom-select-option');
+        
+        if (!container || !btn || !dropdown) return;
+        
+        // 點擊按鈕切換下拉選單
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = !dropdown.classList.contains('hidden');
+            if (isOpen) {
+                this.closeCustomSelect();
+            } else {
+                this.openCustomSelect();
+            }
+        });
+        
+        // 點擊選項
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const value = option.dataset.value;
+                const text = option.querySelector('.font-medium').textContent;
+                const badge = option.querySelector('span[class*="bg-"]')?.textContent || '';
+                
+                // 更新隱藏輸入框的值
+                hiddenInput.value = value;
+                
+                // 更新顯示文字
+                selectedText.textContent = badge ? `${text} (${badge})` : text;
+                
+                // 更新勾選狀態
+                options.forEach(opt => {
+                    const checkIcon = opt.querySelector('.check-icon');
+                    if (opt.dataset.value === value) {
+                        opt.classList.add('selected');
+                        checkIcon?.classList.remove('hidden');
+                    } else {
+                        opt.classList.remove('selected');
+                        checkIcon?.classList.add('hidden');
+                    }
+                });
+                
+                // 關閉下拉選單
+                this.closeCustomSelect();
+            });
+        });
+        
+        // 點擊外部關閉下拉選單
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) {
+                this.closeCustomSelect();
+            }
+        });
+        
+        // 鍵盤導航
+        btn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                btn.click();
+            } else if (e.key === 'Escape') {
+                this.closeCustomSelect();
+            }
+        });
+    },
+    
+    /**
+     * 切換自訂下拉選單
+     */
+    toggleCustomSelect() {
+        const dropdown = document.getElementById('customSelectDropdown');
+        const isOpen = !dropdown?.classList.contains('hidden');
+        if (isOpen) {
+            this.closeCustomSelect();
+        } else {
+            this.openCustomSelect();
+        }
+    },
+    
+    /**
+     * 打開自訂下拉選單
+     */
+    openCustomSelect() {
+        const container = document.getElementById('customModelSelect');
+        const dropdown = document.getElementById('customSelectDropdown');
+        container?.classList.add('open');
+        dropdown?.classList.remove('hidden');
+    },
+    
+    /**
+     * 關閉自訂下拉選單
+     */
+    closeCustomSelect() {
+        const container = document.getElementById('customModelSelect');
+        const dropdown = document.getElementById('customSelectDropdown');
+        container?.classList.remove('open');
+        dropdown?.classList.add('hidden');
+    },
+    
+    /**
+     * 設定自訂下拉選單的值
+     */
+    setCustomSelectValue(value) {
+        const hiddenInput = document.getElementById('modelSelect');
+        const selectedText = document.getElementById('selectedModelText');
+        const options = document.querySelectorAll('.custom-select-option');
+        
+        if (!hiddenInput) return;
+        
+        hiddenInput.value = value;
+        
+        options.forEach(option => {
+            const checkIcon = option.querySelector('.check-icon');
+            if (option.dataset.value === value) {
+                const text = option.querySelector('.font-medium').textContent;
+                const badge = option.querySelector('span[class*="bg-"]')?.textContent || '';
+                selectedText.textContent = badge ? `${text} (${badge})` : text;
+                option.classList.add('selected');
+                checkIcon?.classList.remove('hidden');
+            } else {
+                option.classList.remove('selected');
+                checkIcon?.classList.add('hidden');
+            }
+        });
+    },
+
+    /**
      * 初始化事件監聽器
      */
     initEventListeners() {
@@ -635,6 +772,9 @@ const UI = {
                 dropdown.classList.add('hidden');
             }
         });
+        
+        // 初始化自訂下拉選單
+        this.initCustomSelect();
     }
 };
 
