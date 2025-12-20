@@ -2133,13 +2133,7 @@ button.bg-gray-200:hover {
     border-radius: var(--radius-xl);
 }
 
-#errorState > div {
-    background: rgba(254, 226, 226, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    border-radius: var(--radius-lg);
-}
+/* 已移除錯誤狀態子元素的粉紅色背景，避免影響「需要幫助？」區塊 */
 
 /* ==================== 載入狀態玻璃效果 ==================== */
 
