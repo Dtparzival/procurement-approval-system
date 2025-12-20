@@ -1162,6 +1162,123 @@ input:focus, textarea:focus, select:focus {
     }
 }
 
+/* 橫向模式下彈跳視窗優化 - iPhone 15 Pro Max 等大螢幕手機 */
+@media (max-height: 500px) and (orientation: landscape) {
+    /* 彈跳視窗容器優化 */
+    #historyModal,
+    #draftsModal,
+    #settingsModal {
+        padding: 0.5rem !important;
+        align-items: flex-start !important;
+    }
+    
+    /* 彈跳視窗內容區域優化 */
+    #historyModal > div,
+    #draftsModal > div,
+    #settingsModal > div {
+        max-height: calc(100vh - 1rem) !important;
+        max-width: 90vw !important;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* 標題列縮小 */
+    #historyModal > div > div:nth-child(2),
+    #draftsModal > div > div:nth-child(2),
+    #settingsModal > div > div:nth-child(2) {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    #historyModal > div > div:nth-child(2) h2,
+    #draftsModal > div > div:nth-child(2) h2,
+    #settingsModal > div > div:nth-child(2) h2 {
+        font-size: 1.125rem !important;
+    }
+    
+    #historyModal > div > div:nth-child(2) p,
+    #draftsModal > div > div:nth-child(2) p,
+    #settingsModal > div > div:nth-child(2) p {
+        font-size: 0.75rem !important;
+        margin-top: 0.25rem !important;
+    }
+    
+    /* 內容區域優化 */
+    #historyModal > div > div:last-child,
+    #draftsModal > div > div:last-child,
+    #settingsModal > div > div:last-child {
+        padding: 0.75rem 1rem !important;
+        max-height: calc(100vh - 6rem) !important;
+        overflow-y: auto !important;
+        flex: 1;
+    }
+    
+    /* 設定視窗內容縮小 */
+    #settingsModal > div > div:last-child > div {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    #settingsModal > div > div:last-child label {
+        font-size: 0.875rem !important;
+    }
+    
+    #settingsModal > div > div:last-child p {
+        font-size: 0.75rem !important;
+    }
+    
+    #settingsModal > div > div:last-child input,
+    #settingsModal > div > div:last-child select {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* 歷史記錄和草稿列表優化 */
+    #historyList > div,
+    #draftsList > div {
+        padding: 0.75rem !important;
+    }
+    
+    /* 空狀態提示優化 */
+    #emptyHistory,
+    #emptyDrafts {
+        padding: 1.5rem 0 !important;
+    }
+    
+    #emptyHistory > div:first-child,
+    #emptyDrafts > div:first-child {
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+    
+    #emptyHistory > div:first-child i,
+    #emptyDrafts > div:first-child i {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+}
+
+/* 更小高度的橫向模式優化 */
+@media (max-height: 400px) and (orientation: landscape) {
+    #historyModal > div,
+    #draftsModal > div,
+    #settingsModal > div {
+        max-height: calc(100vh - 0.5rem) !important;
+    }
+    
+    #historyModal > div > div:nth-child(2),
+    #draftsModal > div > div:nth-child(2),
+    #settingsModal > div > div:nth-child(2) {
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    #historyModal > div > div:last-child,
+    #draftsModal > div > div:last-child,
+    #settingsModal > div > div:last-child {
+        padding: 0.5rem 0.75rem !important;
+        max-height: calc(100vh - 4.5rem) !important;
+    }
+}
+
 /* ==================== 錯誤狀態設計 ==================== */
 
 /* 錯誤容器 */
