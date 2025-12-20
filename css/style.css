@@ -1697,3 +1697,604 @@ html {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* ==================== 玻璃及毛玻璃效果 (Glassmorphism) ==================== */
+
+/* 玻璃效果變數 */
+:root {
+    /* 玻璃效果 */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-bg-light: rgba(255, 255, 255, 0.85);
+    --glass-bg-dark: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 145, 66, 0.1);
+    --glass-blur: blur(16px);
+    --glass-blur-light: blur(8px);
+    --glass-blur-heavy: blur(24px);
+    
+    /* 毛玻璃漸層 */
+    --frosted-gradient: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0.7) 100%
+    );
+    
+    /* 玻璃光澤效果 */
+    --glass-shine: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+/* 基礎玻璃效果類別 */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-light {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-blur-light);
+    -webkit-backdrop-filter: var(--glass-blur-light);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 16px 0 rgba(0, 145, 66, 0.08);
+}
+
+.glass-heavy {
+    background: var(--glass-bg-dark);
+    backdrop-filter: var(--glass-blur-heavy);
+    -webkit-backdrop-filter: var(--glass-blur-heavy);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 12px 40px 0 rgba(0, 145, 66, 0.15);
+}
+
+/* 毛玻璃卡片效果 */
+.frosted-card {
+    background: var(--frosted-gradient);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-xl);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 145, 66, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+.frosted-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.8),
+        transparent
+    );
+}
+
+/* 玻璃按鈕效果 */
+.glass-btn {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: all var(--transition-base);
+}
+
+.glass-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 16px rgba(0, 145, 66, 0.15);
+}
+
+/* 玻璃輸入框效果 */
+.glass-input {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all var(--transition-base);
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--color-primary);
+    box-shadow: 
+        0 0 0 3px rgba(0, 145, 66, 0.1),
+        0 4px 16px rgba(0, 145, 66, 0.1);
+}
+
+/* ==================== 頁面背景優化 ==================== */
+
+body {
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* 背景裝飾圓形 */
+body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(111, 186, 44, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 145, 66, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ==================== 導航列玻璃效果 ==================== */
+
+header {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 145, 66, 0.08);
+}
+
+/* ==================== 主要內容區域玻璃效果 ==================== */
+
+/* 左側輸入區域 */
+.input-section,
+#approvalContent,
+.result-section {
+    background: var(--frosted-gradient);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 145, 66, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    border-radius: var(--radius-xl);
+}
+
+/* 輸入框玻璃效果 */
+#userInput,
+#draftTitle,
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 145, 66, 0.15) !important;
+    transition: all var(--transition-base);
+}
+
+#userInput:focus,
+#draftTitle:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 
+        0 0 0 4px rgba(0, 145, 66, 0.1),
+        0 8px 24px rgba(0, 145, 66, 0.12) !important;
+}
+
+/* 檔案上傳區域玻璃效果 */
+#uploadArea {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px dashed rgba(0, 145, 66, 0.3) !important;
+    transition: all var(--transition-base);
+}
+
+#uploadArea:hover {
+    background: rgba(232, 245, 238, 0.9) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 8px 32px rgba(0, 145, 66, 0.15);
+}
+
+#uploadArea.dragover {
+    background: rgba(232, 245, 238, 0.95) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 
+        0 0 0 4px rgba(0, 145, 66, 0.15),
+        0 12px 40px rgba(0, 145, 66, 0.2);
+    transform: scale(1.02);
+}
+
+/* ==================== 彈跳視窗玻璃效果 ==================== */
+
+/* 彈跳視窗背景遮罩 */
+.modal-backdrop,
+#settingsModal,
+#historyModal,
+#draftsModal,
+#loginModal {
+    background: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* 彈跳視窗內容 */
+.modal-content,
+#settingsModal > div > div,
+#historyModal > div > div,
+#draftsModal > div > div,
+#loginModal > div > div,
+[class*="modal"] > div > div {
+    background: var(--frosted-gradient) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.5),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
+    border-radius: var(--radius-2xl) !important;
+}
+
+/* 彈跳視窗標題區域 */
+.modal-header {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.9),
+        rgba(255, 255, 255, 0.7)
+    );
+    border-bottom: 1px solid rgba(0, 145, 66, 0.1);
+}
+
+/* ==================== 卡片玻璃效果 ==================== */
+
+/* 草稿卡片 */
+.draft-card {
+    background: var(--frosted-gradient) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 145, 66, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    transition: all var(--transition-base);
+}
+
+.draft-card:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 
+        0 12px 40px rgba(0, 145, 66, 0.15),
+        0 0 0 1px rgba(0, 145, 66, 0.2);
+    transform: translateY(-4px);
+}
+
+/* 歷史記錄卡片 */
+.history-card {
+    background: var(--frosted-gradient);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 4px 16px rgba(0, 145, 66, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+}
+
+.history-card:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--color-primary);
+    box-shadow: 
+        0 8px 32px rgba(0, 145, 66, 0.12),
+        0 0 0 1px rgba(0, 145, 66, 0.15);
+}
+
+/* 功能卡片玻璃效果 */
+.feature-card {
+    background: var(--frosted-gradient) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 145, 66, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 
+        0 20px 50px rgba(0, 145, 66, 0.15),
+        0 0 0 1px rgba(0, 145, 66, 0.2),
+        inset 0 1px 0 0 rgba(255, 255, 255, 1);
+}
+
+/* ==================== 按鈕玻璃效果 ==================== */
+
+/* 主要按鈕 - 玻璃漸層 */
+#generateBtn,
+.btn-primary,
+button[type="submit"] {
+    background: linear-gradient(135deg, rgba(111, 186, 44, 0.95) 0%, rgba(0, 145, 66, 0.95) 100%) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 145, 66, 0.3),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+#generateBtn::before,
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    pointer-events: none;
+}
+
+#generateBtn:hover,
+.btn-primary:hover {
+    box-shadow: 
+        0 8px 32px rgba(0, 145, 66, 0.4),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+/* 次要按鈕 - 玻璃效果 */
+.btn-secondary,
+button.bg-gray-100,
+button.bg-gray-200 {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 145, 66, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover,
+button.bg-gray-100:hover,
+button.bg-gray-200:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 4px 16px rgba(0, 145, 66, 0.1);
+}
+
+/* ==================== Toast 通知玻璃效果 ==================== */
+
+.toast {
+    background: var(--frosted-gradient) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+.toast.success {
+    background: linear-gradient(135deg, rgba(0, 145, 66, 0.95) 0%, rgba(111, 186, 44, 0.95) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.toast.error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.toast.info {
+    background: linear-gradient(135deg, rgba(0, 145, 66, 0.95) 0%, rgba(0, 122, 56, 0.95) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.toast.warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.95) 0%, rgba(217, 119, 6, 0.95) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ==================== 錯誤狀態玻璃效果 ==================== */
+
+#errorState {
+    background: var(--frosted-gradient);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-xl);
+}
+
+#errorState > div {
+    background: rgba(254, 226, 226, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-lg);
+}
+
+/* ==================== 載入狀態玻璃效果 ==================== */
+
+#loadingState {
+    background: var(--frosted-gradient);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* ==================== 空狀態玻璃效果 ==================== */
+
+#emptyState {
+    background: var(--frosted-gradient);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.empty-state-icon {
+    background: rgba(232, 245, 238, 0.8) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 145, 66, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 145, 66, 0.1);
+}
+
+/* ==================== Footer 玻璃效果 ==================== */
+
+footer {
+    background: linear-gradient(
+        to bottom,
+        rgba(17, 24, 39, 0.95),
+        rgba(17, 24, 39, 0.98)
+    ) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==================== 選單和下拉選單玻璃效果 ==================== */
+
+select {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 145, 66, 0.15) !important;
+}
+
+select:focus {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 4px rgba(0, 145, 66, 0.1);
+}
+
+/* ==================== 滾動條玻璃效果 ==================== */
+
+::-webkit-scrollbar-track {
+    background: rgba(243, 244, 246, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(107, 114, 128, 0.8);
+}
+
+/* ==================== 動畫優化 ==================== */
+
+/* 玻璃元素淡入動畫 */
+@keyframes glassIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0);
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        transform: translateY(0);
+    }
+}
+
+.glass-animate {
+    animation: glassIn 0.5s ease-out forwards;
+}
+
+/* 彈跳視窗進入動畫 */
+@keyframes modalGlassIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0);
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ==================== 響應式玻璃效果調整 ==================== */
+
+@media (max-width: 768px) {
+    :root {
+        --glass-blur: blur(12px);
+        --glass-blur-light: blur(6px);
+        --glass-blur-heavy: blur(16px);
+    }
+    
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+/* 減少動畫偏好設定 */
+@media (prefers-reduced-motion: reduce) {
+    .glass,
+    .glass-light,
+    .glass-heavy,
+    .frosted-card,
+    .glass-btn,
+    .glass-input {
+        transition: none;
+    }
+    
+    @keyframes glassIn {
+        from, to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+}
+
+/* 不支援 backdrop-filter 的瀏覽器備用樣式 */
+@supports not (backdrop-filter: blur(1px)) {
+    .glass,
+    .glass-light,
+    .glass-heavy,
+    .frosted-card {
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    header {
+        background: rgba(255, 255, 255, 0.98) !important;
+    }
+    
+    .modal-content,
+    [class*="modal"] > div > div {
+        background: rgba(255, 255, 255, 0.98) !important;
+    }
+}
