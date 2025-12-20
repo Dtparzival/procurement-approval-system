@@ -41,18 +41,18 @@ const API = {
                 const errorData = await response.json().catch(() => ({}));
                 console.error('API Error Response:', errorData);
                 
-                // 提供更詳細的錯誤訊息
-                let errorMessage = errorData.error?.message || `API 請求失敗 (HTTP ${response.status})`;
+                // 提供簡潔友善的錯誤訊息
+                console.error('API 錯誤詳情:', errorData.error?.message || `HTTP ${response.status}`);
                 
                 if (response.status === 401) {
-                    errorMessage = 'API Key 無效或已過期，請在設定中更新 API Key';
+                    throw new Error('請在設定中更新 API Key。');
                 } else if (response.status === 429) {
-                    errorMessage = 'API 請求次數過多，請稍後再試';
+                    throw new Error('請稍等幾分鐘後再試。');
                 } else if (response.status === 500 || response.status === 502 || response.status === 503) {
-                    errorMessage = 'API 服務器錯誤，請稍後再試';
+                    throw new Error('請稍後再試，或聯絡技術支援。');
+                } else {
+                    throw new Error('請稍後再試。');
                 }
-                
-                throw new Error(errorMessage);
             }
 
             const data = await response.json();
@@ -67,7 +67,7 @@ const API = {
             
             // 如果是網路錯誤
             if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                throw new Error('網路連線失敗，請檢查網路連線後再試');
+                throw new Error('請檢查網路連線後再試。');
             }
             
             throw error;
@@ -237,21 +237,22 @@ const API = {
                     // 在控制台記錄技術詳情，但不顯示給使用者
                     console.error('技術錯誤詳情:', errorMessage);
                     
-                    // 根據狀態碼提供更友善的錯誤訊息（不包含技術詳情）
+                    // 根據狀態碼提供更友善的錯誤訊息（簡潔描述，不與標題重複）
                     if (bodyData.response.statusCode === 500) {
-                        throw new Error('AI 服務暫時無法使用，請稍後再試。');
+                        throw new Error('請稍後再試，或聯絡技術支援。');
                     } else if (bodyData.response.statusCode === 503) {
-                        throw new Error('AI 服務正在維護中，請稍後再試。');
+                        throw new Error('系統正在進行例行維護，請稍後再試。');
                     } else if (bodyData.response.statusCode === 429) {
-                        throw new Error('請求次數過多，請稍後再試。');
+                        throw new Error('請稍等幾分鐘後再試。');
                     } else {
-                        throw new Error('服務暫時無法使用，請稍後再試。');
+                        throw new Error('請稍後再試，或聯絡技術支援。');
                     }
                 }
             }
 
             if (!bodyData.response || !bodyData.response.body) {
-                throw new Error('API 回應格式錯誤：缺少 response.body');
+                console.error('API 回應格式錯誤：缺少 response.body');
+                throw new Error('請稍後再試，或聯絡技術支援。');
             }
 
             let responseBody;
@@ -259,14 +260,14 @@ const API = {
                 responseBody = JSON.parse(bodyData.response.body);
             } catch (parseError) {
                 console.error('Failed to parse response body:', parseError);
-                throw new Error('API 回應格式錯誤：無法解析生成內容');
+                throw new Error('請稍後再試，或聯絡技術支援。');
             }
             console.log('Parsed response body:', responseBody);
 
             const content = responseBody.draft_text;
             
             if (!content || content.trim().length === 0) {
-                throw new Error('AI 生成的內容為空，可能是因為輸入描述不夠清晰。\n\n請嘗試：\n• 提供更詳細的採購需求描述\n• 包含具體的品項、數量和用途\n• 說明預算範圍或時程要求');
+                throw new Error('請提供更詳細的採購需求描述後再試。');
             }
             
             console.log('Approval generated successfully:', {
