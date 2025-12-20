@@ -18,7 +18,7 @@ const MESSAGES = {
      * 方便日後更新維護，不需修改 HTML
      */
     LINKS: {
-        USER_GUIDE: 'https://drive.google.com/open?id=1fGUktdi1W-aCehWaezFmtXO4CxUOpncF',
+        USER_GUIDE: 'https://drive.google.com/file/d/1des1X128eZ6NDEhyA-lWxTSKXyocqO7x/view?usp=sharing',
         SUPPORT_EMAIL: 'support@cathayholdings.com.tw'
     },
 
