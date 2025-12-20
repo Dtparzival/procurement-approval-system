@@ -1872,6 +1872,15 @@ body {
     z-index: 1;
 }
 
+/* 首頁 Header 固定在頂部 */
+#heroSection > header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 50 !important;
+}
+
 /* 功能特色區塊背景 */
 #heroSection section.bg-white {
     background: #ffffff !important;
