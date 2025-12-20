@@ -14,6 +14,15 @@
 
 const MESSAGES = {
     /**
+     * 外部連結配置
+     * 方便日後更新維護，不需修改 HTML
+     */
+    LINKS: {
+        USER_GUIDE: 'https://drive.google.com/open?id=1fGUktdi1W-aCehWaezFmtXO4CxUOpncF',
+        SUPPORT_EMAIL: 'support@cathayholdings.com.tw'
+    },
+
+    /**
      * API 相關錯誤
      */
     API: {

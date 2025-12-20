@@ -18,8 +18,26 @@ class ProcurementApp {
             this.loadSettings();
             this.bindEvents();
             this.setupAutoSave();
+            this.setupExternalLinks();
             lucide.createIcons();
         }, 100);
+    }
+
+    /**
+     * 設定外部連結（從配置檔案讀取）
+     */
+    setupExternalLinks() {
+        // 設定使用指南連結
+        const userGuideLink = document.getElementById('userGuideLink');
+        if (userGuideLink && MESSAGES.LINKS && MESSAGES.LINKS.USER_GUIDE) {
+            userGuideLink.href = MESSAGES.LINKS.USER_GUIDE;
+        }
+
+        // 設定技術支援郵件連結
+        const supportEmailLink = document.getElementById('supportEmailLink');
+        if (supportEmailLink && MESSAGES.LINKS && MESSAGES.LINKS.SUPPORT_EMAIL) {
+            supportEmailLink.href = `mailto:${MESSAGES.LINKS.SUPPORT_EMAIL}`;
+        }
     }
 
     /**
