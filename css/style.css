@@ -1829,33 +1829,145 @@ html {
 /* ==================== 頁面背景優化 ==================== */
 
 body {
-    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%);
-    background-attachment: fixed;
+    background: #f8fafc;
     min-height: 100vh;
 }
 
-/* 背景裝飾圓形 */
-body::before {
+/* Hero 區塊背景 - 只在 Hero 區塊顯示綠色漸層 */
+#heroSection {
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%);
+    position: relative;
+}
+
+/* Hero 區塊背景裝飾圓形 */
+#heroSection::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(111, 186, 44, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#heroSection::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* 確保 Hero 區塊內容在裝飾圓形之上 */
+#heroSection > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* 功能特色區塊背景 */
+#heroSection section.bg-white {
+    background: #ffffff !important;
+}
+
+/* 確保 main 元素有白色背景 */
+#heroSection main {
+    background: #ffffff !important;
+}
+
+/* 功能特色區塊延伸到 Footer */
+#heroSection main > section:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* 移除 heroSection 的綠色背景，只保留 Hero 區塊的綠色 */
+#heroSection {
+    background: #ffffff !important;
+}
+
+/* 移除 main 和 footer 之間的間隙 */
+#heroSection > main {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+#heroSection > footer {
+    margin-top: 0 !important;
+}
+
+/* Hero 內容區塊保留綠色漸層 */
+.hero-gradient {
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-gradient::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(111, 186, 44, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-gradient::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-gradient > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* App 區塊背景 */
+#appSection {
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%);
+    position: relative;
+}
+
+#appSection::before {
     content: '';
     position: fixed;
     top: -20%;
     right: -10%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(111, 186, 44, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(111, 186, 44, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     z-index: -1;
     pointer-events: none;
 }
 
-body::after {
+#appSection::after {
     content: '';
     position: fixed;
     bottom: -20%;
     left: -10%;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(0, 145, 66, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     z-index: -1;
     pointer-events: none;
@@ -2241,13 +2353,92 @@ button.bg-gray-200:hover {
 
 footer {
     background: linear-gradient(
-        to bottom,
-        rgba(17, 24, 39, 0.95),
-        rgba(17, 24, 39, 0.98)
+        135deg,
+        rgba(17, 24, 39, 0.92) 0%,
+        rgba(30, 41, 59, 0.95) 50%,
+        rgba(17, 24, 39, 0.98) 100%
     ) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+    margin-top: 0 !important;
+}
+
+/* Footer 玻璃光澤效果 */
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.15) 20%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0.15) 80%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+/* Footer 裝飾圓形 */
+footer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Footer 內容在裝飾之上 */
+footer > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Footer 品牌區域 */
+footer .flex.items-center.gap-2 {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Footer 連結玻璃效果 */
+footer a {
+    transition: all 0.3s ease;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    margin: -0.25rem -0.5rem;
+}
+
+footer a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Footer 標題玻璃效果 */
+footer h4,
+footer .font-semibold {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer 分隔線玻璃效果 */
+footer .border-t {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 50%,
+        transparent 100%
+    );
 }
 
 /* ==================== 選單和下拉選單玻璃效果 ==================== */
@@ -2328,9 +2519,24 @@ select:focus {
         --glass-blur-heavy: blur(16px);
     }
     
-    body::before,
-    body::after {
+    /* 隱藏裝飾圓形在小螢幕上 */
+    #heroSection::before,
+    #heroSection::after,
+    #appSection::before,
+    #appSection::after,
+    footer::after {
         display: none;
+    }
+    
+    /* Footer 響應式調整 */
+    footer {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+    
+    footer a {
+        padding: 0.5rem 0.75rem;
+        margin: -0.5rem -0.75rem;
     }
 }
 
@@ -2370,4 +2576,65 @@ select:focus {
     [class*="modal"] > div > div {
         background: rgba(255, 255, 255, 0.98) !important;
     }
+}
+
+
+/* ==================== 平板響應式調整 ==================== */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* 平板裝飾圓形縮小 */
+    #heroSection::before,
+    #appSection::before {
+        width: 400px;
+        height: 400px;
+    }
+    
+    #heroSection::after,
+    #appSection::after {
+        width: 350px;
+        height: 350px;
+    }
+    
+    footer::after {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* ==================== 大螢幕響應式調整 ==================== */
+
+@media (min-width: 1280px) {
+    /* 大螢幕裝飾圓形放大 */
+    #heroSection::before,
+    #appSection::before {
+        width: 700px;
+        height: 700px;
+    }
+    
+    #heroSection::after,
+    #appSection::after {
+        width: 600px;
+        height: 600px;
+    }
+    
+    footer::after {
+        width: 500px;
+        height: 500px;
+    }
+}
+
+/* ==================== 功能特色區塊背景修正 ==================== */
+
+/* 確保功能特色區塊有白色背景 */
+section.bg-white.py-16,
+section.bg-white.py-20 {
+    background: #ffffff !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* 移除功能特色區塊與 Footer 之間的間隙 */
+#heroSection > section:last-of-type {
+    margin-bottom: 0 !important;
+    padding-bottom: 4rem;
 }
