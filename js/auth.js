@@ -66,14 +66,14 @@ const Auth = {
             UI.hideLoginDialog();
             
             // 顯示歡迎訊息
-            UI.showToast(`歡迎回來，${user.name}！`, 'success');
+            UI.showToast(`${MESSAGES.SUCCESS.LOGIN}，${user.name}！`, 'success');
             
             // 載入用戶的草稿和歷史記錄
             Storage.loadUserData(user.id);
             
         } catch (error) {
             console.error('Login error:', error);
-            UI.showToast('登入失敗，請稍後再試', 'error');
+            UI.showToast(MESSAGES.AUTH.LOGIN_FAILED.message, 'error');
         }
     },
     

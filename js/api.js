@@ -7,7 +7,7 @@ const API = {
     async callLLM(messages, options = {}) {
         const apiKey = Storage.getApiKey();
         if (!apiKey) {
-            throw new Error('請先在設定中輸入 API Key');
+            throw new Error(MESSAGES.API.NO_API_KEY.message);
         }
 
         const model = options.model || Storage.getModel();
@@ -40,19 +40,11 @@ const API = {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 console.error('API Error Response:', errorData);
-                
-                // 提供簡潔友善的錯誤訊息
                 console.error('API 錯誤詳情:', errorData.error?.message || `HTTP ${response.status}`);
                 
-                if (response.status === 401) {
-                    throw new Error('請在設定中更新 API Key。');
-                } else if (response.status === 429) {
-                    throw new Error('請稍等幾分鐘後再試。');
-                } else if (response.status === 500 || response.status === 502 || response.status === 503) {
-                    throw new Error('請稍後再試，或聯絡技術支援。');
-                } else {
-                    throw new Error('請稍後再試。');
-                }
+                // 使用 MESSAGES 配置取得錯誤訊息
+                const errorInfo = MESSAGES.getApiError(response.status);
+                throw new Error(errorInfo.message);
             }
 
             const data = await response.json();
@@ -67,7 +59,7 @@ const API = {
             
             // 如果是網路錯誤
             if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                throw new Error('請檢查網路連線後再試。');
+                throw new Error(MESSAGES.NETWORK.FAILED_FETCH.message);
             }
             
             throw error;
@@ -193,7 +185,8 @@ const API = {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 console.error('API Error Response:', errorData);
-                throw new Error(`API 請求失敗 (HTTP ${response.status})`);
+                const errorInfo = MESSAGES.getApiError(response.status);
+                throw new Error(errorInfo.message);
             }
 
             const data = await response.json();
@@ -201,7 +194,8 @@ const API = {
 
             // 解析多層 JSON 響應
             if (!data.body) {
-                throw new Error('API 回應格式錯誤：缺少 body');
+                console.error('API 回應格式錯誤：缺少 body');
+                throw new Error(MESSAGES.API.PARSE_ERROR.message);
             }
 
             let bodyData;
@@ -209,7 +203,7 @@ const API = {
                 bodyData = JSON.parse(data.body);
             } catch (parseError) {
                 console.error('Failed to parse body:', parseError);
-                throw new Error('API 回應格式錯誤：無法解析回應內容');
+                throw new Error(MESSAGES.API.PARSE_ERROR.message);
             }
             console.log('Parsed body data:', bodyData);
 
@@ -219,15 +213,15 @@ const API = {
                 if (bodyData.response.statusCode && bodyData.response.statusCode >= 400) {
                     console.error('Inner API error detected:', bodyData.response);
                     
-                    // 嘗試解析內層錯誤訊息
-                    let errorMessage = '伺服器處理請求時發生錯誤';
+                    // 嘗試解析內層錯誤訊息（僅記錄到控制台）
+                    let technicalError = '伺服器處理請求時發生錯誤';
                     try {
                         if (bodyData.response.body) {
                             const innerBody = JSON.parse(bodyData.response.body);
                             if (innerBody.error) {
-                                errorMessage = innerBody.error;
+                                technicalError = innerBody.error;
                             } else if (innerBody.message) {
-                                errorMessage = innerBody.message;
+                                technicalError = innerBody.message;
                             }
                         }
                     } catch (e) {
@@ -235,24 +229,17 @@ const API = {
                     }
                     
                     // 在控制台記錄技術詳情，但不顯示給使用者
-                    console.error('技術錯誤詳情:', errorMessage);
+                    console.error('技術錯誤詳情:', technicalError);
                     
-                    // 根據狀態碼提供更友善的錯誤訊息（簡潔描述，不與標題重複）
-                    if (bodyData.response.statusCode === 500) {
-                        throw new Error('請稍後再試，或聯絡技術支援。');
-                    } else if (bodyData.response.statusCode === 503) {
-                        throw new Error('系統正在進行例行維護，請稍後再試。');
-                    } else if (bodyData.response.statusCode === 429) {
-                        throw new Error('請稍等幾分鐘後再試。');
-                    } else {
-                        throw new Error('請稍後再試，或聯絡技術支援。');
-                    }
+                    // 使用 MESSAGES 配置取得錯誤訊息
+                    const errorInfo = MESSAGES.getApiError(bodyData.response.statusCode);
+                    throw new Error(errorInfo.message);
                 }
             }
 
             if (!bodyData.response || !bodyData.response.body) {
                 console.error('API 回應格式錯誤：缺少 response.body');
-                throw new Error('請稍後再試，或聯絡技術支援。');
+                throw new Error(MESSAGES.API.PARSE_ERROR.message);
             }
 
             let responseBody;
@@ -260,14 +247,14 @@ const API = {
                 responseBody = JSON.parse(bodyData.response.body);
             } catch (parseError) {
                 console.error('Failed to parse response body:', parseError);
-                throw new Error('請稍後再試，或聯絡技術支援。');
+                throw new Error(MESSAGES.API.PARSE_ERROR.message);
             }
             console.log('Parsed response body:', responseBody);
 
             const content = responseBody.draft_text;
             
             if (!content || content.trim().length === 0) {
-                throw new Error('請提供更詳細的採購需求描述後再試。');
+                throw new Error(MESSAGES.API.EMPTY_RESPONSE.message);
             }
             
             console.log('Approval generated successfully:', {
@@ -311,7 +298,7 @@ const API = {
             };
 
             reader.onerror = (error) => {
-                reject(new Error('檔案讀取失敗'));
+                reject(new Error(MESSAGES.FILE.READ_ERROR.message));
             };
 
             reader.readAsDataURL(file);
@@ -324,17 +311,17 @@ const API = {
     validateFile(file) {
         // Check file size
         if (file.size > CONFIG.FILE_UPLOAD.MAX_SIZE) {
-            throw new Error(`檔案大小不能超過 ${CONFIG.FILE_UPLOAD.MAX_SIZE / 1024 / 1024}MB`);
+            throw new Error(MESSAGES.FILE.TOO_LARGE.message);
         }
 
         // Check file type
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
         if (!CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS.includes(fileExtension)) {
-            throw new Error('不支援的檔案格式');
+            throw new Error(MESSAGES.FILE.UNSUPPORTED_FORMAT.message);
         }
 
         if (!CONFIG.FILE_UPLOAD.ALLOWED_TYPES.includes(file.type) && file.type !== '') {
-            throw new Error('不支援的檔案類型');
+            throw new Error(MESSAGES.FILE.UNSUPPORTED_TYPE.message);
         }
 
         return true;

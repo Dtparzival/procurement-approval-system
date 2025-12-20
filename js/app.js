@@ -181,7 +181,7 @@ class ProcurementApp {
         const userInput = document.getElementById('userInput')?.value.trim();
         
         if (!userInput) {
-            UI.showToast('請輸入採購需求描述', 'error');
+            UI.showToast(MESSAGES.INPUT.EMPTY_DESCRIPTION.message, 'error');
             return;
         }
 
@@ -190,11 +190,11 @@ class ProcurementApp {
 
         try {
             // 顯示載入狀態
-            UI.showLoading('正在分析您的需求...');
+            UI.showLoading(MESSAGES.LOADING.ANALYZING);
             
             // 使用可清除的 timeout
-            loadingTimeouts.push(setTimeout(() => UI.showLoading('正在組織簽呈內容...'), 2000));
-            loadingTimeouts.push(setTimeout(() => UI.showLoading('正在優化公文格式...'), 4000));
+            loadingTimeouts.push(setTimeout(() => UI.showLoading(MESSAGES.LOADING.ORGANIZING), 2000));
+            loadingTimeouts.push(setTimeout(() => UI.showLoading(MESSAGES.LOADING.OPTIMIZING), 4000));
 
             // 呼叫 API 生成簽呈
             const result = await API.generateApproval(userInput, this.uploadedFiles);
@@ -218,7 +218,7 @@ class ProcurementApp {
 
             // 顯示結果
             UI.showApproval(historyItem);
-            UI.showToast('簽呈生成成功！', 'success');
+            UI.showToast(MESSAGES.SUCCESS.GENERATE, 'success');
 
             // 清除草稿 ID
             this.currentDraftId = null;
@@ -233,27 +233,16 @@ class ProcurementApp {
             UI.hideLoading();
             
             // 判斷錯誤類型並顯示適當的錯誤 UI
-            const errorMessage = error.message || '生成失敗，請稍後再試';
+            const errorMessage = error.message || MESSAGES.DEFAULT.ERROR_MESSAGE;
             
-            // 根據錯誤訊息判斷錯誤類型
-            let errorTitle = '產生失敗';
-            if (errorMessage.includes('AI 服務暫時無法使用') || errorMessage.includes('500')) {
-                errorTitle = 'AI 服務暫時無法使用';
-            } else if (errorMessage.includes('網路') || errorMessage.includes('network') || errorMessage.includes('fetch')) {
-                errorTitle = '網路連線失敗';
-            } else if (errorMessage.includes('內容為空')) {
-                errorTitle = 'AI 無法生成內容';
-            } else if (errorMessage.includes('請求次數過多') || errorMessage.includes('429')) {
-                errorTitle = '請求過於頻繁';
-            } else if (errorMessage.includes('維護') || errorMessage.includes('503')) {
-                errorTitle = '服務維護中';
-            }
+            // 使用 MESSAGES 配置取得錯誤標題
+            const errorTitle = MESSAGES.getErrorTitle(errorMessage);
             
             // 顯示錯誤狀態 UI
             UI.showErrorState(errorTitle, errorMessage);
             
             // 同時顯示 toast 通知
-            UI.showToast('產生失敗，請查看錯誤詳情', 'error');
+            UI.showToast(MESSAGES.DEFAULT.GENERATE_FAILED, 'error');
         }
     }
     
@@ -274,7 +263,7 @@ class ProcurementApp {
 
         if (!userInput) {
             if (!isAutoSave) {
-                UI.showToast('請輸入需求描述', 'error');
+                UI.showToast(MESSAGES.INPUT.EMPTY_DESCRIPTION.message, 'error');
             }
             return;
         }
@@ -290,7 +279,7 @@ class ProcurementApp {
         Storage.setCurrentDraftId(draft.id);
 
         if (!isAutoSave) {
-            UI.showToast('草稿已儲存', 'success');
+            UI.showToast(MESSAGES.SUCCESS.SAVE_DRAFT, 'success');
         }
         
         // 更新上次儲存時間
@@ -308,11 +297,11 @@ class ProcurementApp {
         const maxSize = 10 * 1024 * 1024; // 10MB
 
         if (file.size > maxSize) {
-            UI.showToast('檔案大小不能超過 10MB', 'error');
+            UI.showToast(MESSAGES.FILE.TOO_LARGE.message, 'error');
             return;
         }
 
-        UI.showToast('正在處理檔案...', 'info');
+        UI.showToast(MESSAGES.LOADING.PROCESSING_FILE, 'info');
 
         try {
             // 提取文件文本內容
@@ -345,14 +334,14 @@ class ProcurementApp {
 
             this.uploadedFiles.push(uploadedFile);
             UI.showUploadedFile(uploadedFile);
-            UI.showToast(`檔案 ${file.name} 處理成功`, 'success');
+            UI.showToast(`檔案 ${file.name} ${MESSAGES.SUCCESS.FILE_UPLOAD}`, 'success');
 
             // 清除 input
             event.target.value = '';
 
         } catch (error) {
             console.error('File processing error:', error);
-            UI.showToast(`檔案處理失敗：${error.message}`, 'error');
+            UI.showToast(`${MESSAGES.FILE.PROCESS_ERROR.message}`, 'error');
         }
     }
 
@@ -421,7 +410,7 @@ class ProcurementApp {
      * 處理登出
      */
     handleLogout() {
-        if (confirm('確定要登出嗎？')) {
+        if (confirm(MESSAGES.CONFIRM.LOGOUT)) {
             // 清除認證狀態
             Storage.clearAuth();
             // 重新載入頁面
@@ -438,20 +427,20 @@ class ProcurementApp {
         const generatedContent = document.getElementById('generatedContent');
         if (!generatedContent || !generatedContent.textContent.trim()) {
             console.error('No content to download');
-            UI.showToast('沒有可下載的內容', 'error');
+            UI.showToast(MESSAGES.UI.NO_CONTENT.message, 'error');
             return;
         }
         
         try {
             console.log('Starting PDF document generation...');
-            UI.showToast('正在準備 PDF 下載...', 'info');
+            UI.showToast(MESSAGES.LOADING.PREPARING_PDF, 'info');
             
             const draftTitle = document.getElementById('draftTitle')?.value || '採購簽呈';
             
             // 創建一個隱藏的列印專用視窗
             const printWindow = window.open('', '_blank');
             if (!printWindow) {
-                UI.showToast('無法開啟列印視窗，請檢查瀏覽器設定', 'error');
+                UI.showToast(MESSAGES.UI.PRINT_BLOCKED.message, 'error');
                 return;
             }
             
@@ -555,14 +544,14 @@ class ProcurementApp {
             printWindow.onload = function() {
                 setTimeout(() => {
                     printWindow.print();
-                    UI.showToast('請在列印對話框中選擇「另存為 PDF」', 'success');
+                    UI.showToast(MESSAGES.SUCCESS.PRINT_HINT, 'success');
                 }, 500);
             };
             
             console.log('Print dialog opened');
         } catch (error) {
             console.error('PDF 文件生成失敗:', error);
-            UI.showToast(`PDF 文件生成失敗：${error.message}`, 'error');
+            UI.showToast(MESSAGES.UI.PDF_GENERATE_ERROR.message, 'error');
         }
     }
     
@@ -632,7 +621,7 @@ class ProcurementApp {
         const draft = drafts.find(d => d.id === draftId);
         
         if (!draft) {
-            UI.showToast('草稿不存在', 'error');
+            UI.showToast(MESSAGES.UI.DRAFT_NOT_FOUND.message, 'error');
             return;
         }
         
@@ -648,14 +637,14 @@ class ProcurementApp {
         
         this.currentDraftId = draftId;
         this.closeDraftsModal();
-        UI.showToast('草稿已載入', 'success');
+        UI.showToast(MESSAGES.SUCCESS.LOAD_DRAFT, 'success');
     }
     
     /**
      * 刪除草稿
      */
     deleteDraft(draftId) {
-        if (!confirm('確定要刪除這個草稿嗎？')) return;
+        if (!confirm(MESSAGES.CONFIRM.DELETE_DRAFT)) return;
         
         // 如果刪除的是當前正在編輯的草稿，清除 currentDraftId
         if (this.currentDraftId === draftId) {
@@ -664,7 +653,7 @@ class ProcurementApp {
         }
         
         Storage.deleteDraft(draftId);
-        UI.showToast('草稿已刪除', 'success');
+        UI.showToast(MESSAGES.SUCCESS.DELETE_DRAFT, 'success');
         this.showDraftsModal(); // 重新載入列表
     }
 }

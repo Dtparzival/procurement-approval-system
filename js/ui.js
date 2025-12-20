@@ -16,10 +16,10 @@ const UI = {
         const errorTitle = document.getElementById('errorTitle');
         const errorMessage = document.getElementById('errorMessage');
         
-        if (errorTitle) errorTitle.textContent = title || '產生失敗';
+        if (errorTitle) errorTitle.textContent = title || MESSAGES.DEFAULT.ERROR_TITLE;
         if (errorMessage) {
             // 處理換行符並轉換為 HTML
-            errorMessage.innerHTML = (message || '系統發生錯誤，請稍後再試').replace(/\n/g, '<br>');
+            errorMessage.innerHTML = (message || MESSAGES.DEFAULT.ERROR_MESSAGE).replace(/\n/g, '<br>');
         }
         
         // 顯示錯誤狀態
@@ -320,7 +320,7 @@ const UI = {
         const autoSave = document.getElementById('autoSaveToggle').checked;
         
         if (!apiKey) {
-            this.showToast('請輸入 API Key', 'error');
+            this.showToast(MESSAGES.INPUT.EMPTY_API_KEY.message, 'error');
             return;
         }
         
@@ -329,7 +329,7 @@ const UI = {
         Storage.setAutoSave(autoSave);
         
         this.hideSettingsModal();
-        this.showToast('設定已儲存', 'success');
+        this.showToast(MESSAGES.SUCCESS.SAVE_SETTINGS, 'success');
     },
 
     /**
@@ -417,7 +417,7 @@ const UI = {
             const plainText = generatedContent ? generatedContent.textContent : this.currentApproval.content;
             
             await navigator.clipboard.writeText(plainText);
-            this.showToast('已複製純文字到剪貼簿', 'success');
+            this.showToast(MESSAGES.SUCCESS.COPY, 'success');
             
             // 更新按鈕圖示
             const copyBtn = document.getElementById('copyBtn');
@@ -430,7 +430,7 @@ const UI = {
                 lucide.createIcons();
             }, 2000);
         } catch (error) {
-            this.showToast('複製失敗', 'error');
+            this.showToast(MESSAGES.UI.COPY_FAILED.message, 'error');
         }
     },
 
@@ -459,14 +459,14 @@ const UI = {
         const content = editTextarea.value.trim();
         
         if (!content) {
-            this.showToast('內容不能為空', 'error');
+            this.showToast(MESSAGES.INPUT.EMPTY_CONTENT.message, 'error');
             return;
         }
         
         this.currentApproval.content = content;
         this.cancelEdit();
         this.showApproval(this.currentApproval);
-        this.showToast('編輯已儲存', 'success');
+        this.showToast(MESSAGES.SUCCESS.SAVE_EDIT, 'success');
     },
 
     /**
