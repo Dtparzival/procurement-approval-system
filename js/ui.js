@@ -2,6 +2,52 @@
 
 const UI = {
     /**
+     * 顯示錯誤狀態 UI
+     */
+    showErrorState(title, message) {
+        // 隱藏其他狀態
+        document.getElementById('emptyState')?.classList.add('hidden');
+        document.getElementById('loadingState')?.classList.add('hidden');
+        document.getElementById('generatedContent')?.classList.add('hidden');
+        document.getElementById('editMode')?.classList.add('hidden');
+        document.getElementById('resultActions')?.classList.add('hidden');
+        
+        // 更新錯誤內容
+        const errorTitle = document.getElementById('errorTitle');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        if (errorTitle) errorTitle.textContent = title || '產生失敗';
+        if (errorMessage) {
+            // 處理換行符並轉換為 HTML
+            errorMessage.innerHTML = (message || '系統發生錯誤，請稍後再試').replace(/\n/g, '<br>');
+        }
+        
+        // 顯示錯誤狀態
+        const errorState = document.getElementById('errorState');
+        if (errorState) {
+            errorState.classList.remove('hidden');
+            lucide.createIcons();
+        }
+    },
+    
+    /**
+     * 隱藏錯誤狀態 UI
+     */
+    hideErrorState() {
+        document.getElementById('errorState')?.classList.add('hidden');
+    },
+    
+    /**
+     * 從錯誤狀態返回空狀態
+     */
+    showEmptyStateFromError() {
+        this.hideErrorState();
+        document.getElementById('emptyState')?.classList.remove('hidden');
+        // 聚焦到輸入框
+        document.getElementById('userInput')?.focus();
+    },
+    
+    /**
      * 更新字數統計
      */
     updateCharCount(textarea) {
@@ -321,12 +367,14 @@ const UI = {
         const emptyState = document.getElementById('emptyState');
         const loadingState = document.getElementById('loadingState');
         const generatedContent = document.getElementById('generatedContent');
+        const errorState = document.getElementById('errorState');
         const loadingText = document.getElementById('loadingText');
         
-        emptyState.classList.add('hidden');
-        generatedContent.classList.add('hidden');
-        loadingState.classList.remove('hidden');
-        loadingText.textContent = message;
+        emptyState?.classList.add('hidden');
+        generatedContent?.classList.add('hidden');
+        errorState?.classList.add('hidden');
+        loadingState?.classList.remove('hidden');
+        if (loadingText) loadingText.textContent = message;
         
         lucide.createIcons();
     },
@@ -345,12 +393,14 @@ const UI = {
         const emptyState = document.getElementById('emptyState');
         const loadingState = document.getElementById('loadingState');
         const generatedContent = document.getElementById('generatedContent');
+        const errorState = document.getElementById('errorState');
         const resultActions = document.getElementById('resultActions');
         
-        emptyState.classList.remove('hidden');
-        loadingState.classList.add('hidden');
-        generatedContent.classList.add('hidden');
-        resultActions.classList.add('hidden');
+        emptyState?.classList.remove('hidden');
+        loadingState?.classList.add('hidden');
+        generatedContent?.classList.add('hidden');
+        errorState?.classList.add('hidden');
+        resultActions?.classList.add('hidden');
         
         lucide.createIcons();
     },

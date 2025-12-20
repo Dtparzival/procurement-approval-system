@@ -220,8 +220,38 @@ class ProcurementApp {
         } catch (error) {
             console.error('Generate error:', error);
             UI.hideLoading();
-            UI.showToast(error.message || '生成失敗，請稍後再試', 'error');
+            
+            // 判斷錯誤類型並顯示適當的錯誤 UI
+            const errorMessage = error.message || '生成失敗，請稍後再試';
+            
+            // 根據錯誤訊息判斷錯誤類型
+            let errorTitle = '產生失敗';
+            if (errorMessage.includes('AI 服務暫時無法使用') || errorMessage.includes('500')) {
+                errorTitle = 'AI 服務暫時無法使用';
+            } else if (errorMessage.includes('網路') || errorMessage.includes('network') || errorMessage.includes('fetch')) {
+                errorTitle = '網路連線失敗';
+            } else if (errorMessage.includes('內容為空')) {
+                errorTitle = 'AI 無法生成內容';
+            } else if (errorMessage.includes('請求次數過多') || errorMessage.includes('429')) {
+                errorTitle = '請求過於頻繁';
+            } else if (errorMessage.includes('維護') || errorMessage.includes('503')) {
+                errorTitle = '服務維護中';
+            }
+            
+            // 顯示錯誤狀態 UI
+            UI.showErrorState(errorTitle, errorMessage);
+            
+            // 同時顯示 toast 通知
+            UI.showToast('產生失敗，請查看錯誤詳情', 'error');
         }
+    }
+    
+    /**
+     * 重新嘗試生成
+     */
+    retryGenerate() {
+        UI.hideErrorState();
+        this.handleGenerate();
     }
 
     /**

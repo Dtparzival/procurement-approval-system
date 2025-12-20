@@ -204,20 +204,66 @@ const API = {
                 throw new Error('API 回應格式錯誤：缺少 body');
             }
 
-            const bodyData = JSON.parse(data.body);
+            let bodyData;
+            try {
+                bodyData = JSON.parse(data.body);
+            } catch (parseError) {
+                console.error('Failed to parse body:', parseError);
+                throw new Error('API 回應格式錯誤：無法解析回應內容');
+            }
             console.log('Parsed body data:', bodyData);
+
+            // 檢查內層 response 是否有錯誤
+            if (bodyData.response) {
+                // 檢查內層 statusCode 是否為錯誤
+                if (bodyData.response.statusCode && bodyData.response.statusCode >= 400) {
+                    console.error('Inner API error detected:', bodyData.response);
+                    
+                    // 嘗試解析內層錯誤訊息
+                    let errorMessage = '伺服器處理請求時發生錯誤';
+                    try {
+                        if (bodyData.response.body) {
+                            const innerBody = JSON.parse(bodyData.response.body);
+                            if (innerBody.error) {
+                                errorMessage = innerBody.error;
+                            } else if (innerBody.message) {
+                                errorMessage = innerBody.message;
+                            }
+                        }
+                    } catch (e) {
+                        // 如果解析失敗，使用預設錯誤訊息
+                    }
+                    
+                    // 根據狀態碼提供更友善的錯誤訊息
+                    if (bodyData.response.statusCode === 500) {
+                        throw new Error(`AI 服務暫時無法使用，請稍後再試。\n\n技術詳情：${errorMessage}`);
+                    } else if (bodyData.response.statusCode === 503) {
+                        throw new Error('AI 服務正在維護中，請稍後再試');
+                    } else if (bodyData.response.statusCode === 429) {
+                        throw new Error('請求次數過多，請稍後再試');
+                    } else {
+                        throw new Error(`服務錯誤 (${bodyData.response.statusCode})：${errorMessage}`);
+                    }
+                }
+            }
 
             if (!bodyData.response || !bodyData.response.body) {
                 throw new Error('API 回應格式錯誤：缺少 response.body');
             }
 
-            const responseBody = JSON.parse(bodyData.response.body);
+            let responseBody;
+            try {
+                responseBody = JSON.parse(bodyData.response.body);
+            } catch (parseError) {
+                console.error('Failed to parse response body:', parseError);
+                throw new Error('API 回應格式錯誤：無法解析生成內容');
+            }
             console.log('Parsed response body:', responseBody);
 
             const content = responseBody.draft_text;
             
             if (!content || content.trim().length === 0) {
-                throw new Error('生成的內容為空，請再試一次');
+                throw new Error('AI 生成的內容為空，可能是因為輸入描述不夠清晰。\n\n請嘗試：\n• 提供更詳細的採購需求描述\n• 包含具體的品項、數量和用途\n• 說明預算範圍或時程要求');
             }
             
             console.log('Approval generated successfully:', {
