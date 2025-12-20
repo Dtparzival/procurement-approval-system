@@ -85,6 +85,13 @@ body {
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* 防止水平滾動 */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 /* 彈跳視窗開啟時禁用背景滾動 */
@@ -1104,12 +1111,36 @@ input:focus, textarea:focus, select:focus {
 @media (min-width: 768px) and (max-width: 1024px) {
     .container {
         max-width: 100%;
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
     }
     
     .grid-cols-2 {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 確保內容不會超出螢幕 */
+    #heroSection,
+    #appSection {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    /* 功能卡片在平板版顯示為兩欄 */
+    #heroSection .grid.md\:grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 第三張卡片置中 */
+    #heroSection .grid.md\:grid-cols-3 > div:last-child {
+        grid-column: 1 / -1;
+        max-width: 50%;
+        margin: 0 auto;
+    }
+    
+    /* Footer 在平板版的佈局 */
+    footer .grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
@@ -1837,6 +1868,8 @@ body {
 #heroSection {
     background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%);
     position: relative;
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 /* Hero 區塊背景裝飾圓形 */
@@ -1844,9 +1877,9 @@ body {
     content: '';
     position: absolute;
     top: -20%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
+    right: 0;
+    width: min(600px, 50vw);
+    height: min(600px, 50vw);
     background: radial-gradient(circle, rgba(111, 186, 44, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
@@ -1857,9 +1890,9 @@ body {
     content: '';
     position: absolute;
     bottom: 20%;
-    left: -10%;
-    width: 500px;
-    height: 500px;
+    left: 0;
+    width: min(500px, 40vw);
+    height: min(500px, 40vw);
     background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
@@ -1923,9 +1956,9 @@ body {
     content: '';
     position: absolute;
     top: -20%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
+    right: 0;
+    width: min(600px, 50vw);
+    height: min(600px, 50vw);
     background: radial-gradient(circle, rgba(111, 186, 44, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
@@ -1936,9 +1969,9 @@ body {
     content: '';
     position: absolute;
     bottom: 20%;
-    left: -10%;
-    width: 500px;
-    height: 500px;
+    left: 0;
+    width: min(500px, 40vw);
+    height: min(500px, 40vw);
     background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
@@ -1954,15 +1987,17 @@ body {
 #appSection {
     background: linear-gradient(135deg, #f0f9f4 0%, #e8f5ee 50%, #f5f9f7 100%);
     position: relative;
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 #appSection::before {
     content: '';
     position: fixed;
     top: -20%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
+    right: 0;
+    width: min(600px, 50vw);
+    height: min(600px, 50vw);
     background: radial-gradient(circle, rgba(111, 186, 44, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     z-index: -1;
@@ -1973,9 +2008,9 @@ body {
     content: '';
     position: fixed;
     bottom: -20%;
-    left: -10%;
-    width: 500px;
-    height: 500px;
+    left: 0;
+    width: min(500px, 40vw);
+    height: min(500px, 40vw);
     background: radial-gradient(circle, rgba(0, 145, 66, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     z-index: -1;
