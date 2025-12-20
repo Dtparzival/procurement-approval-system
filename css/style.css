@@ -1940,22 +1940,23 @@ input[type="password"]:focus {
     -webkit-backdrop-filter: blur(8px);
 }
 
-/* 彈跳視窗內容 */
-.modal-content,
-#settingsModal > div > div,
-#historyModal > div > div,
-#draftsModal > div > div,
-#loginModal > div > div,
-[class*="modal"] > div > div {
-    background: var(--frosted-gradient) !important;
+/* 彈跳視窗內容容器 - 只針對最外層容器 */
+.modal-content {
+    background: white;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 
         0 25px 50px -12px rgba(0, 0, 0, 0.25),
-        0 0 0 1px rgba(255, 255, 255, 0.5),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
-    border-radius: var(--radius-2xl) !important;
+        0 0 0 1px rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-2xl);
+}
+
+/* 彈跳視窗品牌標題列 */
+.modal-brand-header {
+    background: linear-gradient(to right, #16a34a, #15803d) !important;
+    color: white;
+    padding: 1.5rem;
 }
 
 /* 彈跳視窗標題區域 */
