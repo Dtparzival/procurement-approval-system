@@ -893,10 +893,11 @@ input:focus, textarea:focus, select:focus {
     animation: aiParticle 2s ease-out infinite;
 }
 
-/* AI 卡片 hover 效果 */
+/* AI 卡片 hover 效果 - 絲滑動畫優化 */
 .ai-card-hover {
-    transition: all var(--transition-base);
+    transition: all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
+    overflow: hidden;
 }
 
 .ai-card-hover::before {
@@ -906,20 +907,40 @@ input:focus, textarea:focus, select:focus {
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--color-ai-gradient);
+    background: linear-gradient(135deg, rgba(111, 186, 44, 0.08) 0%, rgba(0, 145, 66, 0.12) 100%);
     opacity: 0;
-    transition: opacity var(--transition-base);
+    transition: opacity 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     border-radius: inherit;
+    pointer-events: none;
     z-index: -1;
 }
 
 .ai-card-hover:hover::before {
-    opacity: 0.12;
+    opacity: 1;
 }
 
 .ai-card-hover:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 25px rgba(0, 145, 66, 0.2);
+}
+
+/* 卡片光暈效果 */
+.ai-card-hover::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 145, 66, 0.1) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 500ms ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ai-card-hover:hover::after {
+    opacity: 1;
 }
 
 /* AI 按鈕載入狀態 */
@@ -1442,24 +1463,53 @@ input:focus, textarea:focus, select:focus {
     transition-duration: 100ms;
 }
 
-/* 卡片增強 hover 效果 */
+/* 卡片增強 hover 效果 - 絲滑動畫優化 */
 .card-enhanced {
-    transition: transform var(--transition-smooth), 
-                box-shadow var(--transition-smooth),
-                background-color var(--transition-base);
+    transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                background-color 300ms ease,
+                border-color 300ms ease;
     will-change: transform, box-shadow;
+    transform-origin: center center;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .card-enhanced:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12),
-                0 10px 20px -8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 145, 66, 0.25),
+                0 12px 24px -8px rgba(0, 145, 66, 0.15),
+                0 0 0 1px rgba(0, 145, 66, 0.1);
+    background-color: rgba(0, 145, 66, 0.02);
 }
 
-/* 卡片內圖示 hover 動畫 */
+/* 卡片內圖示 hover 動畫 - 彈跳效果 */
+.card-icon {
+    transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 400ms ease;
+}
+
 .card-enhanced:hover .card-icon {
-    transform: scale(1.1) rotate(5deg);
-    transition: transform var(--transition-base);
+    transform: scale(1.15) rotate(8deg) translateY(-2px);
+    box-shadow: 0 8px 20px -4px rgba(0, 145, 66, 0.4);
+}
+
+/* 卡片標題 hover 效果 */
+.card-enhanced h4 {
+    transition: color 300ms ease;
+}
+
+.card-enhanced:hover h4 {
+    color: #009142;
+}
+
+/* 卡片內容 hover 效果 */
+.card-enhanced p {
+    transition: color 300ms ease;
+}
+
+.card-enhanced:hover p {
+    color: #374151;
 }
 
 /* 輸入框增強 focus 效果 */
@@ -1546,3 +1596,104 @@ html {
                 0 0 40px rgba(30, 64, 175, 0.2);
 }
 
+
+/* ==================== 功能卡片絲滑動畫 ==================== */
+
+/* 功能卡片基礎樣式 */
+.feature-card {
+    position: relative;
+    z-index: 1;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 功能卡片 hover 時的整體效果 */
+.feature-card:hover {
+    z-index: 10;
+}
+
+/* 功能卡片內部元素的交錯動畫 */
+.feature-card .card-icon {
+    transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 450ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.feature-card:hover .card-icon {
+    transform: scale(1.18) rotate(10deg) translateY(-4px);
+    box-shadow: 0 12px 28px -6px rgba(0, 145, 66, 0.45),
+                0 6px 12px -4px rgba(0, 145, 66, 0.25);
+}
+
+/* 功能卡片標題動畫 */
+.feature-card h4 {
+    transition: color 350ms cubic-bezier(0.23, 1, 0.32, 1),
+                transform 350ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.feature-card:hover h4 {
+    color: #007a36;
+    transform: translateX(4px);
+}
+
+/* 功能卡片描述文字動畫 */
+.feature-card p {
+    transition: color 400ms cubic-bezier(0.23, 1, 0.32, 1),
+                transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.feature-card:hover p {
+    color: #4b5563;
+    transform: translateX(2px);
+}
+
+/* 功能卡片底部裝飾線動畫 */
+.feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6FBA2C, #009142);
+    border-radius: 3px 3px 0 0;
+    transition: width 400ms cubic-bezier(0.23, 1, 0.32, 1),
+                left 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 2;
+}
+
+.feature-card:hover::after {
+    width: 60%;
+    left: 20%;
+}
+
+/* 功能卡片圖示內部圖標動畫 */
+.feature-card .card-icon i {
+    transition: transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feature-card:hover .card-icon i {
+    transform: scale(1.1);
+}
+
+/* 功能卡片 active 狀態 */
+.feature-card:active {
+    transform: translateY(-8px) scale(1.01);
+    transition-duration: 100ms;
+}
+
+/* 功能卡片焦點狀態 (無障礙) */
+.feature-card:focus-visible {
+    outline: 2px solid #009142;
+    outline-offset: 4px;
+}
+
+/* 減少動畫偏好設定 */
+@media (prefers-reduced-motion: reduce) {
+    .feature-card,
+    .feature-card .card-icon,
+    .feature-card h4,
+    .feature-card p,
+    .feature-card::after,
+    .feature-card .card-icon i {
+        transition-duration: 0.01ms !important;
+    }
+}
