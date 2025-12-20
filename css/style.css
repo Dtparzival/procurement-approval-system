@@ -2815,3 +2815,86 @@ section.bg-white.py-20 {
     margin-bottom: 0 !important;
     padding-bottom: 4rem;
 }
+
+
+/* ==================== 自訂下拉選單樣式 ==================== */
+
+/* 系統設定中的下拉選單 */
+#modelSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #ffffff !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23009142' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#modelSelect:hover {
+    border-color: var(--color-primary) !important;
+    background-color: #f9fafb !important;
+}
+
+#modelSelect:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(0, 145, 66, 0.15) !important;
+    outline: none;
+}
+
+/* 下拉選單選項樣式 - 僅適用於支援的瀏覽器 */
+#modelSelect option {
+    background-color: #ffffff;
+    color: #374151;
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+#modelSelect option:hover,
+#modelSelect option:focus {
+    background-color: #E8F5EE !important;
+    color: #009142 !important;
+}
+
+#modelSelect option:checked {
+    background: linear-gradient(135deg, #E8F5EE 0%, #d4edda 100%);
+    color: #009142;
+    font-weight: 500;
+}
+
+/* ==================== 自訂開關樣式 ==================== */
+
+/* 自動儲存開關容器 */
+#autoSaveToggle + div {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* 開關關閉狀態 */
+#autoSaveToggle:not(:checked) + div {
+    background-color: #d1d5db !important;
+}
+
+/* 開關打開狀態 */
+#autoSaveToggle:checked + div {
+    background-color: #009142 !important;
+    background: linear-gradient(135deg, #6FBA2C 0%, #009142 100%) !important;
+}
+
+/* 開關圓點 */
+#autoSaveToggle + div::after {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 開關 hover 效果 */
+#autoSaveToggle + div:hover {
+    opacity: 0.9;
+}
+
+/* 開關 focus 效果 */
+#autoSaveToggle:focus + div {
+    box-shadow: 0 0 0 4px rgba(0, 145, 66, 0.2);
+}
