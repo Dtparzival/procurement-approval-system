@@ -1929,42 +1929,109 @@ input[type="password"]:focus {
 
 /* ==================== 彈跳視窗玻璃效果 ==================== */
 
-/* 彈跳視窗背景遮罩 */
+/* ==================== 彈跳視窗玻璃效果重新設計 ==================== */
+
+/* 彈跳視窗背景遮罩 - 深色模糊效果 */
 .modal-backdrop,
 #settingsModal,
 #historyModal,
 #draftsModal,
-#loginModal {
-    background: rgba(0, 0, 0, 0.4) !important;
+#loginModal,
+#loginDialog {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+}
+
+/* 彈跳視窗內容容器 - 玻璃效果 */
+#settingsModal > div,
+#historyModal > div,
+#draftsModal > div,
+#loginDialog > div {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 
+        0 32px 64px -16px rgba(0, 0, 0, 0.25),
+        0 16px 32px -8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
+        0 0 0 1px rgba(0, 145, 66, 0.1);
+    border-radius: 1.5rem !important;
+    overflow: hidden;
+}
+
+/* 彈跳視窗品牌標題列 - 玻璃漸層效果 */
+#settingsModal > div > div:first-child,
+#historyModal > div > div:first-child,
+#draftsModal > div > div:first-child {
+    /* 品牌裝飾條 */
+}
+
+#settingsModal > div > div:nth-child(2),
+#historyModal > div > div:nth-child(2),
+#draftsModal > div > div:nth-child(2) {
+    background: linear-gradient(
+        135deg,
+        rgba(22, 163, 74, 0.95) 0%,
+        rgba(21, 128, 61, 0.98) 50%,
+        rgba(20, 83, 45, 0.95) 100%
+    ) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-}
-
-/* 彈跳視窗內容容器 - 只針對最外層容器 */
-.modal-content {
-    background: white;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.25),
-        0 0 0 1px rgba(255, 255, 255, 0.5);
-    border-radius: var(--radius-2xl);
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 彈跳視窗品牌標題列 */
-.modal-brand-header {
-    background: linear-gradient(to right, #16a34a, #15803d) !important;
-    color: white;
-    padding: 1.5rem;
+/* 彈跳視窗內容區域 - 輕微玻璃效果 */
+#settingsModal > div > div:last-child,
+#historyModal > div > div:last-child,
+#draftsModal > div > div:last-child {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0.95) 100%
+    ) !important;
+}
+
+/* 彈跳視窗關閉按鈕 - 玻璃效果 */
+#settingsModal button[id*="close"],
+#historyModal button[id*="close"],
+#draftsModal button[id*="close"],
+#closeHistoryBtn,
+#closeSettingsBtn,
+#closeDraftsBtn {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+#settingsModal button[id*="close"]:hover,
+#historyModal button[id*="close"]:hover,
+#draftsModal button[id*="close"]:hover,
+#closeHistoryBtn:hover,
+#closeSettingsBtn:hover,
+#closeDraftsBtn:hover {
+    background: rgba(255, 255, 255, 0.4) !important;
+    transform: scale(1.1);
+}
+
+/* 登入對話框特殊樣式 */
+#loginDialog > div {
+    background: rgba(255, 255, 255, 0.92) !important;
 }
 
 /* 彈跳視窗標題區域 */
 .modal-header {
     background: linear-gradient(
         to bottom,
-        rgba(255, 255, 255, 0.9),
-        rgba(255, 255, 255, 0.7)
+        rgba(255, 255, 255, 0.95),
+        rgba(255, 255, 255, 0.85)
     );
     border-bottom: 1px solid rgba(0, 145, 66, 0.1);
 }
