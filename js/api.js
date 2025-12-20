@@ -234,15 +234,18 @@ const API = {
                         // 如果解析失敗，使用預設錯誤訊息
                     }
                     
-                    // 根據狀態碼提供更友善的錯誤訊息
+                    // 在控制台記錄技術詳情，但不顯示給使用者
+                    console.error('技術錯誤詳情:', errorMessage);
+                    
+                    // 根據狀態碼提供更友善的錯誤訊息（不包含技術詳情）
                     if (bodyData.response.statusCode === 500) {
-                        throw new Error(`AI 服務暫時無法使用，請稍後再試。\n\n技術詳情：${errorMessage}`);
+                        throw new Error('AI 服務暫時無法使用，請稍後再試。');
                     } else if (bodyData.response.statusCode === 503) {
-                        throw new Error('AI 服務正在維護中，請稍後再試');
+                        throw new Error('AI 服務正在維護中，請稍後再試。');
                     } else if (bodyData.response.statusCode === 429) {
-                        throw new Error('請求次數過多，請稍後再試');
+                        throw new Error('請求次數過多，請稍後再試。');
                     } else {
-                        throw new Error(`服務錯誤 (${bodyData.response.statusCode})：${errorMessage}`);
+                        throw new Error('服務暫時無法使用，請稍後再試。');
                     }
                 }
             }
