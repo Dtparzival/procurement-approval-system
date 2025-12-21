@@ -3083,3 +3083,128 @@ section.bg-white.py-20 {
         padding: 0.625rem 1rem;
     }
 }
+
+
+/* ==================== 生成結果區塊 Scroll Bar 穩定樣式 ==================== */
+
+/* 右側欄位容器 - 確保 flexbox 正確運作 */
+#rightColumn {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 結果容器 - 使用 flexbox 填滿可用空間 */
+#resultContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 內容包裝器 - 可滾動區域 */
+#contentWrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 生成內容 - 確保 scroll bar 穩定顯示 */
+#generatedContent {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* 當內容顯示時，確保父容器不會 overflow */
+#generatedContent:not(.hidden) {
+    display: block;
+}
+
+/* 桌面版特定樣式 */
+@media (min-width: 1024px) {
+    #rightColumn {
+        max-height: none; /* 移除 JavaScript 設定的 maxHeight，改用 CSS 控制 */
+    }
+    
+    #contentWrapper {
+        max-height: calc(100vh - 320px);
+    }
+    
+    #generatedContent {
+        max-height: none; /* 讓 contentWrapper 控制高度 */
+    }
+}
+
+/* 平板版樣式 */
+@media (min-width: 768px) and (max-width: 1023px) {
+    #contentWrapper {
+        max-height: calc(100vh - 280px);
+    }
+}
+
+/* 手機版樣式 */
+@media (max-width: 767px) {
+    #contentWrapper {
+        max-height: calc(100vh - 240px);
+    }
+    
+    #generatedContent {
+        padding-right: 0.25rem;
+    }
+}
+
+/* 確保 scroll bar 始終可見且明顯 */
+#contentWrapper,
+#generatedContent {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-400) var(--color-gray-100);
+}
+
+#contentWrapper::-webkit-scrollbar,
+#generatedContent::-webkit-scrollbar {
+    width: 10px;
+}
+
+#contentWrapper::-webkit-scrollbar-track,
+#generatedContent::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: 5px;
+    border: 1px solid var(--color-gray-200);
+}
+
+#contentWrapper::-webkit-scrollbar-thumb,
+#generatedContent::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-gray-300) 0%, var(--color-gray-400) 100%);
+    border-radius: 5px;
+    border: 2px solid var(--color-gray-100);
+    min-height: 40px;
+}
+
+#contentWrapper::-webkit-scrollbar-thumb:hover,
+#generatedContent::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--color-gray-400) 0%, var(--color-gray-500) 100%);
+}
+
+/* 可滾動內容區域的基礎樣式 */
+.scrollable-content {
+    overflow-y: scroll !important;
+    max-height: calc(100vh - 320px) !important;
+}
+
+/* 確保有內容時 scroll bar 始終顯示 */
+#generatedContent:not(.hidden) {
+    overflow-y: scroll !important;
+    display: block !important;
+    max-height: calc(100vh - 320px) !important;
+}
+
+/* 當 generatedContent 顯示時，contentWrapper 不需要滾動 */
+#contentWrapper:has(#generatedContent:not(.hidden)) {
+    overflow-y: hidden !important;
+}

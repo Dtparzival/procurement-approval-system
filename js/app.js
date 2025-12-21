@@ -43,71 +43,54 @@ class ProcurementApp {
 
     /**
      * 設定佈局對齊 - 確保左右兩側始終對齊
+     * 注意：主要高度控制已移至 CSS，此函數僅處理桌面版的左右對齊
      */
     setupLayoutAlignment() {
         const leftColumn = document.getElementById('leftColumn');
         const rightColumn = document.getElementById('rightColumn');
-        const resultContainer = document.getElementById('resultContainer');
-        const generatedContent = document.getElementById('generatedContent');
-        const contentWrapper = document.getElementById('contentWrapper');
         
-        if (!leftColumn || !rightColumn || !resultContainer) return;
+        if (!leftColumn || !rightColumn) return;
         
-        // 調整佈局的函數
+        // 調整佈局的函數 - 僅設定右側最大高度以匹配左側
         const adjustLayout = () => {
-            // 只在桌面版應用
+            // 只在桌面版應用左右對齊
             const isDesktop = window.innerWidth >= 1024;
             if (!isDesktop) {
                 rightColumn.style.maxHeight = '';
-                if (generatedContent) generatedContent.style.maxHeight = '';
-                if (contentWrapper) contentWrapper.style.maxHeight = '';
                 return;
             }
             
             // 計算左側區塊的總高度
             const leftHeight = leftColumn.offsetHeight;
             
-            // 設定右側容器的最大高度
+            // 設定右側容器的最大高度以匹配左側
             if (leftHeight > 0) {
                 rightColumn.style.maxHeight = `${leftHeight}px`;
-                
-                // 計算內容區域的可用高度（扣除標題和按鈕區域）
-                // 標題區域約 60px，按鈕區域約 70px，padding 約 48px
-                const headerHeight = 60;
-                const buttonHeight = 70;
-                const padding = 48;
-                const availableHeight = leftHeight - headerHeight - buttonHeight - padding;
-                
-                if (contentWrapper && availableHeight > 0) {
-                    contentWrapper.style.maxHeight = `${availableHeight}px`;
-                }
-                if (generatedContent && availableHeight > 0) {
-                    generatedContent.style.maxHeight = `${availableHeight}px`;
-                }
             }
         };
         
+        // 立即執行一次
+        adjustLayout();
+        
         // 使用 requestAnimationFrame 確保 DOM 完全渲染後再執行
-        // 多次調用以確保所有元素都已渲染完成
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                adjustLayout();
-            });
+            adjustLayout();
         });
         
-        // 頁面完全載入後再次調整
-        window.addEventListener('load', () => {
-            requestAnimationFrame(() => {
-                adjustLayout();
+        // 只在初始化時設定事件監聽（避免重複綁定）
+        if (!this._layoutListenersSet) {
+            this._layoutListenersSet = true;
+            
+            // 頁面完全載入後再次調整
+            window.addEventListener('load', () => {
+                requestAnimationFrame(adjustLayout);
             });
-        });
-        
-        // 監聽視窗大小變化
-        window.addEventListener('resize', () => {
-            requestAnimationFrame(() => {
-                adjustLayout();
+            
+            // 監聽視窗大小變化
+            window.addEventListener('resize', () => {
+                requestAnimationFrame(adjustLayout);
             });
-        });
+        }
     }
 
     /**
