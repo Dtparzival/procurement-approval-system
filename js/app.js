@@ -20,6 +20,7 @@ class ProcurementApp {
             this.setupAutoSave();
             this.setupExternalLinks();
             lucide.createIcons();
+            this.setupLayoutAlignment();
         }, 100);
     }
 
@@ -40,6 +41,37 @@ class ProcurementApp {
         }
     }
 
+    /**
+     * 設定佈局對齊 - 確保左右兩側始終對齊
+     */
+    setupLayoutAlignment() {
+        const leftColumn = document.getElementById('leftColumn');
+        const rightColumn = document.getElementById('rightColumn');
+        const resultContainer = document.getElementById('resultContainer');
+        
+        if (!leftColumn || !rightColumn || !resultContainer) return;
+        
+        // 只在桌面版應用
+        const isDesktop = window.innerWidth >= 1024;
+        if (!isDesktop) return;
+        
+        // 計算左側區塊的總高度
+        const leftHeight = leftColumn.offsetHeight;
+        
+        // 設定右側容器的最大高度
+        rightColumn.style.maxHeight = `${leftHeight}px`;
+        
+        // 監聽視窗大小變化
+        window.addEventListener('resize', () => {
+            const isDesktopNow = window.innerWidth >= 1024;
+            if (isDesktopNow) {
+                const newLeftHeight = leftColumn.offsetHeight;
+                rightColumn.style.maxHeight = `${newLeftHeight}px`;
+            } else {
+                rightColumn.style.maxHeight = '';
+            }
+        });
+    }
 
     /**
      * 載入設定
