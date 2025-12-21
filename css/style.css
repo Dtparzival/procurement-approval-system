@@ -358,6 +358,65 @@ body.modal-open {
     padding: 0.75rem 1rem;
 }
 
+/* 中文公文格式支援 */
+.prose br {
+    display: block;
+    content: '';
+    margin-top: 0.5rem;
+}
+
+/* 確保段落間距清晰 */
+.prose p + p {
+    margin-top: 1.25rem;
+}
+
+/* 中文標題格式（【】） */
+.prose p:has(strong:first-child) {
+    margin-top: 1.5rem;
+}
+
+/* 列表項目間距 */
+.prose ul li,
+.prose ol li {
+    margin-top: 0.375rem;
+    margin-bottom: 0.375rem;
+    line-height: 1.7;
+}
+
+/* 巢狀列表 */
+.prose ul ul,
+.prose ol ol,
+.prose ul ol,
+.prose ol ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* 分隔線 */
+.prose hr {
+    border: 0;
+    border-top: 2px solid var(--color-gray-200);
+    margin: 2rem 0;
+}
+
+/* 強調文字 */
+.prose em {
+    font-style: italic;
+    color: var(--color-gray-700);
+}
+
+/* 工具提示文字 */
+.prose mark {
+    background-color: rgba(111, 186, 44, 0.2);
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+}
+
+/* 確保 max-width 不會限制內容寬度 */
+.prose.max-w-none {
+    max-width: none;
+}
+
 /* ==================== 卡片樣式 ==================== */
 
 .draft-card {

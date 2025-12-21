@@ -302,7 +302,7 @@
                 </div>
 
                 <!-- 右側：輸出區域 -->
-                <div id="rightColumn" class="flex flex-col gap-6">
+                <div id="rightColumn" class="flex flex-col gap-6 overflow-hidden">
                     <!-- 生成結果 -->
                     <div id="resultContainer" class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 flex flex-col flex-1 overflow-hidden">
                         <div class="flex items-center justify-between mb-4">
@@ -327,7 +327,7 @@
                         </div>
                         
                         <!-- 內容區域 - 可滾動 -->
-                        <div class="flex-1 overflow-y-auto min-h-0">
+                        <div class="flex-1 overflow-hidden min-h-0 flex flex-col">
                         <!-- 空狀態 -->
                         <div id="emptyState" class="flex flex-col items-center justify-center min-h-[400px] text-center">
                             <div class="w-20 h-20 bg-gradient-to-br from-green-50 to-green-100 rounded-full flex items-center justify-center mb-4 border border-green-200">
@@ -423,7 +423,7 @@
                         </div>
 
                         <!-- 生成內容 -->
-                        <div id="generatedContent" class="hidden prose prose-sm max-w-none"></div>
+                        <div id="generatedContent" class="hidden prose prose-sm max-w-none overflow-y-auto flex-1"></div>
                         </div>
                         
                         <!-- 編輯模式 -->

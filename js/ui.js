@@ -373,8 +373,20 @@ const UI = {
         generatedContent.classList.remove('hidden');
         resultActions.classList.remove('hidden');
         
+        // 配置 marked.js 選項，優化 Markdown 渲染
+        marked.setOptions({
+            breaks: true,        // 將單個換行符轉換為 <br>
+            gfm: true,           // 啟用 GitHub Flavored Markdown
+            headerIds: false,    // 禁用標題 ID（避免 ID 衝突）
+            mangle: false,       // 不混淆電子郵件連結
+            sanitize: false,     // 不清理 HTML（允許內嵌 HTML）
+        });
+        
+        // 預處理內容：確保段落間有適當的空行
+        let processedContent = this.preprocessMarkdown(approval.content);
+        
         // 渲染 Markdown
-        generatedContent.innerHTML = marked.parse(approval.content);
+        generatedContent.innerHTML = marked.parse(processedContent);
         
         // 儲存當前簽呈資料
         this.currentApproval = approval;
@@ -384,7 +396,47 @@ const UI = {
             generatedContent.scrollIntoView({ behavior: 'smooth' });
         }
         
+        // 重新調整佈局對齊（確保內容顯示後滾動區域正確設定）
+        if (typeof ProcurementApp !== 'undefined' && ProcurementApp.setupLayoutAlignment) {
+            requestAnimationFrame(() => {
+                ProcurementApp.setupLayoutAlignment();
+            });
+        }
+        
         lucide.createIcons();
+    },
+    
+    /**
+     * 預處理 Markdown 內容
+     * 確保分段、斷行等格式正確處理
+     */
+    preprocessMarkdown(content) {
+        if (!content) return '';
+        
+        // 1. 標準化換行符（處理 Windows 和 Mac 的換行符）
+        let processed = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        
+        // 2. 確保標題前後有適當的空行
+        processed = processed.replace(/([^\n])\n(#{1,6}\s)/g, '$1\n\n$2');
+        processed = processed.replace(/(#{1,6}\s[^\n]+)\n([^#\n])/g, '$1\n\n$2');
+        
+        // 3. 確保列表前後有適當的空行
+        processed = processed.replace(/([^\n])\n([-*+]\s|\d+\.\s)/g, '$1\n\n$2');
+        
+        // 4. 確保引用區塊前後有適當的空行
+        processed = processed.replace(/([^\n])\n(>\s)/g, '$1\n\n$2');
+        
+        // 5. 處理「【】」格式的標題（常見於中文公文）
+        processed = processed.replace(/([^\n])\n(【[^】]+】)/g, '$1\n\n$2');
+        processed = processed.replace(/(【[^】]+】[^\n]*)\n([^【\n])/g, '$1\n\n$2');
+        
+        // 6. 處理「一、二、三」等中文序號
+        processed = processed.replace(/([^\n])\n([一二三四五六七八九十]+、)/g, '$1\n\n$2');
+        
+        // 7. 移除過多的連續空行（超過 2 個空行的情況）
+        processed = processed.replace(/\n{4,}/g, '\n\n\n');
+        
+        return processed.trim();
     },
 
     /**
