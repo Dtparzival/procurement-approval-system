@@ -397,9 +397,11 @@ const UI = {
         }
         
         // 重新調整佈局對齊（確保內容顯示後滾動區域正確設定）
-        if (typeof ProcurementApp !== 'undefined' && ProcurementApp.setupLayoutAlignment) {
+        if (window.app && typeof window.app.setupLayoutAlignment === 'function') {
             requestAnimationFrame(() => {
-                ProcurementApp.setupLayoutAlignment();
+                requestAnimationFrame(() => {
+                    window.app.setupLayoutAlignment();
+                });
             });
         }
         

@@ -48,6 +48,8 @@ class ProcurementApp {
         const leftColumn = document.getElementById('leftColumn');
         const rightColumn = document.getElementById('rightColumn');
         const resultContainer = document.getElementById('resultContainer');
+        const generatedContent = document.getElementById('generatedContent');
+        const contentWrapper = document.getElementById('contentWrapper');
         
         if (!leftColumn || !rightColumn || !resultContainer) return;
         
@@ -57,6 +59,8 @@ class ProcurementApp {
             const isDesktop = window.innerWidth >= 1024;
             if (!isDesktop) {
                 rightColumn.style.maxHeight = '';
+                if (generatedContent) generatedContent.style.maxHeight = '';
+                if (contentWrapper) contentWrapper.style.maxHeight = '';
                 return;
             }
             
@@ -66,6 +70,20 @@ class ProcurementApp {
             // 設定右側容器的最大高度
             if (leftHeight > 0) {
                 rightColumn.style.maxHeight = `${leftHeight}px`;
+                
+                // 計算內容區域的可用高度（扣除標題和按鈕區域）
+                // 標題區域約 60px，按鈕區域約 70px，padding 約 48px
+                const headerHeight = 60;
+                const buttonHeight = 70;
+                const padding = 48;
+                const availableHeight = leftHeight - headerHeight - buttonHeight - padding;
+                
+                if (contentWrapper && availableHeight > 0) {
+                    contentWrapper.style.maxHeight = `${availableHeight}px`;
+                }
+                if (generatedContent && availableHeight > 0) {
+                    generatedContent.style.maxHeight = `${availableHeight}px`;
+                }
             }
         };
         
