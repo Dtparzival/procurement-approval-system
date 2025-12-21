@@ -51,25 +51,44 @@ class ProcurementApp {
         
         if (!leftColumn || !rightColumn || !resultContainer) return;
         
-        // 只在桌面版應用
-        const isDesktop = window.innerWidth >= 1024;
-        if (!isDesktop) return;
+        // 調整佈局的函數
+        const adjustLayout = () => {
+            // 只在桌面版應用
+            const isDesktop = window.innerWidth >= 1024;
+            if (!isDesktop) {
+                rightColumn.style.maxHeight = '';
+                return;
+            }
+            
+            // 計算左側區塊的總高度
+            const leftHeight = leftColumn.offsetHeight;
+            
+            // 設定右側容器的最大高度
+            if (leftHeight > 0) {
+                rightColumn.style.maxHeight = `${leftHeight}px`;
+            }
+        };
         
-        // 計算左側區塊的總高度
-        const leftHeight = leftColumn.offsetHeight;
+        // 使用 requestAnimationFrame 確保 DOM 完全渲染後再執行
+        // 多次調用以確保所有元素都已渲染完成
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                adjustLayout();
+            });
+        });
         
-        // 設定右側容器的最大高度
-        rightColumn.style.maxHeight = `${leftHeight}px`;
+        // 頁面完全載入後再次調整
+        window.addEventListener('load', () => {
+            requestAnimationFrame(() => {
+                adjustLayout();
+            });
+        });
         
         // 監聽視窗大小變化
         window.addEventListener('resize', () => {
-            const isDesktopNow = window.innerWidth >= 1024;
-            if (isDesktopNow) {
-                const newLeftHeight = leftColumn.offsetHeight;
-                rightColumn.style.maxHeight = `${newLeftHeight}px`;
-            } else {
-                rightColumn.style.maxHeight = '';
-            }
+            requestAnimationFrame(() => {
+                adjustLayout();
+            });
         });
     }
 
