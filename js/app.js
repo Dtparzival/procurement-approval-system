@@ -61,10 +61,16 @@ class ProcurementApp {
      * 綁定事件監聽器
      */
     bindEvents() {
-        // 生成按鈕
+        // 生成按鈕 - 桌面版
         const generateBtn = document.getElementById('generateBtn');
         if (generateBtn) {
             generateBtn.addEventListener('click', () => this.handleGenerate());
+        }
+        
+        // 生成按鈕 - 手機版
+        const generateBtnMobile = document.getElementById('generateBtnMobile');
+        if (generateBtnMobile) {
+            generateBtnMobile.addEventListener('click', () => this.handleGenerate());
         }
 
         // 儲存草稿按鈕

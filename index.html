@@ -270,7 +270,7 @@
                         </div>
                         <textarea 
                             id="userInput" 
-                            rows="12"
+                            rows="8"
                             placeholder="請詳細描述採購需求，例如：&#10;&#10;需要採購 10 台筆記型電腦供業務部門使用，規格需求如下：&#10;- 處理器：Intel Core i7 或以上&#10;- 記憶體：16GB RAM&#10;- 儲存空間：512GB SSD&#10;- 預算：每台約 NT$ 35,000&#10;- 使用目的：提升業務人員外出作業效率"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none ai-focus input-enhanced"
                         ></textarea>
@@ -294,17 +294,23 @@
                         <div id="uploadedFilesList" class="mt-4 space-y-2"></div>
                     </div>
 
-                    <!-- 生成按鈕 -->
-                    <button id="generateBtn" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 btn-primary-enhanced">
+                    <!-- 生成按鈕 - 手機版 -->
+                    <button id="generateBtnMobile" class="lg:hidden w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 btn-primary-enhanced">
                         <i data-lucide="sparkles" class="w-5 h-5"></i>
                         生成簽呈
                     </button>
                 </div>
 
                 <!-- 右側：輸出區域 -->
-                <div class="space-y-6">
+                <div class="space-y-6 lg:sticky lg:top-24">
+                    <!-- 生成按鈕 - 桌面版 -->
+                    <button id="generateBtn" class="hidden lg:flex w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-semibold text-lg items-center justify-center gap-2 btn-primary-enhanced mb-4">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        生成簽呈
+                    </button>
+                    
                     <!-- 生成結果 -->
-                    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 min-h-[600px]">
+                    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 min-h-[500px] lg:min-h-[calc(100vh-220px)]">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                                 <i data-lucide="file-text" class="w-5 h-5"></i>
@@ -327,7 +333,7 @@
                         </div>
                         
                         <!-- 空狀態 -->
-                        <div id="emptyState" class="flex flex-col items-center justify-center h-[500px] text-center">
+                        <div id="emptyState" class="flex flex-col items-center justify-center h-[400px] lg:h-[calc(100vh-320px)] text-center">
                             <div class="w-20 h-20 bg-gradient-to-br from-green-50 to-green-100 rounded-full flex items-center justify-center mb-4 border border-green-200">
                                 <i data-lucide="file-text" class="w-10 h-10 text-green-500"></i>
                             </div>
@@ -339,7 +345,7 @@
                         </div>
 
                         <!-- 載入狀態 - AI 智能思考效果 -->
-                        <div id="loadingState" class="hidden flex flex-col items-center justify-center h-[500px]">
+                        <div id="loadingState" class="hidden flex flex-col items-center justify-center h-[400px] lg:h-[calc(100vh-320px)]">
                             <!-- AI 思考圖示 -->
                             <div class="relative mb-8">
                                 <!-- 外層脈衝光環 -->
