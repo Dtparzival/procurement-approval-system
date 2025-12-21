@@ -308,7 +308,10 @@ const UI = {
         // 更新自訂下拉選單的顯示
         this.setCustomSelectValue(savedModel);
         
-        // 禁用背景滾動，記錄當前滾動位置
+        // 確保下拉選單預設為收合狀態
+        this.closeCustomSelect();
+        
+        // 禁用背景捲動，記錄當前捲動位置
         this._scrollY = window.scrollY;
         document.body.style.top = `-${this._scrollY}px`;
         document.body.classList.add('modal-open');
