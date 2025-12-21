@@ -311,6 +311,13 @@ const UI = {
         // 確保下拉選單預設為收合狀態
         this.closeCustomSelect();
         
+        // 重新初始化下拉選單事件（確保每次打開設定時事件都正確綁定）
+        const btn = document.getElementById('customSelectBtn');
+        if (btn) {
+            btn.dataset.initialized = 'false';
+            this.initCustomSelect();
+        }
+        
         // 禁用背景捲動，記錄當前捲動位置
         this._scrollY = window.scrollY;
         document.body.style.top = `-${this._scrollY}px`;
@@ -601,10 +608,17 @@ const UI = {
         
         if (!container || !btn || !dropdown) return;
         
+        // 避免重複綁定事件
+        if (btn.dataset.initialized === 'true') return;
+        btn.dataset.initialized = 'true';
+        
         // 點擊按鈕切換下拉選單
         btn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
+            console.log('Custom select button clicked');
             const isOpen = !dropdown.classList.contains('hidden');
+            console.log('Is open:', isOpen);
             if (isOpen) {
                 this.closeCustomSelect();
             } else {
@@ -665,8 +679,14 @@ const UI = {
      * 切換自訂下拉選單
      */
     toggleCustomSelect() {
+        console.log('toggleCustomSelect called');
         const dropdown = document.getElementById('customSelectDropdown');
-        const isOpen = !dropdown?.classList.contains('hidden');
+        if (!dropdown) {
+            console.error('customSelectDropdown not found');
+            return;
+        }
+        const isOpen = !dropdown.classList.contains('hidden');
+        console.log('Dropdown is open:', isOpen);
         if (isOpen) {
             this.closeCustomSelect();
         } else {
@@ -678,20 +698,31 @@ const UI = {
      * 打開自訂下拉選單
      */
     openCustomSelect() {
+        console.log('openCustomSelect called');
         const container = document.getElementById('customModelSelect');
         const dropdown = document.getElementById('customSelectDropdown');
+        const arrow = document.getElementById('selectArrow');
+        if (!dropdown) {
+            console.error('customSelectDropdown not found');
+            return;
+        }
         container?.classList.add('open');
-        dropdown?.classList.remove('hidden');
+        dropdown.classList.remove('hidden');
+        arrow?.classList.add('rotate-180');
+        console.log('Dropdown opened, hidden class removed');
     },
     
     /**
      * 關閉自訂下拉選單
      */
     closeCustomSelect() {
+        console.log('closeCustomSelect called');
         const container = document.getElementById('customModelSelect');
         const dropdown = document.getElementById('customSelectDropdown');
+        const arrow = document.getElementById('selectArrow');
         container?.classList.remove('open');
         dropdown?.classList.add('hidden');
+        arrow?.classList.remove('rotate-180');
     },
     
     /**
