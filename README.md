@@ -1,9 +1,7 @@
-# AI 採購簽呈生成系統 - 靜態網頁版 (DEV 分支)
+# AI 採購簽呈生成系統
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Branch: DEV](https://img.shields.io/badge/Branch-DEV-blue.svg)](https://github.com/Dtparzival/procurement-approval-system/tree/DEV)
-
-> **注意**: 這是靜態網頁版本，與 `main` 分支的全端應用程式在架構上有顯著差異。
+[![Branch: release](https://img.shields.io/badge/Branch-release-green.svg)](https://github.com/Dtparzival/procurement-approval-system/tree/release)
 
 本專案是一個完全使用前端技術實作的 AI 採購簽呈生成系統，無需後端伺服器。所有資料儲存在瀏覽器本地，直接從前端呼叫 LLM API 進行簽呈生成。
 
@@ -11,27 +9,12 @@
 
 ## 📚 文件導航
 
-為了提供更清晰的指引，我們將文件整理如下：
-
-### 📂 主要文件
-
-| 文件 | 說明 | 適用對象 |
-| :--- | :--- | :--- |
-| 📖 **[README.md](README.md)** | **(本文件)** 專案總覽、功能介紹與快速開始。 | **所有使用者** |
-| 📝 **[CHANGELOG_DEV.md](CHANGELOG_DEV.md)** | **變更記錄**：DEV 分支的所有功能更新與修復歷史。 | **關注專案進度者** |
-
-### 📚 技術文件索引
-
-完整的技術文件和報告請參閱 **[docs/README.md](docs/README.md)**
-
-**快速連結**:
-
-- 🔧 [API 資料流程完整分析](docs/API資料流程完整分析.md) - API 呼叫完整流程
-- 🔧 [Request/Response 資料驗證與轉換深度分析](docs/Request_Response資料驗證與轉換深度分析.md) - 資料驗證與轉換機制
-- 📋 [Bug 修復歷史](docs/bugfix/BUGFIX_HISTORY.md) - 所有 Bug 修復記錄
-- 🛡️ [預防措施指南](docs/guides/PREVENTION_GUIDE.md) - 開發最佳實踐
-- 🚀 [部署指南](docs/deployment/DEPLOYMENT.md) - 部署流程
-- 📊 [測試報告](docs/testing/TESTING_REPORT.md) - 測試結果
+| 文件 | 說明 |
+| :--- | :--- |
+| 📖 **[README.md](README.md)** | **(本文件)** 專案總覽、功能介紹與快速開始。 |
+| 📝 **[CHANGELOG.md](CHANGELOG.md)** | **變更記錄**：`release` 分支的主要功能更新與修復歷史。 |
+| 📝 **[CHANGELOG_DEV.md](CHANGELOG_DEV.md)** | **開發變更記錄**：`DEV` 分支的詳細開發過程。 |
+| 📚 **[docs/README.md](docs/README.md)** | **技術文件索引**：所有技術文件、報告和指南的入口。 |
 
 ---
 
@@ -67,17 +50,16 @@ python3 -m http.server 8000
 
 ## ✨ 核心特色
 
+- **專業 UI/UX 設計**：提供清晰、簡潔、專業的使用者體驗，並在桌面版實現左右兩側完美對齊的佈局。
+- **響應式與跨裝置體驗**：完美適應桌面、平板與行動裝置，確保跨裝置體驗一致。
 - **文件智能讀取**：可上傳 PDF/Word 參考文件，AI 會自動提取內容，結合您的需求描述，生成更精準的簽呈。
-- **專業 UI/UX 設計**：參考 `main` 分支的專業設計，提供清晰、簡潔、專業的使用者體驗。
-- **增強的互動效果**：所有互動元素都有增強的 hover 效果和絲滑的過渡動畫。
 - **PDF 檔案下載**: 生成結果可直接下載為 PDF 檔案，並自動加入內控浮水印，確保文件安全與格式一致性。
-- **AI 思考動畫**：優化了載入動畫，以「AI 智能思考」的視覺效果取代傳統的轉圈，提升使用者體驗。
+- **增強的互動效果**：所有互動元素都有增強的 hover 效果和絲滑的過渡動畫，並提供玻璃擬態風格的自定義組件。
 - **純文字複製**: 一鍵複製純文字內容，方便貼到其他應用程式。
 - **零伺服器成本**：純靜態網站，無需後端伺服器，可部署於任何靜態託管服務。
 - **隱私安全**：API Key、草稿和歷史紀錄等所有資料皆儲存於瀏覽器本地，不會上傳到任何伺服器。
 - **無需編譯**：使用原生 HTML/CSS/JavaScript，無需複雜的建置過程。
 - **模組化設計**：程式碼結構清晰，易於維護與擴充。
-- **響應式介面**：完美適應桌面、平板與行動裝置。
 
 ## 🛠️ 技術架構
 
