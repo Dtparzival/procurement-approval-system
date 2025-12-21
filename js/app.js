@@ -40,6 +40,7 @@ class ProcurementApp {
         }
     }
 
+
     /**
      * 載入設定
      */
