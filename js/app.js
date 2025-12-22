@@ -42,8 +42,9 @@ class ProcurementApp {
     }
 
     /**
-     * 設定佈局對齊 - 確保左右兩側始終對齊
-     * 注意：主要高度控制已移至 CSS，此函數僅處理桌面版的左右對齊
+     * 設定左右欄位對齊
+     * 確保左右兩側內容區域高度一致
+     * 注意：主要高度控制已移至 CSS，此函數僅處理基本的佈局設定
      */
     setupLayoutAlignment() {
         const leftColumn = document.getElementById('leftColumn');
@@ -51,22 +52,13 @@ class ProcurementApp {
         
         if (!leftColumn || !rightColumn) return;
         
-        // 調整佈局的函數 - 僅設定右側最大高度以匹配左側
+        // 調整佈局的函數 - 不再設定 maxHeight，讓 CSS 完全控制高度
         const adjustLayout = () => {
-            // 只在桌面版應用左右對齊
-            const isDesktop = window.innerWidth >= 1024;
-            if (!isDesktop) {
-                rightColumn.style.maxHeight = '';
-                return;
-            }
+            // 移除任何 inline style 的 maxHeight 設定，讓 CSS 控制
+            rightColumn.style.maxHeight = '';
             
-            // 計算左側區塊的總高度
-            const leftHeight = leftColumn.offsetHeight;
-            
-            // 設定右側容器的最大高度以匹配左側
-            if (leftHeight > 0) {
-                rightColumn.style.maxHeight = `${leftHeight}px`;
-            }
+            // 確保右側欄位使用 CSS 的高度設定
+            // 不再用 JavaScript 設定固定高度，避免覆蓋 CSS 的響應式設計
         };
         
         // 立即執行一次

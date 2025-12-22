@@ -1,5 +1,22 @@
 # Release 分支變更記錄
 
+## [v1.7.4] - 2025-12-21
+
+### 問題修復
+
+#### 徹底修復桌面版生成結果滾動內容底部遮蔽問題
+
+- **調整 max-height 計算值**：將 `contentWrapper` 的 `max-height` 從 `calc(100vh - 260px)` 調整為 `calc(100vh - 220px)`，增加 40px 的可用空間。
+- **增加底部 padding**：將 `generatedContent` 的 `padding-bottom` 從 32px 增加到 48px，確保內容有足夠的呼吸空間。
+- **移除 JavaScript 高度設定**：簡化 `setupLayoutAlignment` 函數，不再用 JavaScript 設定 `rightColumn.maxHeight`，讓 CSS 完全控制高度。
+- **添加 CSS 版本號**：在 HTML 中添加 `?v=1.7.4` 以強制瀏覽器重新載入 CSS。
+
+### 技術改進
+
+- 統一使用 CSS 的響應式設計來控制內容區域高度，避免 JavaScript 和 CSS 的設定衝突。
+
+---
+
 ## [v1.7.3] - 2025-12-21
 
 ### 問題修復

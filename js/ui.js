@@ -397,12 +397,27 @@ const UI = {
         }
         
         // 重新調整佈局對齊（確保內容顯示後滾動區域正確設定）
+        // 使用多重機制確保佈局調整穩定執行
         if (window.app && typeof window.app.setupLayoutAlignment === 'function') {
+            // 立即執行一次
+            window.app.setupLayoutAlignment();
+            
+            // 使用 requestAnimationFrame 確保 DOM 更新後再執行
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     window.app.setupLayoutAlignment();
                 });
             });
+            
+            // 使用 setTimeout 作為最後保障，確保內容完全渲染後再調整
+            setTimeout(() => {
+                window.app.setupLayoutAlignment();
+            }, 100);
+            
+            // 再次延遲執行，處理字體載入等情況
+            setTimeout(() => {
+                window.app.setupLayoutAlignment();
+            }, 300);
         }
         
         lucide.createIcons();
