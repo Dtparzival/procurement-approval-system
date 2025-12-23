@@ -210,6 +210,9 @@ class ProcurementApp {
             UI.updateCharCount(userInput); // 初始化
         }
         
+        // iOS Safari 縮放修復
+        this.setupIOSZoomFix();
+        
         // 草稿瀏覽按鈕
         const sidebarDraftsBtns = document.querySelectorAll('#sidebarDraftsBtn');
         sidebarDraftsBtns.forEach(btn => {
@@ -728,6 +731,84 @@ class ProcurementApp {
         Storage.deleteDraft(draftId);
         UI.showToast(MESSAGES.SUCCESS.DELETE_DRAFT, 'success');
         this.showDraftsModal(); // 重新載入列表
+    }
+    
+    /**
+     * iOS Safari 縮放修復
+     * 解決手機版點選輸入欄位時畫面放大，鍵盤消失後不會恢復原尺寸的問題
+     */
+    setupIOSZoomFix() {
+        // 檢測是否為 iOS 裝置
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        
+        if (!isIOS) return;
+        
+        // 獲取所有輸入欄位
+        const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], textarea, select');
+        
+        inputs.forEach(input => {
+            // 在 focus 時記錄當前滾動位置
+            input.addEventListener('focus', () => {
+                // 儲存當前滾動位置
+                this._lastScrollPosition = {
+                    x: window.scrollX,
+                    y: window.scrollY
+                };
+            });
+            
+            // 在 blur 時重置縮放和滾動位置
+            input.addEventListener('blur', () => {
+                // 延遲執行以確保鍵盤已完全消失
+                setTimeout(() => {
+                    // 重置縮放比例
+                    this.resetIOSZoom();
+                    
+                    // 恢復滾動位置
+                    if (this._lastScrollPosition) {
+                        window.scrollTo(0, this._lastScrollPosition.y);
+                    }
+                }, 100);
+            });
+        });
+        
+        // 監聽視窗大小變化（鍵盤出現/消失時會觸發）
+        window.addEventListener('resize', () => {
+            // 延遲執行以確保視窗已穩定
+            setTimeout(() => {
+                this.resetIOSZoom();
+            }, 300);
+        });
+        
+        // 監聽方向變化
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.resetIOSZoom();
+            }, 500);
+        });
+    }
+    
+    /**
+     * 重置 iOS Safari 縮放比例
+     */
+    resetIOSZoom() {
+        // 方法 1: 使用 viewport meta tag 重置
+        const viewportMeta = document.querySelector('meta[name="viewport"]');
+        if (viewportMeta) {
+            // 先設定為允許縮放，然後立即設定為不允許
+            viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        }
+        
+        // 方法 2: 強制重繪
+        document.body.style.transform = 'translateZ(0)';
+        requestAnimationFrame(() => {
+            document.body.style.transform = '';
+        });
+        
+        // 方法 3: 重置滾動位置以修復水平偏移
+        if (window.scrollX !== 0) {
+            window.scrollTo(0, window.scrollY);
+        }
     }
 }
 

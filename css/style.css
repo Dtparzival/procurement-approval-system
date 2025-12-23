@@ -3272,3 +3272,106 @@ section.bg-white.py-20 {
 #contentWrapper:has(#generatedContent:not(.hidden)) {
     overflow-y: hidden !important;
 }
+
+
+/* ==================== iOS Safari 防止自動縮放修復 ==================== */
+
+/* 
+ * iOS Safari 會在輸入框字體小於 16px 時自動縮放頁面
+ * 以下樣式確保所有輸入欄位字體至少為 16px，並防止縮放後無法恢復的問題
+ */
+
+/* 全域輸入欄位字體大小設定 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+textarea,
+select {
+    font-size: 16px !important; /* 防止 iOS Safari 自動縮放 */
+    -webkit-text-size-adjust: 100%; /* 防止文字大小自動調整 */
+    text-size-adjust: 100%;
+}
+
+/* 防止 iOS Safari 縮放和平移 */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation; /* 允許觸控滾動和縮放手勢，但禁止雙擊縮放 */
+}
+
+body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+    overflow-x: hidden; /* 防止水平滾動 */
+}
+
+/* 防止輸入框 focus 時的縮放 */
+@media screen and (max-width: 768px) {
+    /* 確保手機版輸入框字體大小 */
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+        transform: translateZ(0); /* 強制 GPU 加速，有助於防止縮放問題 */
+    }
+    
+    /* 防止輸入框 focus 時的視覺縮放 */
+    input:focus,
+    textarea:focus,
+    select:focus {
+        font-size: 16px !important;
+    }
+    
+    /* 特定輸入欄位樣式 */
+    #draftTitle,
+    #userInput {
+        font-size: 16px !important;
+        -webkit-appearance: none; /* 移除 iOS 預設樣式 */
+        appearance: none;
+    }
+    
+    /* 防止頁面水平偏移 */
+    #appSection,
+    .container,
+    main {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+}
+
+/* iOS 特定修復 */
+@supports (-webkit-touch-callout: none) {
+    /* iOS Safari 特定樣式 */
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+    
+    /* 防止 iOS Safari 在輸入框 focus 時縮放 */
+    input:focus,
+    textarea:focus,
+    select:focus {
+        font-size: 16px !important;
+        transform: translateZ(0);
+    }
+}
+
+/* 防止觸控縮放 */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 確保頁面不會水平滾動 */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
