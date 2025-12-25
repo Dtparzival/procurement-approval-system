@@ -1,8 +1,8 @@
 # Agent 智簽公文 - 產品需求文件 (PRD)
 
-**版本：1.1**
+**版本：1.2**
 
-**最後更新日期：2025-12-24**
+**最後更新日期：2025-12-25**
 
 **作者：Manus AI**
 
@@ -232,6 +232,31 @@ js/
 
 ## 7. 資料流程與狀態管理
 
+### 7.1 畫面狀態轉換
+
+右側結果區有四種主要狀態，其轉換邏輯如下：
+
+```mermaid
+graph TD
+    A[空狀態] -- 輸入內容並點擊生成 --> B(載入中狀態);
+    B -- API 成功 --> C{結果顯示狀態};
+    B -- API 失敗 --> D[錯誤狀態];
+    C -- 點擊「編輯」 --> E[編輯模式];
+    E -- 點擊「儲存」或「取消」 --> C;
+    D -- 點擊「重試」 --> B;
+    D -- 點擊「返回」 --> A;
+    C -- 開始新簽呈 --> A;
+```
+
+| 狀態 | 觸發條件 | 畫面呈現 |
+| :--- | :--- | :--- |
+| **空狀態** | - 首次進入<br>- 完成一次生成後開始新的簽呈 | 顯示歡迎訊息和使用提示 |
+| **載入中狀態** | 點擊「生成簽呈」後 | 顯示載入動畫和提示文字 |
+| **結果顯示狀態** | AI API 成功回傳結果 | 顯示生成的簽呈內容和操作按鈕 |
+| **錯誤狀態** | AI API 呼叫失敗 | 顯示錯誤訊息和重試按鈕 |
+| **編輯模式** | 點擊「編輯」按鈕 | 結果區變為可編輯的 textarea |
+
+
 ### 7.1 資料儲存
 
 所有使用者資料都使用瀏覽器的 `localStorage` 進行儲存，包括：
@@ -265,7 +290,9 @@ js/
 
 ## 9. 詳細業務流程說明
 
-### 9.1 使用者登入流程
+### 9.1 使用者認證流程
+
+#### 9.1.1 登入流程
 
 ```mermaid
 sequenceDiagram
@@ -284,7 +311,70 @@ sequenceDiagram
     W->>U: 進入主應用程式
 ```
 
-### 9.2 簽呈生成流程
+#### 9.1.2 登出流程
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant W as 網站
+    participant S as Storage
+
+    U->>W: 點擊「登出」按鈕
+    W->>S: 清除本地儲存的登入狀態
+    W->>U: 重新導向至 Hero 頁面
+    U->>U: 看到登入畫面
+```
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant W as 網站
+    participant G as Google
+
+    U->>W: 訪問網站
+    W->>U: 顯示 Hero 頁面
+    U->>W: 點擊「登入」
+    W->>G: 發起 OAuth 認證
+    G->>U: 顯示 Google 登入畫面
+    U->>G: 輸入帳號密碼
+    G->>W: 回傳認證 Token
+    W->>W: 儲存登入狀態
+    W->>U: 進入主應用程式
+```
+
+### 9.2 連續生成多份簽呈流程
+
+此流程描述使用者在生成一份簽呈後，不清空介面，直接修改輸入內容以生成下一份簽呈的情境。
+
+**業務邏輯：**
+
+1.  **保留輸入內容**：使用者可以選擇不清空輸入區，直接在現有基礎上修改「採購需求描述」。
+2.  **重新生成**：再次點擊「生成簽呈」按鈕，系統會使用新的輸入內容呼叫 AI API。
+3.  **更新歷史紀錄**：新的生成結果會被存為一筆獨立的歷史紀錄。
+
+**畫面呈現：**
+
+-   **左側輸入區**：使用者可以自由編輯內容。
+-   **右側結果區**：在生成過程中會顯示載入動畫，完成後更新為新的簽呈內容。
+
+**流程圖：**
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant W as 網站
+    participant A as AI API
+
+    U->>W: 修改「採購需求描述」
+    U->>W: 點擊「生成簽呈」
+    W->>U: 顯示載入動畫
+    W->>A: 傳送新的需求內容
+    A->>W: 回傳新的生成結果
+    W->>U: 更新右側結果區
+```
+```
+```
+### 9.3 首次簽呈生成流程
 
 ```mermaid
 sequenceDiagram
@@ -306,7 +396,28 @@ sequenceDiagram
     W->>U: 顯示生成的簽呈
 ```
 
-### 9.3 草稿管理流程
+### 9.4 歷史紀錄操作流程
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant W as 網站
+    participant S as Storage
+
+    U->>W: 點擊「歷史紀錄」按鈕
+    W->>S: 讀取歷史紀錄列表
+    S->>W: 回傳歷史紀錄資料
+    W->>U: 顯示歷史紀錄彈窗
+    U->>W: 點擊「載入」某筆紀錄
+    W->>S: 讀取該筆紀錄的詳細內容
+    S->>W: 回傳紀錄詳情
+    W->>U: 將紀錄內容載入到結果區
+    U->>W: 點擊「刪除」某筆紀錄
+    W->>S: 從儲存中刪除該筆紀錄
+    W->>U: 更新歷史紀錄列表
+```
+
+### 9.5 草稿管理流程
 
 ```mermaid
 sequenceDiagram
@@ -324,7 +435,47 @@ sequenceDiagram
     W->>U: 載入草稿至輸入區
 ```
 
-### 9.4 結果操作流程
+### 9.6 設定功能操作流程
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant W as 網站
+    participant S as Storage
+
+    U->>W: 點擊「設定」按鈕
+    W->>U: 顯示設定彈窗
+    U->>W: 修改 API Key
+    W->>S: 儲存新的 API Key
+    U->>W: 選擇 AI 模型
+    W->>S: 儲存選擇的模型
+    U->>W: 點擊「匯出資料」
+    W->>S: 讀取所有本地資料
+    S->>W: 產生 JSON 檔案
+    W->>U: 下載 JSON 檔案
+    U->>W: 點擊「匯入資料」
+    U->>U: 選擇 JSON 檔案
+    W->>S: 解析並儲存資料
+    W->>U: 顯示成功提示
+```
+
+### 9.8 編輯模式操作流程
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant W as 網站
+
+    U->>W: 點擊「編輯」按鈕
+    W->>U: 進入編輯模式，結果區變為可編輯的 textarea
+    U->>W: 修改簽呈內容
+    U->>W: 點擊「儲存」按鈕
+    W->>U: 退出編輯模式，顯示更新後的內容
+    U->>W: 點擊「取消」按鈕
+    W->>U: 退出編輯模式，恢復未修改的內容
+```
+
+### 9.9 結果操作流程
 
 ```mermaid
 sequenceDiagram
@@ -418,6 +569,7 @@ sequenceDiagram
 | [CHANGELOG.md](../CHANGELOG.md) | 變更記錄：主要功能更新與修復歷史。 |
 | [ERROR_CODES.md](ERROR_CODES.md) | 錯誤代碼文件：詳細的錯誤代碼說明。 |
 | [DEPLOYMENT.md](../DEPLOYMENT.md) | 部署指南：如何將網站部署到公開網路。 |
+| [docs/README.md](README.md) | 文件索引：所有技術文件的入口。 |
 
 ---
 
