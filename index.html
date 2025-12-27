@@ -40,7 +40,7 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css?v=1.9.0">
+    <link rel="stylesheet" href="css/style.css?v=1.9.1">
 </head>
 <body class="bg-gray-50">
     <!-- 未登入狀態：Hero 區塊 -->
@@ -691,36 +691,36 @@
                     </label>
                     <!-- 自訂下拉選單組件 -->
                     <div id="customModelSelect" class="custom-select-container relative">
-                        <input type="hidden" id="modelSelect" value="gpt-4o-mini">
+                        <input type="hidden" id="modelSelect" value="gpt-5-mini">
                         <button type="button" id="customSelectBtn" class="custom-select-btn w-full px-4 py-2.5 text-left bg-white/90 backdrop-blur-md border border-gray-200 rounded-lg hover:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200 flex items-center justify-between">
-                            <span id="selectedModelText" class="text-gray-700">GPT-4o Mini (推薦)</span>
+                            <span id="selectedModelText" class="text-gray-700">GPT-5 Mini (推薦)</span>
                             <svg id="selectArrow" class="w-5 h-5 text-green-600 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div id="customSelectDropdown" class="custom-select-dropdown hidden absolute z-50 w-full mt-1 bg-white/95 backdrop-blur-xl border border-gray-200 rounded-lg shadow-xl overflow-hidden">
                             <div class="py-1">
-                                <div class="custom-select-option px-4 py-3 cursor-pointer transition-all duration-150 hover:bg-green-50 flex items-center justify-between" data-value="gpt-4o-mini">
+                                <div class="custom-select-option px-4 py-3 cursor-pointer transition-all duration-150 hover:bg-green-50 flex items-center justify-between" data-value="gpt-5-mini">
                                     <div>
-                                        <span class="font-medium text-gray-800">GPT-4o Mini</span>
+                                        <span class="font-medium text-gray-800">GPT-5 Mini</span>
                                         <span class="ml-2 text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">推薦</span>
                                     </div>
                                     <svg class="check-icon w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
-                                <div class="custom-select-option px-4 py-3 cursor-pointer transition-all duration-150 hover:bg-green-50 flex items-center justify-between" data-value="gpt-3.5-turbo">
+                                <div class="custom-select-option px-4 py-3 cursor-pointer transition-all duration-150 hover:bg-green-50 flex items-center justify-between" data-value="gpt-5-nano">
                                     <div>
-                                        <span class="font-medium text-gray-800">GPT-3.5 Turbo</span>
+                                        <span class="font-medium text-gray-800">GPT-5 Nano</span>
                                         <span class="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">快速</span>
                                     </div>
                                     <svg class="check-icon w-5 h-5 text-green-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
-                                <div class="custom-select-option px-4 py-3 cursor-pointer transition-all duration-150 hover:bg-green-50 flex items-center justify-between" data-value="gpt-4o">
+                                <div class="custom-select-option px-4 py-3 cursor-pointer transition-all duration-150 hover:bg-green-50 flex items-center justify-between" data-value="gpt-5.2">
                                     <div>
-                                        <span class="font-medium text-gray-800">GPT-4o</span>
+                                        <span class="font-medium text-gray-800">GPT-5.2</span>
                                         <span class="ml-2 text-xs px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">最強</span>
                                     </div>
                                     <svg class="check-icon w-5 h-5 text-green-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">

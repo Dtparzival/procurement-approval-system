@@ -3638,3 +3638,197 @@ html, body {
         margin-bottom: 0.25rem !important;
     }
 }
+
+/**
+ * iPhone 橫向模式主要內容區域優化
+ * 針對 iPhone 14 Pro Max 等大螢幕手機橫向模式
+ * 螢幕尺寸：932 x 430 (橫向)
+ */
+
+/* 橫向模式下的主要內容區域 - 手機版 */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 1023px) {
+    /* 主要內容區域 - 使用 Grid 佈局 */
+    #mainSection .grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1rem !important;
+        align-items: start !important;
+    }
+    
+    /* 左側欄位 */
+    #mainSection .grid > div:first-child {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        max-height: calc(100vh - 80px) !important;
+        overflow-y: auto !important;
+    }
+    
+    /* 右側欄位 */
+    #rightColumn {
+        max-height: calc(100vh - 80px) !important;
+        overflow-y: auto !important;
+    }
+    
+    /* 草稿標題區塊 - 縮小 */
+    #mainSection .bg-white.rounded-2xl {
+        padding: 0.75rem !important;
+    }
+    
+    /* 採購需求描述區塊 - 縮小 */
+    #mainSection .bg-white.rounded-2xl textarea {
+        min-height: 80px !important;
+        max-height: 120px !important;
+    }
+    
+    /* 參考文件區塊 - 縮小 */
+    #uploadSection {
+        padding: 0.5rem !important;
+    }
+    
+    .upload-content-wrapper {
+        height: 100px !important;
+    }
+    
+    /* 生成簽呈按鈕 - 調整位置 */
+    #generateBtn {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* 結果容器 */
+    #resultContainer {
+        padding: 0.75rem !important;
+    }
+    
+    /* 空狀態區域 - 縮小並置中 */
+    #emptyState {
+        min-height: auto !important;
+        padding: 1rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    
+    /* 空狀態圖示 */
+    #emptyState .empty-state-icon {
+        width: 40px !important;
+        height: 40px !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    #emptyState .empty-state-icon svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    
+    /* 空狀態標題 */
+    #emptyState .empty-state-title {
+        font-size: 0.875rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    /* 空狀態描述 */
+    #emptyState .empty-state-description {
+        font-size: 0.625rem !important;
+        margin-bottom: 0.25rem !important;
+        display: none !important; /* 橫向模式下隱藏描述文字 */
+    }
+    
+    /* 空狀態連結 */
+    #emptyState .empty-state-action {
+        font-size: 0.625rem !important;
+    }
+    
+    /* 內容包裝器 */
+    #contentWrapper {
+        max-height: calc(100vh - 180px) !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Footer 隱藏 - 橫向模式下節省空間 */
+    footer {
+        display: none !important;
+    }
+    
+    /* Header 縮小 */
+    header {
+        padding: 0.5rem 0 !important;
+    }
+    
+    header .container {
+        padding: 0 0.75rem !important;
+    }
+    
+    /* Logo 縮小 */
+    header .w-10 {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
+    
+    header .text-xl {
+        font-size: 1rem !important;
+    }
+    
+    /* 導航按鈕縮小 */
+    header button,
+    header a {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* 主要內容區域 padding 調整 */
+    main {
+        padding-top: 60px !important;
+    }
+    
+    #mainSection {
+        padding: 0.5rem !important;
+    }
+}
+
+/* 更小高度的橫向模式 - 手機版 */
+@media (max-height: 400px) and (orientation: landscape) and (max-width: 1023px) {
+    /* 主要內容區域 */
+    #mainSection .grid {
+        gap: 0.5rem !important;
+    }
+    
+    /* 左側欄位 */
+    #mainSection .grid > div:first-child {
+        gap: 0.5rem !important;
+    }
+    
+    /* 草稿標題區塊 */
+    #mainSection .bg-white.rounded-2xl {
+        padding: 0.5rem !important;
+    }
+    
+    /* 採購需求描述區塊 */
+    #mainSection .bg-white.rounded-2xl textarea {
+        min-height: 60px !important;
+        max-height: 80px !important;
+    }
+    
+    /* 參考文件區塊 */
+    .upload-content-wrapper {
+        height: 80px !important;
+    }
+    
+    /* 空狀態圖示 */
+    #emptyState .empty-state-icon {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    #emptyState .empty-state-icon svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    
+    /* 空狀態標題 */
+    #emptyState .empty-state-title {
+        font-size: 0.75rem !important;
+    }
+}
