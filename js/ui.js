@@ -585,13 +585,14 @@ const UI = {
         const filesList = document.getElementById('uploadedFilesList');
         const fileDiv = document.createElement('div');
         fileDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+        fileDiv.setAttribute('data-filename', file.fileName); // 添加檔案名稱屬性以便識別
         fileDiv.innerHTML = `
             <div class="flex items-center gap-2">
                 <i data-lucide="file" class="w-4 h-4 text-gray-500"></i>
                 <span class="text-sm text-gray-700">${file.fileName}</span>
                 <span class="text-xs text-gray-500">(${this.formatFileSize(file.fileSize)})</span>
             </div>
-            <button onclick="UI.removeUploadedFile(this)" class="text-red-500 hover:text-red-700">
+            <button onclick="UI.removeUploadedFile(this, '${file.fileName}')" class="text-red-500 hover:text-red-700">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         `;
@@ -601,9 +602,25 @@ const UI = {
 
     /**
      * 移除上傳的檔案
+     * @param {HTMLElement} button - 刪除按鈕元素
+     * @param {string} fileName - 要刪除的檔案名稱
      */
-    removeUploadedFile(button) {
-        button.closest('div').remove();
+    removeUploadedFile(button, fileName) {
+        // 移除 DOM 元素
+        const fileDiv = button.closest('div[data-filename]');
+        if (fileDiv) {
+            fileDiv.remove();
+        }
+        
+        // 同步更新 app.uploadedFiles 陣列
+        if (window.app && window.app.uploadedFiles) {
+            const index = window.app.uploadedFiles.findIndex(f => f.fileName === fileName);
+            if (index !== -1) {
+                window.app.uploadedFiles.splice(index, 1);
+                console.log('File removed from uploadedFiles:', fileName);
+                console.log('Remaining files:', window.app.uploadedFiles.length);
+            }
+        }
     },
 
     /**

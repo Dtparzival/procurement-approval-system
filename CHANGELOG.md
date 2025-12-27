@@ -1,5 +1,37 @@
 # Release 分支變更記錄
 
+## [v1.7.7] - 2025-12-27
+
+### 問題修復
+
+#### 修復 API 呼叫時前次文件資料殘留問題
+
+- **問題描述**：當用戶刪除上傳的文件後，下次點擊「生成簽呈」或「重新試一次」時，API 呼叫仍會帶到已刪除文件的內容資料。
+
+- **根本原因**：`UI.removeUploadedFile()` 函數只移除了 DOM 元素，但沒有同步更新 `app.uploadedFiles` 陣列。
+
+- **修復方案**：
+  - 在 `showUploadedFile()` 函數中添加 `data-filename` 屬性以便識別文件
+  - 修改 `removeUploadedFile()` 函數，在移除 DOM 元素的同時同步更新 `window.app.uploadedFiles` 陣列
+
+#### 修復桌面版左右欄位上下對齊問題
+
+- **問題描述**：桌面版左右兩邊上下沒有對齊，右側「生成簽呈」按鈕與左側「參考文件」區塊底部不在同一水平線。
+
+- **根本原因**：右側欄位使用了 `sticky` 定位和 `align-self: flex-start`，導致不會隨左側高度變化。
+
+- **修復方案**：
+  - 在 Grid 容器添加 `lg:items-stretch` 讓左右等高
+  - 移除右側欄位的 `sticky` 定位和 `align-self: flex-start`
+  - 使用 Flexbox 的 `flex-1` 讓右側結果區域填滿可用空間
+
+### 技術改進
+
+- 統一使用 CSS Flexbox 佈局控制左右欄位高度對齊
+- 確保文件刪除操作同步更新 JavaScript 狀態和 DOM
+
+---
+
 ## [v1.7.6] - 2025-12-27
 
 ### 問題修復

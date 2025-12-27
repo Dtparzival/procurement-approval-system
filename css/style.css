@@ -3128,61 +3128,69 @@ section.bg-white.py-20 {
 
 /* 桌面版特定樣式 - 大螢幕 (1280px+) */
 @media (min-width: 1280px) {
+    /* 右側欄位使用 flex 佈局填滿高度，與左側對齊 */
     #rightColumn {
-        max-height: calc(100vh - 140px); /* 固定右側最大高度，不隨左側變化 */
-        position: sticky;
-        top: 7rem; /* 112px = header 高度 + 間距 */
-        align-self: flex-start;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
     }
     
+    /* 結果容器使用 flex-1 填滿可用空間 */
     #resultContainer {
-        max-height: calc(100vh - 160px); /* 固定結果容器高度 */
-        overflow: hidden;
-    }
-    
-    #contentWrapper {
-        max-height: calc(100vh - 240px); /* 增加可用空間，讓內容區域更大 */
         flex: 1;
         display: flex;
         flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+    
+    /* 內容包裝器使用 flex-1 並允許滾動 */
+    #contentWrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
         overflow-y: auto;
     }
     
     #generatedContent {
-        max-height: none; /* 移除固定 max-height，讓 flex: 1 自動填滿空間 */
         flex: 1;
         min-height: 0;
-        padding-bottom: 3rem !important; /* 增加底部 padding，確保最後一行內容有足夠的呼吸空間 */
+        padding-bottom: 3rem !important;
     }
 }
 
 /* 桌面版樣式 - 標準螢幕 (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
+    /* 右側欄位使用 flex 佈局填滿高度，與左側對齊 */
     #rightColumn {
-        max-height: calc(100vh - 140px); /* 固定右側最大高度，不隨左側變化 */
-        position: sticky;
-        top: 7rem;
-        align-self: flex-start;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
     }
     
+    /* 結果容器使用 flex-1 填滿可用空間 */
     #resultContainer {
-        max-height: calc(100vh - 160px); /* 固定結果容器高度 */
-        overflow: hidden;
-    }
-    
-    #contentWrapper {
-        max-height: calc(100vh - 240px); /* 增加可用空間 */
         flex: 1;
         display: flex;
         flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+    
+    /* 內容包裝器使用 flex-1 並允許滾動 */
+    #contentWrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
         overflow-y: auto;
     }
     
     #generatedContent {
-        max-height: none; /* 移除固定 max-height，讓 flex: 1 自動填滿空間 */
         flex: 1;
         min-height: 0;
-        padding-bottom: 3rem !important; /* 增加底部 padding */
+        padding-bottom: 3rem !important;
     }
 }
 
