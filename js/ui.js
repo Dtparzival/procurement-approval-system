@@ -584,20 +584,40 @@ const UI = {
     showUploadedFile(file) {
         const filesList = document.getElementById('uploadedFilesList');
         const fileDiv = document.createElement('div');
-        fileDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
-        fileDiv.setAttribute('data-filename', file.fileName); // 添加檔案名稱屬性以便識別
+        fileDiv.className = 'uploaded-file-item';
+        fileDiv.setAttribute('data-filename', file.fileName);
         fileDiv.innerHTML = `
-            <div class="flex items-center gap-2">
-                <i data-lucide="file" class="w-4 h-4 text-gray-500"></i>
-                <span class="text-sm text-gray-700">${file.fileName}</span>
-                <span class="text-xs text-gray-500">(${this.formatFileSize(file.fileSize)})</span>
+            <div class="uploaded-file-info">
+                <i data-lucide="file-text" class="uploaded-file-icon"></i>
+                <span class="uploaded-file-name" title="${file.fileName}">${file.fileName}</span>
+                <span class="uploaded-file-size">${this.formatFileSize(file.fileSize)}</span>
             </div>
-            <button onclick="UI.removeUploadedFile(this, '${file.fileName}')" class="text-red-500 hover:text-red-700">
-                <i data-lucide="x" class="w-4 h-4"></i>
+            <button onclick="UI.removeUploadedFile(this, '${file.fileName}')" class="uploaded-file-remove" title="移除檔案">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
             </button>
         `;
         filesList.appendChild(fileDiv);
         lucide.createIcons();
+        
+        // 更新文件計數
+        this.updateFileCount();
+    },
+    
+    /**
+     * 更新文件計數顯示
+     */
+    updateFileCount() {
+        const filesList = document.getElementById('uploadedFilesList');
+        const fileCount = document.getElementById('fileCount');
+        if (filesList && fileCount) {
+            const count = filesList.children.length;
+            if (count > 0) {
+                fileCount.textContent = `${count} 個文件`;
+                fileCount.classList.remove('hidden');
+            } else {
+                fileCount.classList.add('hidden');
+            }
+        }
     },
 
     /**
@@ -621,6 +641,9 @@ const UI = {
                 console.log('Remaining files:', window.app.uploadedFiles.length);
             }
         }
+        
+        // 更新文件計數
+        this.updateFileCount();
     },
 
     /**
