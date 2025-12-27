@@ -3157,7 +3157,7 @@ section.bg-white.py-20 {
     #generatedContent {
         flex: 1;
         min-height: 0;
-        padding-bottom: 3rem !important;
+        padding-bottom: 1rem !important;
     }
 }
 
@@ -3192,7 +3192,7 @@ section.bg-white.py-20 {
     #generatedContent {
         flex: 1;
         min-height: 0;
-        padding-bottom: 3rem !important;
+        padding-bottom: 1rem !important;
     }
 }
 
@@ -3208,7 +3208,7 @@ section.bg-white.py-20 {
     #generatedContent {
         max-height: none; /* 移除固定 max-height，讓 flex: 1 自動填滿空間 */
         padding-right: 0.375rem;
-        padding-bottom: 3rem !important; /* 增加底部 padding */
+        padding-bottom: 1rem !important; /* 減少底部 padding */
         flex: 1;
         min-height: 0;
     }
@@ -3226,7 +3226,7 @@ section.bg-white.py-20 {
     #generatedContent {
         max-height: none; /* 移除固定 max-height，讓 flex: 1 自動填滿空間 */
         padding-right: 0.25rem;
-        padding-bottom: 2.5rem !important; /* 增加底部 padding */
+        padding-bottom: 0.75rem !important; /* 減少底部 padding */
         flex: 1;
         min-height: 0;
     }
@@ -3244,7 +3244,7 @@ section.bg-white.py-20 {
     #generatedContent {
         max-height: none; /* 移除固定 max-height，讓 flex: 1 自動填滿空間 */
         padding-right: 0.25rem;
-        padding-bottom: 2.5rem !important; /* 增加底部 padding */
+        padding-bottom: 0.75rem !important; /* 減少底部 padding */
         font-size: 0.875rem; /* 稍微縮小字體以適應小螢幕 */
         flex: 1;
         min-height: 0;
@@ -3286,14 +3286,14 @@ section.bg-white.py-20 {
 /* 可滾動內容區域的基礎樣式 */
 .scrollable-content {
     overflow-y: scroll !important;
-    padding-bottom: 3rem; /* 增加底部 padding 確保內容不被截斷 */
+    padding-bottom: 1rem; /* 減少底部 padding */
 }
 
 /* 確保有內容時 scroll bar 始終顯示 */
 #generatedContent:not(.hidden) {
     overflow-y: scroll !important;
     display: block !important;
-    padding-bottom: 3rem; /* 增加底部 padding 確保內容不被截斷 */
+    padding-bottom: 1rem; /* 減少底部 padding */
 }
 
 /* 當 generatedContent 顯示時，contentWrapper 需要允許滾動以顯示完整內容 */
