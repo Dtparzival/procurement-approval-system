@@ -3302,6 +3302,59 @@ section.bg-white.py-20 {
 }
 
 
+/* ==================== 參考文件區塊樣式 ==================== */
+
+/* 參考文件區塊固定大小 */
+#uploadSection {
+    flex-shrink: 0; /* 不允許壓縮 */
+}
+
+/* 已上傳文件列表樣式 */
+#uploadedFilesList {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-400) var(--color-gray-100);
+}
+
+#uploadedFilesList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#uploadedFilesList::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: 3px;
+}
+
+#uploadedFilesList::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: 3px;
+}
+
+#uploadedFilesList::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray-400);
+}
+
+/* 桌面版參考文件區塊 */
+@media (min-width: 1024px) {
+    #uploadedFilesList {
+        max-height: 120px; /* 約 3 個文件的高度 */
+    }
+}
+
+/* 平板版參考文件區塊 */
+@media (min-width: 768px) and (max-width: 1023px) {
+    #uploadedFilesList {
+        max-height: 100px; /* 約 2-3 個文件的高度 */
+    }
+}
+
+/* 手機版參考文件區塊 */
+@media (max-width: 767px) {
+    #uploadedFilesList {
+        max-height: 120px; /* 約 3 個文件的高度 */
+    }
+}
+
+
 /* ==================== iOS Safari 防止自動縮放修復 ==================== */
 
 /* 
