@@ -1,5 +1,26 @@
 # Release 分支變更記錄
 
+## [v1.7.8] - 2025-12-27
+
+### 問題修復
+
+#### 修正 v1.7.7 造成的桌面版佈局問題
+
+- **問題描述**：v1.7.7 使用 `lg:items-stretch` 導致右側內容延伸到很長，沒有 scroll bar，左右不對齊。
+
+- **修復方案**：
+  - 移除 `lg:items-stretch`，改用 `align-self: flex-start` 讓左右頂部對齊
+  - 恢復右側欄位的 `sticky` 定位和固定最大高度
+  - 確保 `contentWrapper` 有 `overflow-y: auto` 允許滾動
+  - 設定 `resultContainer` 的 `max-height` 限制結果區域高度
+
+### 技術改進
+
+- 右側欄位使用 `position: sticky` 固定在視窗頂部
+- 生成結果區域有獨立的滾動條，不會隨左側內容高度變化
+
+---
+
 ## [v1.7.7] - 2025-12-27
 
 ### 問題修復

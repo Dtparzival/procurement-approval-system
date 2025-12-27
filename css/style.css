@@ -3128,11 +3128,14 @@ section.bg-white.py-20 {
 
 /* 桌面版特定樣式 - 大螢幕 (1280px+) */
 @media (min-width: 1280px) {
-    /* 右側欄位使用 flex 佈局填滿高度，與左側對齊 */
+    /* 右側欄位使用 sticky 定位，固定在視窗頂部 */
     #rightColumn {
+        position: sticky;
+        top: 7rem; /* header 高度 + 間距 */
+        max-height: calc(100vh - 140px);
         display: flex;
         flex-direction: column;
-        min-height: 0;
+        align-self: flex-start; /* 頂部對齊 */
     }
     
     /* 結果容器使用 flex-1 填滿可用空間 */
@@ -3141,6 +3144,7 @@ section.bg-white.py-20 {
         display: flex;
         flex-direction: column;
         min-height: 0;
+        max-height: calc(100vh - 220px); /* 結果容器最大高度 */
         overflow: hidden;
     }
     
@@ -3150,7 +3154,7 @@ section.bg-white.py-20 {
         display: flex;
         flex-direction: column;
         min-height: 0;
-        overflow-y: auto;
+        overflow-y: auto; /* 允許滾動 */
     }
     
     #generatedContent {
@@ -3162,11 +3166,14 @@ section.bg-white.py-20 {
 
 /* 桌面版樣式 - 標準螢幕 (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
-    /* 右側欄位使用 flex 佈局填滿高度，與左側對齊 */
+    /* 右側欄位使用 sticky 定位，固定在視窗頂部 */
     #rightColumn {
+        position: sticky;
+        top: 7rem;
+        max-height: calc(100vh - 140px);
         display: flex;
         flex-direction: column;
-        min-height: 0;
+        align-self: flex-start; /* 頂部對齊 */
     }
     
     /* 結果容器使用 flex-1 填滿可用空間 */
@@ -3175,6 +3182,7 @@ section.bg-white.py-20 {
         display: flex;
         flex-direction: column;
         min-height: 0;
+        max-height: calc(100vh - 220px); /* 結果容器最大高度 */
         overflow: hidden;
     }
     
@@ -3184,7 +3192,7 @@ section.bg-white.py-20 {
         display: flex;
         flex-direction: column;
         min-height: 0;
-        overflow-y: auto;
+        overflow-y: auto; /* 允許滾動 */
     }
     
     #generatedContent {
