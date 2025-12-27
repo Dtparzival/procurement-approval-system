@@ -3129,14 +3129,23 @@ section.bg-white.py-20 {
 /* 桌面版特定樣式 - 大螢幕 (1280px+) */
 @media (min-width: 1280px) {
     #rightColumn {
-        max-height: none;
+        max-height: calc(100vh - 140px); /* 固定右側最大高度，不隨左側變化 */
+        position: sticky;
+        top: 7rem; /* 112px = header 高度 + 間距 */
+        align-self: flex-start;
+    }
+    
+    #resultContainer {
+        max-height: calc(100vh - 160px); /* 固定結果容器高度 */
+        overflow: hidden;
     }
     
     #contentWrapper {
-        max-height: calc(100vh - 200px); /* 增加可用空間，讓內容區域更大 */
+        max-height: calc(100vh - 240px); /* 增加可用空間，讓內容區域更大 */
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow-y: auto;
     }
     
     #generatedContent {
@@ -3150,14 +3159,23 @@ section.bg-white.py-20 {
 /* 桌面版樣式 - 標準螢幕 (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
     #rightColumn {
-        max-height: none;
+        max-height: calc(100vh - 140px); /* 固定右側最大高度，不隨左側變化 */
+        position: sticky;
+        top: 7rem;
+        align-self: flex-start;
+    }
+    
+    #resultContainer {
+        max-height: calc(100vh - 160px); /* 固定結果容器高度 */
+        overflow: hidden;
     }
     
     #contentWrapper {
-        max-height: calc(100vh - 220px); /* 增加可用空間 */
+        max-height: calc(100vh - 240px); /* 增加可用空間 */
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow-y: auto;
     }
     
     #generatedContent {
@@ -3268,9 +3286,9 @@ section.bg-white.py-20 {
     padding-bottom: 3rem; /* 增加底部 padding 確保內容不被截斷 */
 }
 
-/* 當 generatedContent 顯示時，contentWrapper 不需要滾動 */
+/* 當 generatedContent 顯示時，contentWrapper 需要允許滾動以顯示完整內容 */
 #contentWrapper:has(#generatedContent:not(.hidden)) {
-    overflow-y: hidden !important;
+    overflow-y: auto !important;
 }
 
 

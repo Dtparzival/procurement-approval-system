@@ -1,5 +1,23 @@
 # Release 分支變更記錄
 
+## [v1.7.6] - 2025-12-27
+
+### 問題修復
+
+#### 修復桌面版生成結果區域滾動問題
+
+- **問題描述**：當左側上傳多個文件時，右側生成結果區域的底部內容會被遮蔽，無法滾動查看完整內容。
+
+- **根本原因**：CSS 規則 `#contentWrapper:has(#generatedContent:not(.hidden))` 將 `overflow-y` 設為 `hidden`，導致內容無法滾動。
+
+- **修復方案**：將 `overflow-y: hidden` 改為 `overflow-y: auto`，允許內容區域正常滾動顯示完整內容。
+
+### 驗證項目
+
+- **API 呼叫邏輯**：確認 `handleGenerate()` 和 `retryGenerate()` 函數每次都會讀取最新的表單資料，並生成新的 `sessionId`，確保每次 API 呼叫都帶新資料。
+
+---
+
 ## [v1.7.5] - 2025-12-24
 
 ### 問題修復
