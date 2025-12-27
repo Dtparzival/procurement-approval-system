@@ -29,7 +29,8 @@ const CONFIG = {
         DRAFTS: 'procurement_drafts',
         HISTORY: 'procurement_history',
         AUTO_SAVE: 'procurement_auto_save',
-        CURRENT_DRAFT_ID: 'procurement_current_draft_id'
+        CURRENT_DRAFT_ID: 'procurement_current_draft_id',
+        USE_OPENAI: 'procurement_use_openai'
     },
 
     // Auto-save interval (milliseconds)

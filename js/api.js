@@ -117,6 +117,92 @@ const API = {
             attachmentsCount: attachments.length
         });
 
+        // 檢查是否使用 OpenAI API
+        const useOpenAI = Storage.getUseOpenAI();
+        
+        if (useOpenAI) {
+            return await this.generateApprovalWithOpenAI(userInput, attachments);
+        } else {
+            return await this.generateApprovalWithAWS(userInput, attachments);
+        }
+    },
+
+    /**
+     * Generate procurement approval document using OpenAI API
+     */
+    async generateApprovalWithOpenAI(userInput, attachments = []) {
+        console.log('Using OpenAI API for generation');
+
+        // 組合完整的 inputText
+        let inputText = '';
+
+        // 添加標題（如果有）
+        const draftTitle = document.getElementById('draftTitle')?.value.trim();
+        if (draftTitle) {
+            inputText = `標題：${draftTitle}\n\n`;
+        }
+
+        // 添加需求描述
+        inputText += `需求描述：\n${userInput}`;
+
+        // 添加參考文件及其內容
+        if (attachments.length > 0) {
+            inputText += `\n\n參考文件：\n`;
+            attachments.forEach((att, index) => {
+                inputText += `- ${att.fileName}\n`;
+            });
+            
+            // 添加文件實際內容
+            attachments.forEach((att, index) => {
+                if (att.textContent && att.textContent.length > 0) {
+                    const maxLength = 10000;
+                    const content = att.textContent.length > maxLength 
+                        ? att.textContent.substring(0, maxLength) + '\n\n[文件內容過長，已截斷]'
+                        : att.textContent;
+                    inputText += `\n\n【${att.fileName} 內容】\n${content}\n`;
+                }
+            });
+        }
+
+        const messages = [
+            {
+                role: "system",
+                content: CONFIG.PROMPTS.APPROVAL_GENERATION
+            },
+            {
+                role: "user",
+                content: inputText
+            }
+        ];
+
+        try {
+            const response = await this.callLLM(messages);
+            const content = response.choices[0]?.message?.content || '';
+            
+            if (!content || content.trim().length === 0) {
+                throw new Error(MESSAGES.API.EMPTY_RESPONSE.message);
+            }
+            
+            // Extract title from content (first heading)
+            const titleMatch = content.match(/^#\s+(.+)$/m);
+            const title = titleMatch ? titleMatch[1] : '採購簽呈';
+
+            return {
+                title: title,
+                content: content
+            };
+        } catch (error) {
+            console.error('OpenAI API error:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Generate procurement approval document using AWS API
+     */
+    async generateApprovalWithAWS(userInput, attachments = []) {
+        console.log('Using AWS API for generation');
+
         // 組合完整的 inputText（符合 AWS API 格式）
         let inputText = '';
 

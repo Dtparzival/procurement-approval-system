@@ -3551,3 +3551,90 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
+
+
+/* ==================== iPhone 橫向模式修復 ==================== */
+
+/* 
+ * 修復 iPhone 14 Pro Max 等大螢幕手機橫向模式下
+ * 「尚未生成簽呈」區域出現不必要滾動條的問題
+ */
+
+/* 橫向模式下的空狀態區域 */
+@media (max-height: 500px) and (orientation: landscape) {
+    /* 空狀態區域 - 移除滾動條 */
+    #emptyState {
+        overflow: hidden !important;
+        padding: 1rem !important;
+    }
+    
+    /* 空狀態圖示縮小 */
+    #emptyState .empty-state-icon {
+        width: 48px !important;
+        height: 48px !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    #emptyState .empty-state-icon::before {
+        inset: -4px !important;
+    }
+    
+    #emptyState .empty-state-icon svg {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    
+    /* 空狀態文字縮小 */
+    #emptyState .empty-state-title {
+        font-size: 1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #emptyState .empty-state-description {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* 空狀態連結縮小 */
+    #emptyState .empty-state-action {
+        font-size: 0.75rem !important;
+    }
+    
+    /* 內容包裝器 - 移除滾動條 */
+    #contentWrapper:has(#emptyState:not(.hidden)) {
+        overflow: hidden !important;
+    }
+    
+    /* 結果容器 - 移除滾動條 */
+    #resultContainer:has(#emptyState:not(.hidden)) {
+        overflow: hidden !important;
+    }
+}
+
+/* 更小高度的橫向模式 */
+@media (max-height: 400px) and (orientation: landscape) {
+    #emptyState {
+        padding: 0.5rem !important;
+    }
+    
+    #emptyState .empty-state-icon {
+        width: 36px !important;
+        height: 36px !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #emptyState .empty-state-icon svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+    
+    #emptyState .empty-state-title {
+        font-size: 0.875rem !important;
+    }
+    
+    #emptyState .empty-state-description {
+        font-size: 0.625rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+}

@@ -295,11 +295,23 @@ const UI = {
      */
     showSettingsModal() {
         const modal = document.getElementById('settingsModal');
+        const useOpenAIToggle = document.getElementById('useOpenAIToggle');
+        const openAISettings = document.getElementById('openAISettings');
         const apiKeyInput = document.getElementById('apiKeyInput');
         const modelSelect = document.getElementById('modelSelect');
         const autoSaveToggle = document.getElementById('autoSaveToggle');
         
         // 載入當前設定
+        const useOpenAI = Storage.getUseOpenAI();
+        useOpenAIToggle.checked = useOpenAI;
+        
+        // 根據 OpenAI 開關狀態顯示/隱藏 API 設定區塊
+        if (useOpenAI) {
+            openAISettings.classList.remove('hidden');
+        } else {
+            openAISettings.classList.add('hidden');
+        }
+        
         apiKeyInput.value = Storage.getApiKey();
         const savedModel = Storage.getModel();
         modelSelect.value = savedModel;
@@ -317,6 +329,9 @@ const UI = {
             btn.dataset.initialized = 'false';
             this.initCustomSelect();
         }
+        
+        // 綁定 OpenAI 開關事件
+        this.bindOpenAIToggle();
         
         // 禁用背景捲動，記錄當前捲動位置
         this._scrollY = window.scrollY;
@@ -339,18 +354,44 @@ const UI = {
     },
 
     /**
+     * 綁定 OpenAI 開關事件
+     */
+    bindOpenAIToggle() {
+        const useOpenAIToggle = document.getElementById('useOpenAIToggle');
+        const openAISettings = document.getElementById('openAISettings');
+        
+        if (!useOpenAIToggle || !openAISettings) return;
+        
+        // 移除舊的事件監聽器（避免重複綁定）
+        const newToggle = useOpenAIToggle.cloneNode(true);
+        useOpenAIToggle.parentNode.replaceChild(newToggle, useOpenAIToggle);
+        
+        // 綁定新的事件監聽器
+        newToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                openAISettings.classList.remove('hidden');
+            } else {
+                openAISettings.classList.add('hidden');
+            }
+        });
+    },
+
+    /**
      * 儲存設定
      */
     saveSettings() {
+        const useOpenAI = document.getElementById('useOpenAIToggle').checked;
         const apiKey = document.getElementById('apiKeyInput').value.trim();
         const model = document.getElementById('modelSelect').value;
         const autoSave = document.getElementById('autoSaveToggle').checked;
         
-        if (!apiKey) {
+        // 如果啟用 OpenAI API，則需要檢查 API Key
+        if (useOpenAI && !apiKey) {
             this.showToast(MESSAGES.INPUT.EMPTY_API_KEY.message, 'error');
             return;
         }
         
+        Storage.setUseOpenAI(useOpenAI);
         Storage.setApiKey(apiKey);
         Storage.setModel(model);
         Storage.setAutoSave(autoSave);

@@ -38,6 +38,21 @@ const Storage = {
     },
 
     /**
+     * Get useOpenAI setting
+     */
+    getUseOpenAI() {
+        const value = localStorage.getItem(this.getUserKey(CONFIG.STORAGE.USE_OPENAI));
+        return value === 'true';
+    },
+
+    /**
+     * Set useOpenAI setting
+     */
+    setUseOpenAI(enabled) {
+        localStorage.setItem(this.getUserKey(CONFIG.STORAGE.USE_OPENAI), enabled.toString());
+    },
+
+    /**
      * Get auto-save setting
      */
     getAutoSave() {

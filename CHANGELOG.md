@@ -1,5 +1,47 @@
 # Release 分支變更記錄
 
+## [v1.9.0] - 2025-12-28
+
+### 新增功能
+
+#### 系統設定新增 OpenAI API 開關
+
+- **功能描述**：在系統設定中新增「使用 OpenAI API」開關，讓使用者可以選擇使用自己的 OpenAI API Key 或內建的 AWS API Gateway。
+
+- **開關開啟時**：
+  - 顯示 API Key 輸入欄位
+  - 顯示 AI 模型選擇（GPT-4o Mini、GPT-3.5 Turbo、GPT-4o）
+  - 顯示取得 OpenAI API Key 連結
+  - 顯示提示訊息（如何確認 API Key 是否正確）
+
+- **開關關閉時**：
+  - 隱藏 API Key 輸入欄位和 AI 模型選擇
+  - 維持使用內建 AWS API Gateway
+
+### 問題修復
+
+#### 修正 iPhone 橫向模式下的 scroll bar 問題
+
+- **問題描述**：iPhone 14 Pro Max 等大螢幕手機在橫向模式下，「尚未生成簽呈」區域會出現不必要的滾動條，與其他裝置的顯示效果不一致。
+
+- **修復方案**：
+  - 新增橫向模式專用的媒體查詢（`@media (orientation: landscape) and (max-height: 500px)`）
+  - 設定空狀態區域的 `overflow: visible` 和 `min-height: auto`
+  - 調整空狀態圖示和文字的大小
+
+### 文件更新
+
+- 更新 `docs/ERROR_CODES.md`，新增 API 模式說明區塊
+
+### 技術改進
+
+- 在 `config.js` 中新增 `USE_OPENAI` 儲存 key
+- 在 `storage.js` 中新增 `useOpenAI` 的 getter 和 setter
+- 在 `ui.js` 中新增 `bindOpenAIToggle()` 函數
+- 在 `api.js` 中修改 `generateApproval()` 函數，支援 OpenAI API 和 AWS API 的切換
+
+---
+
 ## [v1.8.3] - 2025-12-27
 
 ### 功能優化
