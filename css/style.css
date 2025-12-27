@@ -3305,36 +3305,32 @@ section.bg-white.py-20 {
 /* ==================== 參考文件區塊樣式 ==================== */
 
 /* 參考文件區塊固定大小 */
-.upload-section-fixed {
+#uploadSection {
     flex-shrink: 0; /* 不允許壓縮 */
 }
 
 /* 上傳區域容器 - 固定高度 */
-.upload-content-container {
-    height: 180px; /* 固定高度 */
+.upload-content-wrapper {
+    height: 200px; /* 固定高度，與 v1.8.0 相同 */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-/* 上傳拖放區 */
-.upload-dropzone {
-    flex-shrink: 0;
-    min-height: 70px;
 }
 
 /* 已上傳文件列表 */
 .uploaded-files-list {
     flex: 1;
     min-height: 0;
+    max-height: 80px; /* 約 2-3 個文件的高度 */
     overflow-y: auto;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
     scrollbar-width: thin;
     scrollbar-color: var(--color-gray-400) var(--color-gray-100);
 }
 
 .uploaded-files-list:empty {
     display: none;
+    margin-top: 0;
 }
 
 /* 文件項目樣式 */
@@ -3367,8 +3363,8 @@ section.bg-white.py-20 {
 
 .uploaded-file-icon {
     flex-shrink: 0;
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1rem;
+    height: 1rem;
     color: var(--color-green-600);
 }
 
@@ -3425,22 +3421,31 @@ section.bg-white.py-20 {
 
 /* 桌面版參考文件區塊 */
 @media (min-width: 1024px) {
-    .upload-content-container {
-        height: 180px;
+    .upload-content-wrapper {
+        height: 200px;
+    }
+    .uploaded-files-list {
+        max-height: 80px;
     }
 }
 
 /* 平板版參考文件區塊 */
 @media (min-width: 768px) and (max-width: 1023px) {
-    .upload-content-container {
-        height: 170px;
+    .upload-content-wrapper {
+        height: 190px;
+    }
+    .uploaded-files-list {
+        max-height: 70px;
     }
 }
 
 /* 手機版參考文件區塊 */
 @media (max-width: 767px) {
-    .upload-content-container {
-        height: 180px;
+    .upload-content-wrapper {
+        height: 200px;
+    }
+    .uploaded-files-list {
+        max-height: 80px;
     }
 }
 

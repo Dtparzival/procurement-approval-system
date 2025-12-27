@@ -40,7 +40,7 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css?v=1.8.1">
+    <link rel="stylesheet" href="css/style.css?v=1.8.2">
 </head>
 <body class="bg-gray-50">
     <!-- 未登入狀態：Hero 區塊 -->
@@ -280,24 +280,23 @@
                         </div>
                     </div>
 
-                    <!-- 檔案上傳 - 固定大小區塊 -->
-                    <div id="uploadSection" class="bg-white rounded-xl shadow-lg p-4 sm:p-5 border border-gray-100 upload-section-fixed">
+                    <!-- 檔案上傳 -->
+                    <div id="uploadSection" class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
                         <div class="flex items-center justify-between mb-3">
-                            <label class="text-sm font-medium text-gray-700">
+                            <label class="block text-sm font-medium text-gray-700">
                                 參考文件 (選填)
                             </label>
                             <span id="fileCount" class="text-xs text-gray-500 hidden">0 個文件</span>
                         </div>
-                        <!-- 上傳區域容器 - 固定高度 -->
-                        <div class="upload-content-container">
-                            <!-- 上傳區域 -->
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-green-600 hover:bg-green-50/30 transition-all cursor-pointer upload-dropzone" id="uploadArea">
+                        <!-- 上傳區域容器 -->
+                        <div class="upload-content-wrapper">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-green-700 transition-colors cursor-pointer" id="uploadArea">
                                 <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,image/*" multiple>
-                                <i data-lucide="upload-cloud" class="w-6 h-6 mx-auto text-gray-400 mb-1"></i>
-                                <p class="text-sm text-gray-600">點擊上傳或拖曳檔案</p>
-                                <p class="text-xs text-gray-400 mt-0.5">PDF、Word、圖片，最大 10MB</p>
+                                <i data-lucide="upload" class="w-8 h-8 mx-auto text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600 mb-1">點擊上傳或拖曳檔案至此</p>
+                                <p class="text-xs text-gray-500">支援 PDF、Word、圖片等格式，最大 10MB</p>
                             </div>
-                            <!-- 已上傳文件列表 -->
+                            <!-- 已上傳文件列表，有最大高度限制和滾動 -->
                             <div id="uploadedFilesList" class="uploaded-files-list"></div>
                         </div>
                     </div>
