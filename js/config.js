@@ -4,16 +4,16 @@ const CONFIG = {
     // API Configuration
     API: {
         // OpenAI API endpoint
-        // 支援 OpenAI 模型：gpt-4o-mini, gpt-3.5-turbo, gpt-4o
+        // 支援模型：GPT-5 Mini, GPT-5 Nano, GPT-5.2
         // 請在設定中輸入您的 OpenAI API Key
         BASE_URL: 'https://api.openai.com/v1',
         // Default model
-        DEFAULT_MODEL: 'gpt-4o-mini',
+        DEFAULT_MODEL: 'gpt-5-mini',
         // Available models
         MODELS: [
-            { value: 'gpt-4o-mini', label: 'GPT-4o Mini (推薦)' },
-            { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (快速)' },
-            { value: 'gpt-4o', label: 'GPT-4o (最強)' }
+            { value: 'gpt-5-mini', label: 'GPT-5 Mini (推薦)' },
+            { value: 'gpt-5-nano', label: 'GPT-5 Nano (快速)' },
+            { value: 'gpt-5.2', label: 'GPT-5.2 (最強)' }
         ],
         // 生成簽呈 API 端點
         // AWS API Gateway endpoint for document generation

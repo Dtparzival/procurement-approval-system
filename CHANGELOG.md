@@ -1,5 +1,33 @@
 # Release 分支變更記錄
 
+## [v1.9.2] - 2025-12-28
+
+### 修復
+
+#### 修正 OpenAI API 模型名稱對應問題
+
+- **問題描述**：UI 顯示的模型名稱（GPT-5.2、GPT-5 Mini、GPT-5 Nano）與實際 API 呼叫使用的模型名稱不一致，導致 API 呼叫失敗。
+
+- **修復內容**：
+  - 更新 `config.js` 中的 `DEFAULT_MODEL` 從 `gpt-4o-mini` 改為 `gpt-5-mini`
+  - 更新 `config.js` 中的 `MODELS` 陣列，包含正確的模型 ID：`gpt-5-mini`、`gpt-5-nano`、`gpt-5.2`
+  - 更新 `index.html` 中自訂下拉選單的 `data-value` 屬性，確保與 API 模型名稱一致
+
+#### 修正 OpenAI API 參數相容性問題
+
+- **問題描述**：GPT-5 系列模型不支援 `max_tokens` 和自訂 `temperature` 參數。
+
+- **修復內容**：
+  - 將 `api.js` 中的 `max_tokens` 參數改為 `max_completion_tokens`
+  - 移除 `temperature` 參數以使用模型預設值
+
+### 技術改進
+
+- 更新 CSS 版本號為 1.9.2
+- 確保 UI 模型選擇與 API 呼叫的模型名稱完全一致
+
+---
+
 ## [v1.9.1] - 2025-12-28
 
 ### 新增

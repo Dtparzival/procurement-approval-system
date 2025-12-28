@@ -30,8 +30,7 @@ const API = {
                 body: JSON.stringify({
                     model: model,
                     messages: messages,
-                    temperature: temperature,
-                    max_tokens: maxTokens
+                    max_completion_tokens: maxTokens
                 })
             });
 
