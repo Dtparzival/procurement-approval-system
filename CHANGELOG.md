@@ -1,5 +1,38 @@
 # 變更記錄
 
+## [v1.9.7] - 2025-12-28
+
+### 文件整理
+
+#### 合併 README 相關檔案
+
+- **問題描述**：專案中存在 `BRANCH_README.md` 檔案，這是開發分支的說明文件，在 release 分支中已不再需要獨立存在。
+
+- **處理內容**：
+  - 將 `BRANCH_README.md` 的重要內容（API 整合、測試狀態、部署方式）整合到 `README.md`
+  - 刪除 `BRANCH_README.md` 檔案
+  - 更新所有引用 `BRANCH_README.md` 的文件連結
+
+#### 更新分支描述
+
+- 更新 `docs/README.md` 中的「DEV 分支」描述為「release 分支」
+- 更新 `docs/testing/README.md` 中的分支描述
+- 更新 `FEATURE_GENERATE_API.md` 中的相關文件連結
+
+#### 更新的文件
+
+- `README.md`：整合 API 整合、測試狀態、部署方式等內容
+- `docs/README.md`：移除「DEV 分支」描述
+- `docs/testing/README.md`：更新分支描述為 release
+- `FEATURE_GENERATE_API.md`：更新相關文件連結
+
+### 技術改進
+
+- 更新 CSS 版本號為 1.9.7
+- 統一使用 `README.md` 作為專案主要說明文件
+
+---
+
 ## [v1.9.6] - 2025-12-28
 
 ### 文件整理
