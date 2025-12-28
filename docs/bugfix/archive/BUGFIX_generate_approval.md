@@ -107,7 +107,7 @@ console.log('Approval generated successfully:', {
 
 **改進內容**:
 
-1. **移除特定服務名稱**: 移除「Manus Forge」字樣，改為通用的「OpenAI-compatible API」
+1. **移除特定服務名稱**: 改為通用的「OpenAI-compatible API」
 
 2. **添加診斷提示**:
 ```html

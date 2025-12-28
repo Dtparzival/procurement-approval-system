@@ -30,10 +30,10 @@
 ### 方法二：使用本地伺服器 (推薦)
 
 ```bash
-# 1. 克隆專案並切換到 DEV 分支
+# 1. 克隆專案並切換到 release 分支
 git clone https://github.com/Dtparzival/procurement-approval-system.git
 cd procurement-approval-system
-git checkout DEV
+git checkout release
 
 # 2. 啟動本地伺服器 (任選一種)
 python3 -m http.server 8000
@@ -43,7 +43,7 @@ python3 -m http.server 8000
 # 3. 開啟瀏覽器訪問 http://localhost:8000
 ```
 
-若要將網站部署到公開網路，請參考我們的 [**部署指南 (DEPLOYMENT.md)**](DEPLOYMENT.md)。
+若要將網站部署到公開網路，請參考我們的 [**部署指南 (DEPLOYMENT.md)**](docs/deployment/DEPLOYMENT.md)。
 
 ---
 
@@ -59,6 +59,8 @@ python3 -m http.server 8000
 - **隱私安全**：API Key、草稿和歷史紀錄等所有資料皆儲存於瀏覽器本地，不會上傳到任何伺服器。
 - **無需編譯**：使用原生 HTML/CSS/JavaScript，無需複雜的建置過程。
 - **模組化設計**：程式碼結構清晰，易於維護與擴充。
+
+---
 
 ## 🛠️ 技術架構
 
@@ -81,3 +83,86 @@ js/
 ├── ui.js        # UI 管理 (互動、渲染)
 └── app.js       # 應用主邏輯 (事件處理、流程控制)
 ```
+
+---
+
+## 🔌 API 整合
+
+本系統支援多種 API 整合方式：
+
+### OpenAI API
+
+系統可直接呼叫 OpenAI API 進行簽呈生成，支援以下模型：
+- GPT-5 Mini（推薦）
+- GPT-5 Nano（快速）
+- GPT-5.2（最強）
+
+### AWS API Gateway
+
+系統也支援透過 AWS API Gateway 呼叫外部 AI 服務：
+
+**請求格式**：
+```json
+{
+  "inputText": "標題：XXX\n\n需求描述：\nYYY",
+  "sessionId": "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+}
+```
+
+**響應格式**：
+```json
+{
+  "statusCode": 200,
+  "body": "{\"response\": {\"body\": \"{\\\"draft_text\\\": \\\"簽呈內容...\\\"}\"}}"
+}
+```
+
+API URL 配置在 `js/config.js` 中，便於管理和修改。
+
+---
+
+## 🚀 部署方式
+
+本專案為純靜態網站，可部署於以下平台：
+
+- **AWS S3 + CloudFront**（推薦）
+- **GitHub Pages**
+- **Netlify / Vercel**
+- **任何靜態文件託管服務**
+
+詳細說明請參考 [部署指南](docs/deployment/DEPLOYMENT.md)。
+
+---
+
+## 📋 測試狀態
+
+| 測試項目 | 狀態 | 說明 |
+|:---|:---:|:---|
+| API 連接 | ✅ 通過 | 成功連接到 API |
+| 請求格式 | ✅ 通過 | 請求參數正確組合 |
+| 響應解析 | ✅ 通過 | JSON 正確解析 |
+| 內容顯示 | ✅ 通過 | Markdown 格式正確渲染 |
+| CORS 處理 | ✅ 完成 | API Gateway CORS 已配置 |
+| 響應式設計 | ✅ 通過 | 桌面、平板、手機適配完成 |
+
+詳細測試報告請參考 [測試報告索引](docs/testing/README.md)。
+
+---
+
+## 🔗 相關文件
+
+- [變更記錄](CHANGELOG.md) - 完整的版本變更歷史
+- [技術文件索引](docs/README.md) - 所有技術文件的入口
+- [部署指南](docs/deployment/DEPLOYMENT.md) - 部署流程和注意事項
+- [Bug 修復歷史](docs/bugfix/BUGFIX_HISTORY.md) - 問題和解決方案記錄
+
+---
+
+## 📝 授權
+
+本專案採用 MIT 授權條款。詳見 [LICENSE](LICENSE) 文件。
+
+---
+
+**分支狀態**：✅ 穩定版本  
+**最後更新**：2025-12-28

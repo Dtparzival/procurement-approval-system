@@ -186,6 +186,6 @@ const x = 2; // ❌ SyntaxError: Identifier 'x' has already been declared
 
 ---
 
-**修復人員**: Manus AI Agent  
+**修復人員**: Agent 智簽公文開發團隊  
 **審查狀態**: 待審查  
 **部署狀態**: 待部署

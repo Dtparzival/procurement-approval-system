@@ -3,7 +3,7 @@
 **系統**: 採購公文智簽系統 (Procurement Approval System)  
 **版本**: v1.5.4  
 **日期**: 2025-12-13  
-**分析師**: Manus AI Agent  
+**分析師**: Agent 智簽公文開發團隊  
 **嚴重程度**: 🔴 Critical (P0)
 
 ---
@@ -541,4 +541,4 @@ describe('ProcurementApp', () => {
 
 **報告結束**
 
-*本報告由 Manus AI Agent 生成，基於 Git 提交歷史和代碼分析。*
+*本報告由 Agent 智簽公文開發團隊 生成，基於 Git 提交歷史和代碼分析。*

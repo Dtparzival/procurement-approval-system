@@ -172,4 +172,4 @@ const response = await fetch(apiUrl, {
 - API 配置：`js/config.js`
 - API 整合邏輯：`js/api.js`
 - 應用主邏輯：`js/app.js`
-- 分支說明：`BRANCH_README.md`
+- 專案說明：`README.md`
