@@ -47,7 +47,7 @@ docs/
 如果您是第一次接觸這個專案，建議按以下順序閱讀：
 
 1. **[README.md](../README.md)** - 專案概述和快速開始
-2. **[CHANGELOG_DEV.md](../CHANGELOG_DEV.md)** - 版本變更記錄
+2. **[CHANGELOG.md](../CHANGELOG.md)** - 版本變更記錄
 3. **[部署指南](deployment/DEPLOYMENT.md)** - 如何部署系統
 
 ### 商業決策
@@ -247,7 +247,7 @@ docs/
 ### 找不到需要的文件？
 
 1. 使用本文件的「按主題查找」章節
-2. 查看 [CHANGELOG_DEV.md](../CHANGELOG_DEV.md) 的版本記錄
+2. 查看 [CHANGELOG.md](../CHANGELOG.md) 的版本記錄
 3. 搜尋 GitHub Issues
 
 ### 文件有錯誤或過時？
@@ -267,7 +267,7 @@ docs/
 ## 📚 延伸閱讀
 
 - [專案 README](../README.md)
-- [版本變更記錄](../CHANGELOG_DEV.md)
+- [版本變更記錄](../CHANGELOG.md)
 - [GitHub Repository](https://github.com/Dtparzival/procurement-approval-system)
 
 ---

@@ -167,7 +167,7 @@ const x = 2; // ❌ SyntaxError: Identifier 'x' has already been declared
 
 ## 📚 相關文件
 
-- **CHANGELOG_DEV.md** - 版本變更記錄
+- **CHANGELOG.md** - 版本變更記錄
 - **BUGFIX_v1.5.3_comprehensive.md** - v1.5.3 綜合修復報告
 - **BUGFIX_v1.5.1_hotfix.md** - v1.5.1 緊急修復報告
 

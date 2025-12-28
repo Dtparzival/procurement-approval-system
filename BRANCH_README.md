@@ -120,7 +120,7 @@ python3 -m http.server 8080
 - [ ] 測試 API 調用功能
 - [ ] 驗證錯誤處理
 - [ ] 檢查文檔完整性
-- [ ] 更新 CHANGELOG_DEV.md
+- [ ] 更新 CHANGELOG.md
 - [ ] 代碼審查通過
 
 ## 後續工作

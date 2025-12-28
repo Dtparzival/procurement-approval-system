@@ -224,7 +224,7 @@
 ## 🔗 相關文件
 
 - [專案 README](../../README.md) - 專案概述和快速開始
-- [版本變更記錄](../../CHANGELOG_DEV.md) - 版本變更記錄
+- [版本變更記錄](../../CHANGELOG.md) - 版本變更記錄
 - [部署指南](../deployment/DEPLOYMENT.md) - 部署流程
 - [Google OAuth 設定](../deployment/GOOGLE_OAUTH_SETUP.md) - Google OAuth 配置指南
 - [Bug 修復歷史](../bugfix/BUGFIX_HISTORY.md) - Bug 修復記錄

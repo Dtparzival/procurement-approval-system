@@ -12,8 +12,7 @@
 | 文件 | 說明 |
 | :--- | :--- |
 | 📖 **[README.md](README.md)** | **(本文件)** 專案總覽、功能介紹與快速開始。 |
-| 📝 **[CHANGELOG.md](CHANGELOG.md)** | **變更記錄**：`release` 分支的主要功能更新與修復歷史。 |
-| 📝 **[CHANGELOG_DEV.md](CHANGELOG_DEV.md)** | **開發變更記錄**：`DEV` 分支的詳細開發過程。 |
+| 📝 **[CHANGELOG.md](CHANGELOG.md)** | **變更記錄**：完整的功能更新與修復歷史。 |
 | 📚 **[docs/README.md](docs/README.md)** | **技術文件索引**：所有技術文件、報告和指南的入口。 |
 
 ---

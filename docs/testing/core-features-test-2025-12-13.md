@@ -114,7 +114,7 @@
 
 ## 下一步
 
-1. 更新 README.md 和 CHANGELOG_DEV.md
+1. 更新 README.md 和 CHANGELOG.md
 2. 提交最終版本到 GitHub DEV 分支
 3. 準備部署到 AWS S3
 

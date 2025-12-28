@@ -285,7 +285,7 @@ UI.showToast('下載成功！', 'success');
 
 ## 📚 相關文件
 
-- [CHANGELOG_DEV.md](./CHANGELOG_DEV.md) - 完整的變更記錄
+- [CHANGELOG.md](../../../CHANGELOG.md) - 完整的變更記錄
 - [README.md](./README.md) - 專案說明文件
 - [DEPLOYMENT.md](./DEPLOYMENT.md) - 部署指南
 
