@@ -4255,3 +4255,274 @@ html, body {
         font-size: 0.875rem !important;
     }
 }
+
+
+/* ==================== v1.9.5 修復：iPhone 橫向模式參考文件區塊和錯誤狀態 ==================== */
+
+/**
+ * 修正 iPhone 14 Pro Max 等大螢幕手機橫向模式下：
+ * 1. 參考文件區塊未正常顯示（已上傳文件列表不顯示）
+ * 2. 產生失敗畫面未完整呈現
+ */
+
+/* ==================== 橫向模式 - 參考文件區塊優化 ==================== */
+
+@media (max-height: 500px) and (orientation: landscape) {
+    /* 參考文件區塊容器 */
+    #uploadSection {
+        padding: 0.5rem !important;
+    }
+    
+    /* 參考文件標籤 */
+    #uploadSection .flex.items-center.justify-between {
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #uploadSection .flex.items-center.justify-between label {
+        font-size: 0.75rem !important;
+    }
+    
+    #uploadSection .flex.items-center.justify-between span {
+        font-size: 0.625rem !important;
+    }
+    
+    /* 上傳區域容器 */
+    .upload-content-wrapper {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.5rem !important;
+        align-items: stretch !important;
+    }
+    
+    /* 上傳區域 - 縮小 */
+    #uploadArea {
+        padding: 0.5rem !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+    
+    #uploadArea svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #uploadArea p:first-of-type {
+        font-size: 0.625rem !important;
+        margin-bottom: 0.125rem !important;
+    }
+    
+    #uploadArea p:last-of-type {
+        font-size: 0.5rem !important;
+    }
+    
+    /* 已上傳文件列表 - 橫向顯示 */
+    .uploaded-files-list {
+        flex: 1 !important;
+        max-height: 80px !important;
+        overflow-y: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.25rem !important;
+    }
+    
+    /* 已上傳文件項目 */
+    .uploaded-file-item {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.625rem !important;
+    }
+    
+    .uploaded-file-item svg {
+        width: 0.75rem !important;
+        height: 0.75rem !important;
+    }
+}
+
+/* 更小高度的橫向模式 - 參考文件區塊 */
+@media (max-height: 400px) and (orientation: landscape) {
+    #uploadSection {
+        padding: 0.375rem !important;
+    }
+    
+    #uploadArea {
+        padding: 0.375rem !important;
+    }
+    
+    #uploadArea svg {
+        width: 1rem !important;
+        height: 1rem !important;
+    }
+    
+    #uploadArea p:first-of-type {
+        font-size: 0.5rem !important;
+    }
+    
+    #uploadArea p:last-of-type {
+        display: none !important;
+    }
+    
+    .uploaded-files-list {
+        max-height: 60px !important;
+    }
+}
+
+/* ==================== 橫向模式 - 錯誤狀態完整顯示優化 ==================== */
+
+@media (max-height: 500px) and (orientation: landscape) {
+    /* 錯誤狀態區域 - 確保完整顯示 */
+    #errorState {
+        padding: 0.5rem 1rem !important;
+        min-height: auto !important;
+        justify-content: flex-start !important;
+        gap: 0.25rem !important;
+    }
+    
+    /* 錯誤狀態圖示區域 */
+    #errorState > .relative.mb-6,
+    #errorState > div:first-child {
+        margin-bottom: 0.25rem !important;
+    }
+    
+    /* 錯誤狀態圖示 */
+    #errorState > .relative.mb-6 > div:first-child,
+    #errorState > div:first-child > div:first-child {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+    
+    #errorState > .relative.mb-6 > div:first-child svg,
+    #errorState > div:first-child > div:first-child svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+    }
+    
+    /* 錯誤狀態小紅圈 */
+    #errorState > .relative.mb-6 > div:last-child,
+    #errorState > div:first-child > div:last-child {
+        width: 1rem !important;
+        height: 1rem !important;
+        bottom: -2px !important;
+        right: -2px !important;
+    }
+    
+    #errorState > .relative.mb-6 > div:last-child svg,
+    #errorState > div:first-child > div:last-child svg {
+        width: 0.5rem !important;
+        height: 0.5rem !important;
+    }
+    
+    /* 錯誤狀態標題 */
+    #errorTitle {
+        font-size: 0.875rem !important;
+        margin-bottom: 0.125rem !important;
+    }
+    
+    /* 錯誤狀態訊息 */
+    #errorMessage {
+        font-size: 0.625rem !important;
+        margin-bottom: 0.25rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* 錯誤狀態按鈕區域 */
+    #errorState .flex.items-center.gap-3 {
+        flex-direction: row !important;
+        gap: 0.5rem !important;
+        width: auto !important;
+    }
+    
+    #errorState .flex.items-center.gap-3 button {
+        width: auto !important;
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.625rem !important;
+    }
+    
+    /* 幫助連結區域 - 縮小並橫向排列 */
+    #errorState .mt-8.pt-6.border-t {
+        margin-top: 0.25rem !important;
+        padding-top: 0.25rem !important;
+        border-top-width: 1px !important;
+    }
+    
+    #errorState .mt-8.pt-6.border-t > p {
+        font-size: 0.5rem !important;
+        margin-bottom: 0.125rem !important;
+    }
+    
+    #errorState .mt-8.pt-6.border-t .flex.items-center.gap-4 {
+        flex-direction: row !important;
+        gap: 0.5rem !important;
+    }
+    
+    #errorState .mt-8.pt-6.border-t .flex.items-center.gap-4 a {
+        font-size: 0.5rem !important;
+    }
+    
+    #errorState .mt-8.pt-6.border-t .flex.items-center.gap-4 a svg {
+        width: 0.625rem !important;
+        height: 0.625rem !important;
+    }
+}
+
+/* 更小高度的橫向模式 - 錯誤狀態 */
+@media (max-height: 400px) and (orientation: landscape) {
+    #errorState {
+        padding: 0.25rem 0.75rem !important;
+    }
+    
+    /* 錯誤狀態圖示 */
+    #errorState > .relative.mb-6 > div:first-child,
+    #errorState > div:first-child > div:first-child {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
+    
+    #errorState > .relative.mb-6 > div:first-child svg,
+    #errorState > div:first-child > div:first-child svg {
+        width: 1rem !important;
+        height: 1rem !important;
+    }
+    
+    /* 錯誤狀態標題 */
+    #errorTitle {
+        font-size: 0.75rem !important;
+    }
+    
+    /* 錯誤狀態訊息 */
+    #errorMessage {
+        font-size: 0.5rem !important;
+    }
+    
+    /* 錯誤狀態按鈕 */
+    #errorState .flex.items-center.gap-3 button {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.5rem !important;
+    }
+    
+    /* 幫助連結區域 - 隱藏以節省空間 */
+    #errorState .mt-8.pt-6.border-t {
+        display: none !important;
+    }
+}
+
+/* ==================== 橫向模式 - 結果容器滾動優化 ==================== */
+
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 1023px) {
+    /* 結果容器 - 允許滾動以顯示完整內容 */
+    #resultContainer {
+        overflow-y: auto !important;
+        max-height: calc(100vh - 120px) !important;
+    }
+    
+    /* 內容包裝器 */
+    #contentWrapper {
+        overflow-y: auto !important;
+        max-height: none !important;
+    }
+    
+    /* 右側欄位 */
+    #rightColumn {
+        overflow-y: auto !important;
+        max-height: calc(100vh - 100px) !important;
+    }
+}
