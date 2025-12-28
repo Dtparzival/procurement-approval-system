@@ -4058,3 +4058,200 @@ html, body {
         overflow-y: visible !important;
     }
 }
+
+
+/* ==================== v1.9.4 修復：狀態互斥顯示 ==================== */
+
+/**
+ * 修正錯誤狀態和空狀態同時顯示的問題
+ * 確保在同一時間只顯示一個狀態
+ */
+
+/* 當錯誤狀態顯示時，隱藏空狀態 */
+#contentWrapper:has(#errorState:not(.hidden)) #emptyState {
+    display: none !important;
+}
+
+/* 當載入狀態顯示時，隱藏空狀態和錯誤狀態 */
+#contentWrapper:has(#loadingState:not(.hidden)) #emptyState,
+#contentWrapper:has(#loadingState:not(.hidden)) #errorState {
+    display: none !important;
+}
+
+/* 當生成內容顯示時，隱藏空狀態和錯誤狀態 */
+#contentWrapper:has(#generatedContent:not(.hidden)) #emptyState,
+#contentWrapper:has(#generatedContent:not(.hidden)) #errorState {
+    display: none !important;
+}
+
+/* ==================== v1.9.4 修復：手機版參考文件區塊優化 ==================== */
+
+/**
+ * 修正 iPhone 14 Pro Max 等手機版參考文件區塊未完整顯示的問題
+ * 確保上傳區域和已上傳文件列表都能正確顯示
+ */
+
+/* 手機版參考文件區塊 */
+@media (max-width: 1023px) {
+    /* 上傳區域容器 */
+    #uploadSection {
+        padding: 1rem !important;
+    }
+    
+    /* 上傳區域 */
+    #uploadArea {
+        padding: 1rem !important;
+    }
+    
+    /* 上傳區域文字 */
+    #uploadArea p {
+        font-size: 0.75rem !important;
+    }
+    
+    /* 上傳區域圖示 */
+    #uploadArea svg {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+    
+    /* 已上傳文件列表 */
+    .uploaded-files-list {
+        max-height: 150px !important;
+        overflow-y: auto !important;
+    }
+    
+    /* 已上傳文件項目 */
+    .uploaded-file-item {
+        padding: 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* 更小螢幕的手機版 */
+@media (max-width: 640px) {
+    /* 上傳區域容器 */
+    #uploadSection {
+        padding: 0.75rem !important;
+    }
+    
+    /* 上傳區域 */
+    #uploadArea {
+        padding: 0.75rem !important;
+    }
+    
+    /* 上傳區域文字 */
+    #uploadArea p:first-of-type {
+        font-size: 0.75rem !important;
+    }
+    
+    #uploadArea p:last-of-type {
+        font-size: 0.625rem !important;
+    }
+    
+    /* 已上傳文件列表 */
+    .uploaded-files-list {
+        max-height: 120px !important;
+    }
+}
+
+/* ==================== v1.9.4 修復：手機版錯誤狀態優化 ==================== */
+
+/**
+ * 修正手機版錯誤狀態的顯示問題
+ * 確保錯誤狀態在手機版上正確顯示
+ */
+
+/* 手機版錯誤狀態 */
+@media (max-width: 1023px) {
+    /* 錯誤狀態區域 */
+    #errorState {
+        min-height: auto !important;
+        padding: 1.5rem 1rem !important;
+    }
+    
+    /* 錯誤狀態圖示 */
+    #errorState > div:first-child {
+        margin-bottom: 1rem !important;
+    }
+    
+    #errorState > div:first-child > div:first-child {
+        width: 4rem !important;
+        height: 4rem !important;
+    }
+    
+    #errorState > div:first-child > div:first-child svg {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
+    
+    /* 錯誤狀態標題 */
+    #errorTitle {
+        font-size: 1.125rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* 錯誤狀態訊息 */
+    #errorMessage {
+        font-size: 0.875rem !important;
+        margin-bottom: 1rem !important;
+        padding: 0 0.5rem !important;
+    }
+    
+    /* 錯誤狀態按鈕 */
+    #errorState .flex.items-center.gap-3 {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+    }
+    
+    #errorState .flex.items-center.gap-3 button {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    /* 幫助連結區域 */
+    #errorState .mt-8.pt-6.border-t {
+        margin-top: 1rem !important;
+        padding-top: 1rem !important;
+    }
+    
+    #errorState .mt-8.pt-6.border-t .flex.items-center.gap-4 {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* 更小螢幕的手機版 */
+@media (max-width: 640px) {
+    /* 錯誤狀態區域 */
+    #errorState {
+        padding: 1rem 0.75rem !important;
+    }
+    
+    /* 錯誤狀態圖示 */
+    #errorState > div:first-child > div:first-child {
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+    }
+    
+    #errorState > div:first-child > div:first-child svg {
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+    }
+    
+    /* 錯誤狀態標題 */
+    #errorTitle {
+        font-size: 1rem !important;
+    }
+    
+    /* 錯誤狀態訊息 */
+    #errorMessage {
+        font-size: 0.75rem !important;
+    }
+    
+    /* 錯誤狀態按鈕 */
+    #errorState .flex.items-center.gap-3 button {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+}

@@ -75,8 +75,31 @@
 | `@media (max-height: 500px) and (orientation: landscape)` | iPhone 14 Pro Max 等大螢幕手機 | Modal、空狀態、錯誤狀態、Footer 優化 |
 | `@media (max-height: 400px) and (orientation: landscape)` | 更小高度的橫向模式 | 進一步縮小各元素尺寸 |
 | `@media (max-height: 500px) and (orientation: landscape) and (max-width: 1023px)` | 手機橫向模式 | 主要內容區域 Grid 佈局、Footer 顯示 |
+| `@media (max-width: 1023px)` | 手機版和平板版 | 參考文件區塊、錯誤狀態優化（v1.9.4） |
+| `@media (max-width: 640px)` | 小螢幕手機 | 進一步縮小各元素尺寸（v1.9.4） |
+
+### 狀態互斥顯示（v1.9.4 新增）
+
+系統使用 CSS `:has()` 選擇器確保以下狀態互斥顯示：
+
+| 狀態 | 元素 ID | 說明 |
+| :--- | :--- | :--- |
+| 空狀態 | `#emptyState` | 預設顯示，尚未生成簽呈 |
+| 載入狀態 | `#loadingState` | AI 正在生成簽呈 |
+| 錯誤狀態 | `#errorState` | 生成失敗 |
+| 生成內容 | `#generatedContent` | 簽呈生成完成 |
+
+CSS 規則確保當一個狀態顯示時，其他狀態會自動隱藏：
+
+```css
+/* 當錯誤狀態顯示時，隱藏空狀態 */
+#contentWrapper:has(#errorState:not(.hidden)) #emptyState {
+    display: none !important;
+}
+```
 
 ## 更新紀錄
 
+- **2025-12-28**：新增狀態互斥顯示說明和手機版媒體查詢（v1.9.4）。
 - **2025-12-28**：新增橫向模式媒體查詢說明（v1.9.3）。
 - **2025-12-28**：建立此文件。
