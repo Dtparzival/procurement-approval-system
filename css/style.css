@@ -3832,3 +3832,229 @@ html, body {
         font-size: 0.75rem !important;
     }
 }
+
+
+/* ==================== iPhone 橫向模式 - 錯誤狀態和 Footer 修正 ==================== */
+
+/**
+ * v1.9.3 修復
+ * 修正 iPhone 14 Pro Max 等大螢幕手機橫向模式下：
+ * 1. 「產生失敗」畫面出現不必要滾動條的問題
+ * 2. Footer 未顯示的問題
+ */
+
+/* 橫向模式下的錯誤狀態區域 */
+@media (max-height: 500px) and (orientation: landscape) {
+    /* 錯誤狀態區域 - 移除滾動條 */
+    #errorState {
+        overflow: hidden !important;
+        padding: 1rem !important;
+        min-height: auto !important;
+    }
+    
+    /* 錯誤狀態圖示縮小 */
+    #errorState .error-icon,
+    #errorState > div > div:first-child {
+        width: 48px !important;
+        height: 48px !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    #errorState .error-icon svg,
+    #errorState > div > div:first-child svg {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    
+    /* 錯誤狀態文字縮小 */
+    #errorState .text-xl,
+    #errorState h3 {
+        font-size: 1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #errorState .text-gray-600,
+    #errorState p {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* 錯誤狀態按鈕縮小 */
+    #errorState button {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* 錯誤狀態「需要幫助？」區塊縮小 */
+    #errorState .text-sm {
+        font-size: 0.625rem !important;
+    }
+    
+    /* 內容包裝器 - 移除滾動條（錯誤狀態） */
+    #contentWrapper:has(#errorState:not(.hidden)) {
+        overflow: hidden !important;
+    }
+    
+    /* 結果容器 - 移除滾動條（錯誤狀態） */
+    #resultContainer:has(#errorState:not(.hidden)) {
+        overflow: hidden !important;
+    }
+}
+
+/* 更小高度的橫向模式 - 錯誤狀態 */
+@media (max-height: 400px) and (orientation: landscape) {
+    #errorState {
+        padding: 0.5rem !important;
+    }
+    
+    #errorState .error-icon,
+    #errorState > div > div:first-child {
+        width: 36px !important;
+        height: 36px !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #errorState .error-icon svg,
+    #errorState > div > div:first-child svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+    
+    #errorState .text-xl,
+    #errorState h3 {
+        font-size: 0.875rem !important;
+    }
+    
+    #errorState .text-gray-600,
+    #errorState p {
+        font-size: 0.625rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #errorState button {
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.625rem !important;
+    }
+}
+
+/* ==================== iPhone 橫向模式 - Footer 顯示修正 ==================== */
+
+/**
+ * 修正橫向模式下 Footer 被隱藏的問題
+ * 改為顯示精簡版 Footer，保持品牌一致性
+ */
+
+/* 橫向模式下顯示精簡版 Footer */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 1023px) {
+    /* 覆蓋原本隱藏 Footer 的設定 */
+    footer {
+        display: block !important;
+        padding: 0.5rem 0 !important;
+    }
+    
+    /* Footer 內容精簡化 */
+    footer .container {
+        padding: 0 0.75rem !important;
+    }
+    
+    /* Footer Grid 改為單行 */
+    footer .grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* 隱藏 Footer 的詳細內容區塊 */
+    footer .grid > div:not(:first-child):not(:last-child) {
+        display: none !important;
+    }
+    
+    /* Footer 品牌區域精簡 */
+    footer .grid > div:first-child {
+        flex: none !important;
+        width: auto !important;
+    }
+    
+    footer .grid > div:first-child .text-lg {
+        font-size: 0.875rem !important;
+    }
+    
+    footer .grid > div:first-child .text-gray-400 {
+        display: none !important;
+    }
+    
+    /* Footer 版權區域精簡 */
+    footer .border-t {
+        padding: 0.5rem 0 !important;
+        margin-top: 0.5rem !important;
+    }
+    
+    footer .border-t .text-sm {
+        font-size: 0.625rem !important;
+    }
+    
+    /* 隱藏 Footer 的隱私權和服務條款連結 */
+    footer .border-t .flex.gap-6 {
+        display: none !important;
+    }
+}
+
+/* 更小高度的橫向模式 - Footer */
+@media (max-height: 400px) and (orientation: landscape) and (max-width: 1023px) {
+    footer {
+        padding: 0.25rem 0 !important;
+    }
+    
+    footer .grid > div:first-child .text-lg {
+        font-size: 0.75rem !important;
+    }
+    
+    footer .border-t {
+        padding: 0.25rem 0 !important;
+        margin-top: 0.25rem !important;
+    }
+    
+    footer .border-t .text-sm {
+        font-size: 0.5rem !important;
+    }
+}
+
+/* ==================== 橫向模式整體佈局優化 ==================== */
+
+/**
+ * 確保橫向模式下頁面可以正常滾動到 Footer
+ */
+
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 1023px) {
+    /* 主要內容區域高度調整，為 Footer 留出空間 */
+    #mainSection {
+        min-height: auto !important;
+        padding-bottom: 0.5rem !important;
+    }
+    
+    /* 確保頁面可以滾動 */
+    body {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* 主要內容區域 Grid 高度調整 */
+    #mainSection .grid {
+        max-height: none !important;
+    }
+    
+    /* 左側欄位高度調整 */
+    #mainSection .grid > div:first-child {
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+    
+    /* 右側欄位高度調整 */
+    #rightColumn {
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+}

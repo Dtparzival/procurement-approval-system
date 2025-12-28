@@ -64,7 +64,19 @@
 - 縮小 Header 和 Footer
 - 調整 Modal 的大小和位置
 - 縮小空狀態區域的圖示和文字
+- 縮小錯誤狀態區域的圖示、文字和按鈕（v1.9.3 新增）
+- 顯示精簡版 Footer，僅保留品牌區域和版權資訊（v1.9.3 新增）
+
+### 橫向模式媒體查詢
+
+| 媒體查詢 | 適用場景 | 說明 |
+| :--- | :--- | :--- |
+| `@media (max-height: 600px) and (orientation: landscape)` | 一般橫向模式 | Header 和 Hero 區域縮小 |
+| `@media (max-height: 500px) and (orientation: landscape)` | iPhone 14 Pro Max 等大螢幕手機 | Modal、空狀態、錯誤狀態、Footer 優化 |
+| `@media (max-height: 400px) and (orientation: landscape)` | 更小高度的橫向模式 | 進一步縮小各元素尺寸 |
+| `@media (max-height: 500px) and (orientation: landscape) and (max-width: 1023px)` | 手機橫向模式 | 主要內容區域 Grid 佈局、Footer 顯示 |
 
 ## 更新紀錄
 
+- **2025-12-28**：新增橫向模式媒體查詢說明（v1.9.3）。
 - **2025-12-28**：建立此文件。
